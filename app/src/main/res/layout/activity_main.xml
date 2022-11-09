@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_theme"
     tools:context=".MainActivity">
     <LinearLayout
         android:id="@+id/LinearLayoutSettings"
@@ -14,7 +15,7 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_gravity="end"
             android:layout_margin="25dp"
             android:background="@android:color/transparent"
@@ -26,8 +27,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/LinearLayoutSettings"
-       app:layout_constraintBottom_toTopOf="@id/LinearUsers"
-        android:gravity="center_horizontal">
+        app:layout_constraintBottom_toTopOf="@id/LinearUsers"
+        android:gravity="center_horizontal"
+        app:layout_constraintVertical_bias="0.40">
 
     <TextView
         android:id="@+id/textView1"
@@ -35,6 +37,7 @@
         android:layout_height="wrap_content"
         android:text="Math Game"
         android:textSize="40dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toTopOf="@id/ButtonSinglePlayer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,10 +46,12 @@
 
         <Button
             android:id="@+id/ButtonSinglePlayer"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/SinglePlayer"
             android:textSize="18dp"
+            android:textColor="#D2D2D2"
+            android:background="@drawable/round_btn"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView1"
@@ -57,10 +62,13 @@
 
         <Button
             android:id="@+id/ButtonMultiPlayer"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:text="@string/MultiPlayer"
             android:textSize="18dp"
+            android:textColor="#D2D2D2"
+            android:background="@drawable/round_btn"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@id/ButtonSinglePlayer"
             app:layout_constraintStart_toStartOf="parent"
