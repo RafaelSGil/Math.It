@@ -14,10 +14,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btSinglePlayer.setOnClickListener{_ ->
+        binding.ButtonSinglePlayer.setOnClickListener{_ ->
             startActivity(Intent(this, SinglePlayerActivity::class.java))
         }
-        binding.btMultiPlayer.setOnClickListener{view ->
+        binding.ButtonMultiPlayer.setOnClickListener{view ->
             Snackbar.make(view,"Coming Soon", Snackbar.LENGTH_LONG).show()
         }
     }

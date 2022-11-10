@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_theme"
     tools:context=".SinglePlayerActivity">
 
     <TableLayout
@@ -10,6 +11,18 @@
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:layout_gravity="center_vertical">
+        <TextView
+            android:id="@+id/best"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"/>
+        <TextView
+            android:id="@+id/secondbest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"/>
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -17,7 +30,7 @@
                 android:id="@+id/r1tv1"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -25,12 +38,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r1tv2"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -38,12 +52,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r1tv3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -51,12 +66,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r1tv4"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -64,12 +80,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r1tv5"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -77,7 +94,8 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
         </TableRow>
         <TableRow
             android:layout_width="wrap_content"
@@ -86,7 +104,7 @@
                 android:id="@+id/r2tv1"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -94,11 +112,12 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/white"
+                android:background="@color/transparent"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -106,12 +125,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r2tv3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -119,11 +139,12 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/white"
+                android:background="@color/transparent"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -131,12 +152,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r2tv5"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -144,7 +166,8 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
         </TableRow>
         <TableRow
             android:layout_width="wrap_content"
@@ -153,7 +176,7 @@
                 android:id="@+id/r3tv1"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -161,12 +184,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r3tv2"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -174,12 +198,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r3tv3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -187,12 +212,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r3tv4"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -200,12 +226,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r3tv5"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -213,7 +240,8 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
         </TableRow>
         <TableRow
             android:layout_width="wrap_content"
@@ -222,7 +250,7 @@
                 android:id="@+id/r4tv1"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -230,11 +258,12 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/transparent"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -242,12 +271,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r4tv3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -255,11 +285,12 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/white"
+                android:background="@color/transparent"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -267,12 +298,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r4tv5"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -280,7 +312,8 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
         </TableRow>
         <TableRow
             android:layout_width="wrap_content"
@@ -289,7 +322,7 @@
                 android:id="@+id/r5tv1"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -297,12 +330,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r5tv2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -310,12 +344,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r5tv3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -323,12 +358,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r5tv4"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/purple_200"
+                android:background="@color/signCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -336,12 +372,13 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
             <TextView
                 android:id="@+id/r5tv5"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/teal_200"
+                android:background="@color/numberCell"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textSize="15sp"
@@ -349,7 +386,8 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="30dp"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp"/>
+                android:paddingEnd="15dp"
+                android:layout_margin="2dp"/>
         </TableRow>
     </TableLayout>
 
