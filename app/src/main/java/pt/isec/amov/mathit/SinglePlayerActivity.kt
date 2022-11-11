@@ -1,15 +1,25 @@
 package pt.isec.amov.mathit
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
+import android.view.MotionEvent.*
+import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import net.objecthunter.exp4j.ExpressionBuilder
-import org.w3c.dom.Text
 import pt.isec.amov.mathit.databinding.ActivitySinglePlayerBinding
 
-class SinglePlayerActivity : AppCompatActivity(){
+
+class SinglePlayerActivity : AppCompatActivity(), View.OnClickListener{
     private lateinit var binding: ActivitySinglePlayerBinding
 
+    private lateinit var gestureDetector : GestureDetector;
     private var tvs : ArrayList<TextView> = ArrayList()
     private var operationSigns : ArrayList<String> = ArrayList()
     private var idsSelected : ArrayList<TextView> = ArrayList()
@@ -20,6 +30,8 @@ class SinglePlayerActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivitySinglePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        gestureDetector = GestureDetector(this, GestureListener())
 
         //add every text view to an array, to make it easier to iterate through each one
         tvs.add(binding.r1tv1)
@@ -50,21 +62,93 @@ class SinglePlayerActivity : AppCompatActivity(){
         tvs.add(binding.r5tv4)
         tvs.add(binding.r5tv5)
 
+        for (view : TextView in tvs){
+            view.setOnClickListener(this)
+        }
+
         //create an array with all
         operationSigns.addAll(arrayOf("+", "-", "*", "/"))
 
         assignRandomValues()
+    }
 
-        var str : String = String()
-        for (view : TextView in bestCombination){
-            str += view.text.toString()
+
+/*    private class GestureListener : SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent?): Boolean {
+            return true
         }
-        binding.best.text = str
-        str = ""
-        for (view : TextView in secondBestCombination){
-            str += view.text.toString()
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            if(e1.action == ACTION_DOWN){
+
+            }
+            return super.onFling(e1, e2, velocityX, velocityY)
         }
-        binding.secondbest.text = str
+    }*/
+
+/*    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+        if (p1 != null) {
+            when(p1.action){
+                ACTION_DOWN -> {
+                    idsSelected.add(p0 as TextView)
+                    if (idsSelected.size >= 5){
+                        p0.setBackgroundColor(Color.WHITE)
+                        if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
+                            Snackbar.make(p0,"Congrats", Snackbar.LENGTH_LONG).show()
+                            idsSelected.clear()
+                            assignRandomValues()
+                            return true
+                        }
+                    }
+
+                }
+                ACTION_MOVE -> {
+                    p0?.setBackgroundColor(Color.WHITE)
+                    if (idsSelected.size >= 5){
+                        if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
+                            if (p0 != null) {
+                                Snackbar.make(p0,"Congrats", Snackbar.LENGTH_LONG).show()
+                            }
+                            idsSelected.clear()
+                            assignRandomValues()
+                            return true
+                        }
+                    }
+                    idsSelected.add(p0 as TextView)
+                }
+                ACTION_UP -> {
+                    if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
+                        idsSelected.clear()
+                        assignRandomValues()
+                        return true
+                    }
+                    idsSelected.clear()
+                }
+            }
+        }
+        return true
+    }*/
+
+    override fun onClick(p0: View?) {
+        idsSelected.add(p0 as TextView)
+        if (idsSelected.size >= 5){
+            if (idsSelected.containsAll(bestCombination)){
+                Snackbar.make(p0,"Best Combination", Snackbar.LENGTH_LONG).show()
+                idsSelected.clear()
+                assignRandomValues()
+                return
+            }
+            if(idsSelected.containsAll(secondBestCombination)){
+                Snackbar.make(p0,"Second Best Combination", Snackbar.LENGTH_LONG).show()
+                idsSelected.clear()
+                assignRandomValues()
+                return
+            }
+
+            Snackbar.make(p0,"You lost", Snackbar.LENGTH_LONG).show()
+            idsSelected.clear()
+            assignRandomValues()
+        }
     }
 
     private fun calculateBestCombination(){
