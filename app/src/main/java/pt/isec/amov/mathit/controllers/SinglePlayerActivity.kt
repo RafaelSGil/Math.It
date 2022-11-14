@@ -1,25 +1,33 @@
-package pt.isec.amov.mathit
+package pt.isec.amov.mathit.controllers
 
-import android.annotation.SuppressLint
-import android.graphics.Color
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
-import android.view.MotionEvent
 import android.view.MotionEvent.*
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import net.objecthunter.exp4j.ExpressionBuilder
 import pt.isec.amov.mathit.databinding.ActivitySinglePlayerBinding
+import pt.isec.amov.mathit.model.ModelManager
 
 
 class SinglePlayerActivity : AppCompatActivity(), View.OnClickListener{
+    companion object{
+        private var manager : ModelManager? = null
+
+        fun getNewIntent(context : Context, manager : ModelManager) : Intent {
+            val intent = Intent(context, SinglePlayerActivity::class.java)
+            this.manager = manager
+            return intent
+        }
+    }
+
     private lateinit var binding: ActivitySinglePlayerBinding
 
-    private lateinit var gestureDetector : GestureDetector;
+    private lateinit var gestureDetector : GestureDetector
     private var tvs : ArrayList<TextView> = ArrayList()
     private var operationSigns : ArrayList<String> = ArrayList()
     private var idsSelected : ArrayList<TextView> = ArrayList()
