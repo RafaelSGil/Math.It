@@ -7,7 +7,6 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMainMenuBinding
 import pt.isec.amov.mathit.model.ModelManager
-import pt.isec.amov.mathit.model.fsm.States
 
 class MainMenuActivity : AppCompatActivity() {
     companion object{
@@ -28,7 +27,6 @@ class MainMenuActivity : AppCompatActivity() {
 
         binding.ButtonSinglePlayer.setOnClickListener{ _ ->
             manager.goSinglePlayerState(this, manager)
-            //startActivity(SinglePlayerActivity.getNewIntent(this, manager))
         }
 
         binding.ButtonMultiPlayer.setOnClickListener{view ->
