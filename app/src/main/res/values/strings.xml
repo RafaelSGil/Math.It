@@ -4,4 +4,6 @@
     <string name="SinglePlayer">SinglePlayer</string>
     <string name="MultiPlayer">MultiPlayer</string>
     <string name="Users">Users</string>
+    <string name="points">Points: </string>
+    <string name="level">Level:</string>
 </resources>
