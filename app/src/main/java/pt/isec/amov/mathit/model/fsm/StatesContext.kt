@@ -77,4 +77,13 @@ class StatesContext{
     fun goWaitMultiStartState(context : Context, manager: ModelManager) {
         this.state.goWaitMultiStartState(context, manager)
     }
+
+    // DATA
+    fun getLocalPlayerName(): String? {
+        return data.playerName
+    }
+
+    fun changeLocalPlayerName(name: String?) {
+        data.playerName = name
+    }
 }

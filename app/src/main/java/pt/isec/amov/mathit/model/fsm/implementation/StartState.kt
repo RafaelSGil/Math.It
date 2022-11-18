@@ -2,8 +2,7 @@ package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
 import androidx.core.content.ContextCompat.startActivity
-import androidx.appcompat.app.AppCompatActivity
-import pt.isec.amov.mathit.controllers.MainMenuActivity
+import pt.isec.amov.mathit.controllers.ProfileActivity
 import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
@@ -31,6 +30,7 @@ class StartState(
 
     override fun goProfileState(context: Context, manager : ModelManager) {
         setState(States.PROFILE)
+        startActivity(context, ProfileActivity.getNewIntent(context, manager), null)
     }
 
     override fun goTop5State(context: Context, manager : ModelManager) {
