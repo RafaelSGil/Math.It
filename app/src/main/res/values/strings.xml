@@ -6,4 +6,11 @@
     <string name="Users">Users</string>
     <string name="points">Points: </string>
     <string name="level">Level:</string>
+    <string name="users_label">Users</string>
+    <string name="default_player_name">Player123</string>
+    <string name="profile_title_label">Your Profile</string>
+    <string name="profile_picture_label">Profile Picture</string>
+    <string name="edit_profile_name_label">Name</string>
+    <string name="save_profile_label">Save</string>
+    <string name="profile_button_label">Profile</string>
 </resources>

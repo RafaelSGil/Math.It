@@ -12,29 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MathIt"
         tools:targetApi="31">
+
         <activity
             android:name=".controllers.MainMenuActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".new_layout"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -42,10 +27,19 @@
         <activity
             android:name=".controllers.SinglePlayerActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".controllers.MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".controllers.MainMenuActivity" />
+        </activity>
+
+        <activity
+            android:name=".controllers.ProfileActivity"
+            android:exported="false"
+            android:parentActivityName=".controllers.MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controllers.MainMenuActivity" />
         </activity>
     </application>
 
