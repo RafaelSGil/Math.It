@@ -1,12 +1,13 @@
 package pt.isec.amov.mathit.model
 
 import android.content.Context
+import android.content.SharedPreferences
 import pt.isec.amov.mathit.model.fsm.IState
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
 
-class ModelManager {
-    private var context : StatesContext = StatesContext()
+class ModelManager(sharedPreferences: SharedPreferences) {
+    private var context : StatesContext = StatesContext(sharedPreferences)
 
     fun getState() : States?{
         return this.context.getState()

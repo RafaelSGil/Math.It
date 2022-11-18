@@ -1,13 +1,14 @@
 package pt.isec.amov.mathit.model.fsm
 
 import android.content.Context
+import android.content.SharedPreferences
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.fsm.implementation.SinglePlayerState
 import pt.isec.amov.mathit.model.fsm.implementation.StartState
 
-class StatesContext{
-    private val data: Data = Data()
+class StatesContext(sharedPreferences: SharedPreferences){
+    private val data: Data = Data(sharedPreferences)
     private var state : IState = StartState(this, data)
 
     fun setState(state: IState){
