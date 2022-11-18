@@ -8,8 +8,12 @@ import android.view.MotionEvent.*
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 import net.objecthunter.exp4j.ExpressionBuilder
+import pt.isec.amov.mathit.R
+import pt.isec.amov.mathit.controllers.fragments.GameBoardFragment
 import pt.isec.amov.mathit.databinding.ActivitySinglePlayerBinding
 import pt.isec.amov.mathit.model.ModelManager
 
@@ -31,6 +35,12 @@ class SinglePlayerActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivitySinglePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+/*        val bundle = bundleOf("some_int" to 0)
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add<GameBoardFragment>(binding.fragmentContainerView, args = bundle)
+        }*/
 
     }
 

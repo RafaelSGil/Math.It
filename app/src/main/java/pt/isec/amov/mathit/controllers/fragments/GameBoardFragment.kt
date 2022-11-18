@@ -67,9 +67,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
 
         //        gestureDetector = GestureDetector(this, GestureListener())
 
-        //create an array with all
-        operationSigns.addAll(arrayOf("+", "-", "*", "/"))
-
         assignRandomValues()
     }
 
