@@ -21,12 +21,11 @@
         android:id="@+id/editProfileNameTextInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="12dp"
         android:ems="10"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        android:text="@string/default_player_name"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/button_save_profile"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,10 +33,10 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="LabelFor" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/playerProfilePic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toTopOf="@+id/playerNameLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +48,7 @@
         android:id="@+id/playerNameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/edit_profile_name_label"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/editProfileNameTextInput"

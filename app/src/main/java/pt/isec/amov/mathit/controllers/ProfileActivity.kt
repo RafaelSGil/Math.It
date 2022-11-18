@@ -3,6 +3,7 @@ package pt.isec.amov.mathit.controllers
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityEditProfileBinding
@@ -29,6 +30,11 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.editProfileNameTextInput.hint = manager?.getLocalPlayerName()
+    }
+
     private fun registerHandlers() {
         binding.playerProfilePic.setOnClickListener{
             Snackbar.make(it, "Updating profile pic is coming soon", 1000).show()
@@ -36,6 +42,7 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.buttonSaveProfile.setOnClickListener{
             Snackbar.make(it, "Profile saved", 1000).show()
+            manager?.changeLocalPlayerName(binding.editProfileNameTextInput.text.toString())
         }
     }
 }

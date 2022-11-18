@@ -71,4 +71,14 @@ class ModelManager {
     fun goWaitMultiStartState(context: Context, model: ModelManager) {
         this.context.goWaitMultiStartState(context, model)
     }
+
+    //Data
+
+    fun getLocalPlayerName(): String? {
+        return context.getLocalPlayerName()
+    }
+
+    fun changeLocalPlayerName(name: String?) {
+        return context.changeLocalPlayerName(name)
+    }
 }

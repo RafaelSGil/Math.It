@@ -19,6 +19,11 @@ class MainMenuActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        manager.goStartState(this, manager)
+        super.onResume()
+    }
+
     private fun registerHandlers() {
         binding.ButtonSinglePlayer.setOnClickListener{
             manager.goSinglePlayerState(this, manager)
@@ -28,12 +33,9 @@ class MainMenuActivity : AppCompatActivity() {
             Snackbar.make(it,"Coming Soon", Snackbar.LENGTH_LONG).show()
         }
 
-        binding.ButtonProfile.setOnClickListener{
+        binding.btnSettings.setOnClickListener{
             manager.goProfileState(this, manager)
         }
 
-        binding.btnSettings.setOnClickListener{
-            Snackbar.make(it,"Coming Soon", Snackbar.LENGTH_LONG).show()
-        }
     }
 }

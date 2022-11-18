@@ -26,7 +26,6 @@
         </activity>
         <activity
             android:name=".controllers.SinglePlayerActivity"
-            android:exported="false"
             android:parentActivityName=".controllers.MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -35,7 +34,6 @@
 
         <activity
             android:name=".controllers.ProfileActivity"
-            android:exported="false"
             android:parentActivityName=".controllers.MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

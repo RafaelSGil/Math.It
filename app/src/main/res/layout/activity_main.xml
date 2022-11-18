@@ -48,7 +48,7 @@
 
         <Button
             android:id="@+id/ButtonSinglePlayer"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/SinglePlayer"
             android:textSize="18sp"
@@ -64,7 +64,7 @@
 
         <Button
             android:id="@+id/ButtonMultiPlayer"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/MultiPlayer"
@@ -78,16 +78,6 @@
             app:layout_constraintEnd_toEndOf="parent">
         </Button>
 
-        <Button
-            android:id="@+id/ButtonProfile"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/round_btn"
-            android:text="@string/profile_button_label"
-            android:textColor="#D2D2D2"
-            android:textSize="18sp"
-            app:layout_constraintVertical_chainStyle="packed" />
     </LinearLayout>
 
     <LinearLayout

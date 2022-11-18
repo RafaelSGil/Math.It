@@ -31,5 +31,7 @@ class SinglePlayerActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivitySinglePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
     }
+
 }

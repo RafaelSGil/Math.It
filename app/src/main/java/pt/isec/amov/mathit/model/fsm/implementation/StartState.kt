@@ -2,8 +2,6 @@ package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
 import androidx.core.content.ContextCompat.startActivity
-import androidx.appcompat.app.AppCompatActivity
-import pt.isec.amov.mathit.controllers.MainMenuActivity
 import pt.isec.amov.mathit.controllers.ProfileActivity
 import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.model.ModelManager
