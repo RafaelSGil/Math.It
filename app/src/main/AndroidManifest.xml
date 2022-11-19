@@ -33,6 +33,14 @@
         </activity>
 
         <activity
+            android:name=".controllers.Top5Activity"
+            android:parentActivityName=".controllers.MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controllers.MainMenuActivity" />
+        </activity>
+
+        <activity
             android:name=".controllers.ProfileActivity"
             android:parentActivityName=".controllers.MainMenuActivity">
             <meta-data
