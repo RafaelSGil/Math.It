@@ -2,6 +2,7 @@ package pt.isec.amov.mathit.controllers
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMainBinding
 import pt.isec.amov.mathit.model.ModelManager
@@ -25,17 +26,21 @@ class MainMenuActivity : AppCompatActivity() {
     }
 
     private fun registerHandlers() {
-        binding.ButtonSinglePlayer.setOnClickListener{
+        binding.ButtonSinglePlayer.setOnClickListener {
             manager.goSinglePlayerState(this, manager)
         }
 
-        binding.ButtonMultiPlayer.setOnClickListener{
-            Snackbar.make(it,"Coming Soon", Snackbar.LENGTH_LONG).show()
+        binding.ButtonMultiPlayer.setOnClickListener {
+            Snackbar.make(it, "Coming Soon", Snackbar.LENGTH_LONG).show()
         }
 
-        binding.btnSettings.setOnClickListener{
+        binding.btnSettings.setOnClickListener {
             manager.goProfileState(this, manager)
         }
 
+        binding.BtnUsers.setOnClickListener {
+            manager.goTop5State(this, manager)
+        }
     }
 }
+
