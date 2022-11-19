@@ -14,7 +14,7 @@ class MainMenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        manager = ModelManager()
+        manager = ModelManager(getSharedPreferences("Math-It_Preferences",0))
         registerHandlers()
 
     }
