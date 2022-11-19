@@ -1,6 +1,7 @@
 package pt.isec.amov.mathit.model.data.levels
 
 enum class Levels {
+    //OLA
     LEVEL1{
         var operations : ArrayList<String> = arrayListOf<String>("+")
         var maxNumb = 10
