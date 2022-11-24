@@ -1,18 +1,20 @@
 package pt.isec.amov.mathit.controllers.fragments
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.OnClickListener
-import android.view.ViewGroup
+import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.View.OnTouchListener
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import net.objecthunter.exp4j.ExpressionBuilder
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.databinding.GameBoardBinding
+import kotlin.math.abs
 
-class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
+
+class GameBoardFragment : Fragment(R.layout.game_board){
     private lateinit var binding : GameBoardBinding
 
     private var tvs : ArrayList<TextView> = ArrayList()
@@ -20,6 +22,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
     private var idsSelected : ArrayList<TextView> = ArrayList()
     private var bestCombination : ArrayList<TextView> = ArrayList()
     private var secondBestCombination : ArrayList<TextView> = ArrayList()
+
+    private lateinit var onSwipeTouchListener : OnSwipeTouchListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,35 +65,12 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
         tvs.add(binding.r5tv4)
         tvs.add(binding.r5tv5)
 
-        for (view : TextView in tvs){
-            view.setOnClickListener(this)
-        }
+        onSwipeTouchListener = OnSwipeTouchListener(context, tvs)
 
-        //        gestureDetector = GestureDetector(this, GestureListener())
+        operationSigns.addAll(arrayOf("+", "-", "*", "/"))
 
         assignRandomValues()
-    }
 
-    override fun onClick(p0: View?) {
-        idsSelected.add(p0 as TextView)
-        if (idsSelected.size >= 5){
-            if (idsSelected.containsAll(bestCombination)){
-                Snackbar.make(p0,"Best Combination", Snackbar.LENGTH_LONG).show()
-                idsSelected.clear()
-                assignRandomValues()
-                return
-            }
-            if(idsSelected.containsAll(secondBestCombination)){
-                Snackbar.make(p0,"Second Best Combination", Snackbar.LENGTH_LONG).show()
-                idsSelected.clear()
-                assignRandomValues()
-                return
-            }
-
-            Snackbar.make(p0,"You lost", Snackbar.LENGTH_LONG).show()
-            idsSelected.clear()
-            assignRandomValues()
-        }
     }
 
     private fun calculateBestCombination(){
@@ -210,59 +191,96 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
         calculateBestCombination()
     }
 
-    /*    private class GestureListener : SimpleOnGestureListener() {
-        override fun onDown(e: MotionEvent?): Boolean {
-            return true
-        }
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-            if(e1.action == ACTION_DOWN){
+    class OnSwipeTouchListener(ctx: Context?, mainView: ArrayList<TextView>) : OnTouchListener {
+        private val SWIPE_THRESHOLD = 100
+        private val SWIPE_VELOCITY_THRESHOLD = 100
+        private var gestureDetector: GestureDetector = GestureDetector(ctx, GestureListener())
+        lateinit var context: Context
 
+        init {
+            gestureDetector = GestureDetector(ctx, GestureListener())
+            //mainView.setOnTouchListener(this)
+
+            for(view : View in mainView){
+                view.setOnTouchListener(this)
             }
-            return super.onFling(e1, e2, velocityX, velocityY)
+
+            if (ctx != null) {
+                context = ctx
+            }
         }
-    }*/
 
-/*    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        if (p1 != null) {
-            when(p1.action){
-                ACTION_DOWN -> {
-                    idsSelected.add(p0 as TextView)
-                    if (idsSelected.size >= 5){
-                        p0.setBackgroundColor(Color.WHITE)
-                        if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
-                            Snackbar.make(p0,"Congrats", Snackbar.LENGTH_LONG).show()
-                            idsSelected.clear()
-                            assignRandomValues()
-                            return true
-                        }
-                    }
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            return gestureDetector.onTouchEvent(event)
+        }
 
-                }
-                ACTION_MOVE -> {
-                    p0?.setBackgroundColor(Color.WHITE)
-                    if (idsSelected.size >= 5){
-                        if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
-                            if (p0 != null) {
-                                Snackbar.make(p0,"Congrats", Snackbar.LENGTH_LONG).show()
+        inner class GestureListener : SimpleOnGestureListener() {
+
+            override fun onDown(e: MotionEvent): Boolean {
+                return true
+            }
+
+            override fun onFling(
+                e1: MotionEvent,
+                e2: MotionEvent,
+                velocityX: Float,
+                velocityY: Float
+            ): Boolean {
+                var result = false
+                try {
+                    val diffY = e2.y - e1.y
+                    val diffX = e2.x - e1.x
+                    if (abs(diffX) > abs(diffY)) {
+                        if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                            if (diffX > 0) {
+                                onSwipeRight()
+                            } else {
+                                onSwipeLeft()
                             }
-                            idsSelected.clear()
-                            assignRandomValues()
-                            return true
+                            result = true
                         }
+                    } else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffY > 0) {
+                            onSwipeBottom()
+                        } else {
+                            onSwipeTop()
+                        }
+                        result = true
                     }
-                    idsSelected.add(p0 as TextView)
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
                 }
-                ACTION_UP -> {
-                    if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
-                        idsSelected.clear()
-                        assignRandomValues()
-                        return true
-                    }
-                    idsSelected.clear()
-                }
+                return result
             }
         }
-        return true
-    }*/
+
+        fun onSwipeRight() {
+            Toast.makeText(context, "Swiped Right", Toast.LENGTH_SHORT).show()
+            //onSwipe!!.swipeRight()
+        }
+
+        fun onSwipeLeft() {
+            Toast.makeText(context, "Swiped Left", Toast.LENGTH_SHORT).show()
+            //onSwipe!!.swipeLeft()
+        }
+
+        fun onSwipeTop() {
+            Toast.makeText(context, "Swiped Up", Toast.LENGTH_SHORT).show()
+            //onSwipe!!.swipeTop()
+        }
+
+        fun onSwipeBottom() {
+            Toast.makeText(context, "Swiped Down", Toast.LENGTH_SHORT).show()
+            //onSwipe!!.swipeBottom()
+        }
+
+        interface onSwipeListener {
+            fun swipeRight()
+            fun swipeTop()
+            fun swipeBottom()
+            fun swipeLeft()
+        }
+
+        var onSwipe: onSwipeListener? = null
+    }
 }
