@@ -18,8 +18,9 @@ class Top5Activity : AppCompatActivity() {
             return intent
         }
     }
+    enum class MODE {MULTIPLAYER, SINGLEPLAYER}
 
-    private var MODE = 0
+    private var mode = MODE.MULTIPLAYER
 
     private lateinit var binding: ActivityTop5Binding
 
@@ -29,7 +30,6 @@ class Top5Activity : AppCompatActivity() {
         setContentView(binding.root)
         registerHandlers()
         binding.top5Listview.emptyView
-
     }
 
     override fun onResume() {
@@ -38,28 +38,28 @@ class Top5Activity : AppCompatActivity() {
     }
 
     private fun updateList() {
-        when(MODE) {
-            0 -> listTop5Singleplayer()
-            1 -> listTop5Multiplayer()
+        when(mode) {
+            MODE.MULTIPLAYER -> listTop5Singleplayer()
+            MODE.SINGLEPLAYER -> listTop5Multiplayer()
         }
     }
 
     private fun listTop5Singleplayer() {
-
+        //access firestore db..
     }
 
     private fun listTop5Multiplayer() {
-
+        //access firestore db..
     }
 
     private fun registerHandlers() {
         binding.btnToggleMode.setOnClickListener {
-            MODE = when(binding.btnToggleMode.isChecked) {
-                true -> { Snackbar.make(it, "Showing SinglePlayer Top5", 1000).show()
-                    0
+            mode = when(binding.btnToggleMode.isChecked) {
+                true -> { Snackbar.make(it, "Showing Singleplayer Top5", 1000).show()
+                    MODE.SINGLEPLAYER
                 }
-                false -> { Snackbar.make(it, "Showing MultiPlayer Top5", 1000).show()
-                    1
+                false -> { Snackbar.make(it, "Showing Multiplayer Top5", 1000).show()
+                    MODE.MULTIPLAYER
                 }
             }
         }
