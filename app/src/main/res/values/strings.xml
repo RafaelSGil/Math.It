@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Math.It</string>
     <string name="welcome_message">Welcome my friend</string>
-    <string name="SinglePlayer">SinglePlayer</string>
-    <string name="MultiPlayer">MultiPlayer</string>
+    <string name="SinglePlayer">Singleplayer</string>
+    <string name="MultiPlayer">Multiplayer</string>
     <string name="Users">Users</string>
     <string name="points">Points: </string>
     <string name="level">Level:</string>

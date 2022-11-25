@@ -1,8 +1,7 @@
 package pt.isec.amov.mathit.controllers
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMainBinding
 import pt.isec.amov.mathit.model.ModelManager
@@ -38,7 +37,7 @@ class MainMenuActivity : AppCompatActivity() {
             manager.goProfileState(this, manager)
         }
 
-        binding.BtnUsers.setOnClickListener {
+        binding.BtnUsers.setOnClickListener{
             manager.goTop5State(this, manager)
         }
     }

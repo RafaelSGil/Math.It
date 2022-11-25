@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "11354919407",
+    "project_id": "math-it-amov",
+    "storage_bucket": "math-it-amov.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11354919407:android:04b3d968f5c5e5cc3ce61a",
+        "android_client_info": {
+          "package_name": "pt.isec.amov.mathit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11354919407-ch0s73mb9sv4fhbf76f6oe5cb5gb6811.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.isec.amov.mathit",
+            "certificate_hash": "9dbf10fa47fe58fa9f783beacd3d8ae1287f5245"
+          }
+        },
+        {
+          "client_id": "11354919407-8tihivonpm9587bgnp5gbtmdjkd1ei45.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUoIm1WqkDwIL1nbi-3F-4mjeTkLoKQpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11354919407-8tihivonpm9587bgnp5gbtmdjkd1ei45.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
+import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.fsm.implementation.SinglePlayerState
 import pt.isec.amov.mathit.model.fsm.implementation.StartState
 
@@ -87,4 +88,5 @@ class StatesContext(sharedPreferences: SharedPreferences){
     fun changeLocalPlayerName(name: String?) {
         data.playerName = name
     }
+
 }
