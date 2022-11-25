@@ -1,25 +1,32 @@
 package pt.isec.amov.mathit.controllers.fragments
 
+import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.util.Log
+import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.View.OnClickListener
-import android.view.ViewGroup
+import android.view.View.OnTouchListener
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import net.objecthunter.exp4j.ExpressionBuilder
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.databinding.GameBoardBinding
+import kotlin.math.abs
 
-class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
+
+class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClickListener{
     private lateinit var binding : GameBoardBinding
 
     private var tvs : ArrayList<TextView> = ArrayList()
     private var operationSigns : ArrayList<String> = ArrayList()
-    private var idsSelected : ArrayList<TextView> = ArrayList()
     private var bestCombination : ArrayList<TextView> = ArrayList()
     private var secondBestCombination : ArrayList<TextView> = ArrayList()
+
+    private val swipe = 700
+    private val swipeVelocity = 100
+    private lateinit var gestureDetector: GestureDetector
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,35 +68,15 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
         tvs.add(binding.r5tv4)
         tvs.add(binding.r5tv5)
 
-        for (view : TextView in tvs){
-            view.setOnClickListener(this)
+        gestureDetector = GestureDetector(context, GestureListener())
+
+        for(v : View in tvs){
+            v.setOnTouchListener(this)
         }
 
-        //        gestureDetector = GestureDetector(this, GestureListener())
+        operationSigns.addAll(arrayOf("+", "-", "*", "/"))
 
         assignRandomValues()
-    }
-
-    override fun onClick(p0: View?) {
-        idsSelected.add(p0 as TextView)
-        if (idsSelected.size >= 5){
-            if (idsSelected.containsAll(bestCombination)){
-                Snackbar.make(p0,"Best Combination", Snackbar.LENGTH_LONG).show()
-                idsSelected.clear()
-                assignRandomValues()
-                return
-            }
-            if(idsSelected.containsAll(secondBestCombination)){
-                Snackbar.make(p0,"Second Best Combination", Snackbar.LENGTH_LONG).show()
-                idsSelected.clear()
-                assignRandomValues()
-                return
-            }
-
-            Snackbar.make(p0,"You lost", Snackbar.LENGTH_LONG).show()
-            idsSelected.clear()
-            assignRandomValues()
-        }
     }
 
     private fun calculateBestCombination(){
@@ -210,59 +197,92 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnClickListener{
         calculateBestCombination()
     }
 
-    /*    private class GestureListener : SimpleOnGestureListener() {
-        override fun onDown(e: MotionEvent?): Boolean {
+    inner class GestureListener : SimpleOnGestureListener() {
+        var idsSelected : ArrayList<TextView> = ArrayList();
+
+        override fun onDown(e: MotionEvent): Boolean {
             return true
         }
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-            if(e1.action == ACTION_DOWN){
 
-            }
-            return super.onFling(e1, e2, velocityX, velocityY)
-        }
-    }*/
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            var result = false
+            try {
+                val diffY = e2.y - e1.y
+                val diffX = e2.x - e1.x
 
-/*    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        if (p1 != null) {
-            when(p1.action){
-                ACTION_DOWN -> {
-                    idsSelected.add(p0 as TextView)
-                    if (idsSelected.size >= 5){
-                        p0.setBackgroundColor(Color.WHITE)
-                        if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
-                            Snackbar.make(p0,"Congrats", Snackbar.LENGTH_LONG).show()
-                            idsSelected.clear()
-                            assignRandomValues()
-                            return true
-                        }
-                    }
-
-                }
-                ACTION_MOVE -> {
-                    p0?.setBackgroundColor(Color.WHITE)
-                    if (idsSelected.size >= 5){
-                        if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
-                            if (p0 != null) {
-                                Snackbar.make(p0,"Congrats", Snackbar.LENGTH_LONG).show()
+                if (abs(diffX) > abs(diffY)) {
+                    if (abs(diffX) > swipe && abs(velocityX) > swipeVelocity) {
+                        for(view : TextView in tvs){
+                            val location = IntArray(2)
+                            view.getLocationInWindow(location)
+                            if(e1.rawY < location[1] + view.height && e1.rawY > location[1]){
+                                idsSelected.add(view)
                             }
-                            idsSelected.clear()
-                            assignRandomValues()
-                            return true
+                        }
+                        result = true
+                    }
+                } else if (abs(diffY) > swipe && abs(velocityY) > swipeVelocity) {
+                    for(view : TextView in tvs){
+                        val location = IntArray(2)
+                        view.getLocationInWindow(location)
+                        if(e1.rawX < location[0] + view.width && e1.rawX > location[0]){
+                            idsSelected.add(view)
                         }
                     }
-                    idsSelected.add(p0 as TextView)
+                    result = true
                 }
-                ACTION_UP -> {
-                    if (idsSelected.containsAll(bestCombination) || idsSelected.containsAll(secondBestCombination)){
-                        idsSelected.clear()
-                        assignRandomValues()
-                        return true
-                    }
-                    idsSelected.clear()
-                }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
+
+            if (idsSelected.size >= 5){
+                for(v : TextView in idsSelected){
+                    Log.i("VIEWS: ", v.text.toString())
+                }
+                if (idsSelected.containsAll(bestCombination)){
+                    Log.i("RESULT: ", "BEST")
+                    idsSelected.clear()
+                    assignRandomValues()
+                    return result
+                }
+                if(idsSelected.containsAll(secondBestCombination)){
+                    Log.i("RESULT: ", "SECOND BEST")
+                    idsSelected.clear()
+                    assignRandomValues()
+                    return result
+                }
+
+                Log.i("RESULT: ", "LOST")
+                assignRandomValues()
+            }
+
+            idsSelected.clear()
+            return result
         }
-        return true
-    }*/
+    }
+
+    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+        return gestureDetector.onTouchEvent(p1)
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            Log.i("COORDINATES1", p0.x.toString() + " " + p0.y.toString())
+            var loc = IntArray(2)
+            p0.getLocationOnScreen(loc)
+            Log.i("COORDINATES2", loc[0].toString() + " " + loc[1].toString())
+            p0.getLocationInWindow(loc)
+            Log.i("COORDINATES3", loc[0].toString() + " " + loc[1].toString())
+            var w = p0.x + p0.width
+            var h = p0.x + p0.height
+            Log.i("DIM", "$w $h")
+            var tv = p0 as TextView
+            Log.i("CONTENT", tv.text.toString())
+        }
+    }
 }
