@@ -82,6 +82,7 @@ class Top5Activity : AppCompatActivity() {
     }
 
     private fun listTop5Singleplayer() {
+        top5SingleplayerList?.sortByDescending { it.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,
             android.R.layout.simple_list_item_1, top5SingleplayerList!!.toArray())
@@ -89,6 +90,7 @@ class Top5Activity : AppCompatActivity() {
     }
 
     private fun listTop5Multiplayer() {
+        top5MultiplayerList?.sortByDescending { it.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,
             android.R.layout.simple_list_item_1, top5MultiplayerList!!.toArray())
