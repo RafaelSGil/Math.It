@@ -245,7 +245,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
                     Log.i("VIEWS: ", v.text.toString())
                 }
                 if (idsSelected.containsAll(bestCombination)){
-                    Toast.makeText(context, "Best", Toast.LENGTH_SHORT).show()
                     Log.i("RESULT: ", "BEST")
                     idsSelected.clear()
                     assignRandomValues()
