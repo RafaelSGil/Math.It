@@ -267,7 +267,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
     }
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        return gestureDetector.onTouchEvent(p1)
+        return gestureDetector.onTouchEvent(p1!!)
     }
 
     override fun onClick(p0: View?) {
