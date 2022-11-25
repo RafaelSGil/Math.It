@@ -1,9 +1,11 @@
 package pt.isec.amov.mathit.controllers.fragments
 
-import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.View.OnClickListener
 import android.view.View.OnTouchListener
 import android.widget.TextView
 import android.widget.Toast
@@ -14,16 +16,17 @@ import pt.isec.amov.mathit.databinding.GameBoardBinding
 import kotlin.math.abs
 
 
-class GameBoardFragment : Fragment(R.layout.game_board){
+class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClickListener{
     private lateinit var binding : GameBoardBinding
 
     private var tvs : ArrayList<TextView> = ArrayList()
     private var operationSigns : ArrayList<String> = ArrayList()
-    private var idsSelected : ArrayList<TextView> = ArrayList()
     private var bestCombination : ArrayList<TextView> = ArrayList()
     private var secondBestCombination : ArrayList<TextView> = ArrayList()
 
-    private lateinit var onSwipeTouchListener : OnSwipeTouchListener
+    private val swipe = 700
+    private val swipeVelocity = 100
+    private lateinit var gestureDetector: GestureDetector
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,12 +68,15 @@ class GameBoardFragment : Fragment(R.layout.game_board){
         tvs.add(binding.r5tv4)
         tvs.add(binding.r5tv5)
 
-        onSwipeTouchListener = OnSwipeTouchListener(context, tvs)
+        gestureDetector = GestureDetector(context, GestureListener())
+
+        for(v : View in tvs){
+            v.setOnTouchListener(this)
+        }
 
         operationSigns.addAll(arrayOf("+", "-", "*", "/"))
 
         assignRandomValues()
-
     }
 
     private fun calculateBestCombination(){
@@ -191,96 +197,93 @@ class GameBoardFragment : Fragment(R.layout.game_board){
         calculateBestCombination()
     }
 
-    class OnSwipeTouchListener(ctx: Context?, mainView: ArrayList<TextView>) : OnTouchListener {
-        private val SWIPE_THRESHOLD = 100
-        private val SWIPE_VELOCITY_THRESHOLD = 100
-        private var gestureDetector: GestureDetector = GestureDetector(ctx, GestureListener())
-        lateinit var context: Context
+    inner class GestureListener : SimpleOnGestureListener() {
+        var idsSelected : ArrayList<TextView> = ArrayList();
 
-        init {
-            gestureDetector = GestureDetector(ctx, GestureListener())
-            //mainView.setOnTouchListener(this)
-
-            for(view : View in mainView){
-                view.setOnTouchListener(this)
-            }
-
-            if (ctx != null) {
-                context = ctx
-            }
+        override fun onDown(e: MotionEvent): Boolean {
+            return true
         }
 
-        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            return gestureDetector.onTouchEvent(event)
-        }
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            var result = false
+            try {
+                val diffY = e2.y - e1.y
+                val diffX = e2.x - e1.x
 
-        inner class GestureListener : SimpleOnGestureListener() {
-
-            override fun onDown(e: MotionEvent): Boolean {
-                return true
-            }
-
-            override fun onFling(
-                e1: MotionEvent,
-                e2: MotionEvent,
-                velocityX: Float,
-                velocityY: Float
-            ): Boolean {
-                var result = false
-                try {
-                    val diffY = e2.y - e1.y
-                    val diffX = e2.x - e1.x
-                    if (abs(diffX) > abs(diffY)) {
-                        if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                            if (diffX > 0) {
-                                onSwipeRight()
-                            } else {
-                                onSwipeLeft()
+                if (abs(diffX) > abs(diffY)) {
+                    if (abs(diffX) > swipe && abs(velocityX) > swipeVelocity) {
+                        for(view : TextView in tvs){
+                            val location = IntArray(2)
+                            view.getLocationInWindow(location)
+                            if(e1.rawY < location[1] + view.height && e1.rawY > location[1]){
+                                idsSelected.add(view)
                             }
-                            result = true
-                        }
-                    } else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffY > 0) {
-                            onSwipeBottom()
-                        } else {
-                            onSwipeTop()
                         }
                         result = true
                     }
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
+                } else if (abs(diffY) > swipe && abs(velocityY) > swipeVelocity) {
+                    for(view : TextView in tvs){
+                        val location = IntArray(2)
+                        view.getLocationInWindow(location)
+                        if(e1.rawX < location[0] + view.width && e1.rawX > location[0]){
+                            idsSelected.add(view)
+                        }
+                    }
+                    result = true
                 }
-                return result
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
-        }
 
-        fun onSwipeRight() {
-            Toast.makeText(context, "Swiped Right", Toast.LENGTH_SHORT).show()
-            //onSwipe!!.swipeRight()
-        }
+            if (idsSelected.size >= 5){
+                for(v : TextView in idsSelected){
+                    Log.i("VIEWS: ", v.text.toString())
+                }
+                if (idsSelected.containsAll(bestCombination)){
+                    Toast.makeText(context, "Best", Toast.LENGTH_SHORT).show()
+                    Log.i("RESULT: ", "BEST")
+                    idsSelected.clear()
+                    assignRandomValues()
+                    return result
+                }
+                if(idsSelected.containsAll(secondBestCombination)){
+                    Log.i("RESULT: ", "SECOND BEST")
+                    idsSelected.clear()
+                    assignRandomValues()
+                    return result
+                }
 
-        fun onSwipeLeft() {
-            Toast.makeText(context, "Swiped Left", Toast.LENGTH_SHORT).show()
-            //onSwipe!!.swipeLeft()
-        }
+                Log.i("RESULT: ", "LOST")
+                assignRandomValues()
+            }
 
-        fun onSwipeTop() {
-            Toast.makeText(context, "Swiped Up", Toast.LENGTH_SHORT).show()
-            //onSwipe!!.swipeTop()
+            idsSelected.clear()
+            return result
         }
+    }
 
-        fun onSwipeBottom() {
-            Toast.makeText(context, "Swiped Down", Toast.LENGTH_SHORT).show()
-            //onSwipe!!.swipeBottom()
+    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+        return gestureDetector.onTouchEvent(p1)
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            Log.i("COORDINATES1", p0.x.toString() + " " + p0.y.toString())
+            var loc = IntArray(2)
+            p0.getLocationOnScreen(loc)
+            Log.i("COORDINATES2", loc[0].toString() + " " + loc[1].toString())
+            p0.getLocationInWindow(loc)
+            Log.i("COORDINATES3", loc[0].toString() + " " + loc[1].toString())
+            var w = p0.x + p0.width
+            var h = p0.x + p0.height
+            Log.i("DIM", "$w $h")
+            var tv = p0 as TextView
+            Log.i("CONTENT", tv.text.toString())
         }
-
-        interface onSwipeListener {
-            fun swipeRight()
-            fun swipeTop()
-            fun swipeBottom()
-            fun swipeLeft()
-        }
-
-        var onSwipe: onSwipeListener? = null
     }
 }
