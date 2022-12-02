@@ -3,37 +3,40 @@ package pt.isec.amov.mathit.model.data.levels
 enum class Levels {
     //OLA
     LEVEL1{
-        var operations : ArrayList<String> = arrayListOf<String>("+")
-        var maxNumb = 10
+        override var operations : ArrayList<String> = arrayListOf<String>("+")
+        override var maxNumb = 10
     },
     LEVEL2{
-        var operations : ArrayList<String> = arrayListOf<String>("+")
-        var maxNumb = 20
+        override var operations : ArrayList<String> = arrayListOf<String>("+")
+        override var maxNumb = 20
     },
     LEVEL3{
-        var operations : ArrayList<String> = arrayListOf<String>("+", "-")
-        var maxNumb = 20
+        override var operations : ArrayList<String> = arrayListOf<String>("+", "-")
+        override var maxNumb = 20
     },
     LEVEL4{
-        var operations : ArrayList<String> = arrayListOf<String>("+", "-")
-        var maxNumb = 40
+        override var operations : ArrayList<String> = arrayListOf<String>("+", "-")
+        override var maxNumb = 40
     },
     LEVEL5{
-        var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
-        var maxNumb = 40
+        override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
+        override var maxNumb = 40
     },
     LEVEL6{
-        var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
-        var maxNumb = 80
+        override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
+        override var maxNumb = 80
     },
     LEVEL7{
-        var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
-        var maxNumb = 80
+        override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
+        override var maxNumb = 80
     },
     LEVEL8{
-        var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
-        var maxNumb = 160
+        override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
+        override var maxNumb = 160
     };
+
+    open var operations : ArrayList<String> = ArrayList()
+    open var maxNumb = 0
 
     fun getNextLevel(lvl : Levels?) : Levels{
         if(lvl == null){

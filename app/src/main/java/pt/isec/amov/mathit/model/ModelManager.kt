@@ -4,11 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArraySet
 import pt.isec.amov.mathit.model.data.Player
+import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.IState
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
 
-class ModelManager(sharedPreferences: SharedPreferences) {
+class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
 
     fun getState() : States?{
@@ -17,6 +18,18 @@ class ModelManager(sharedPreferences: SharedPreferences) {
 
     fun goGameOverState(context: Context, model: ModelManager) {
         this.context.goGameOverState(context, model)
+    }
+
+    fun addPoints(points : Int){
+        this.context.addPoints(points)
+    }
+
+    fun getPoints() : Int{
+        return context.getPoints()
+    }
+
+    fun getLevel() : Levels?{
+        return context.getLevel()
     }
 
     fun goMultiPlayerState(context: Context, model: ModelManager) {

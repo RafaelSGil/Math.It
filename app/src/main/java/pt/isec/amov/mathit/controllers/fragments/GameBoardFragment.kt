@@ -1,5 +1,7 @@
 package pt.isec.amov.mathit.controllers.fragments
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -12,11 +14,24 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import net.objecthunter.exp4j.ExpressionBuilder
 import pt.isec.amov.mathit.R
+import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.databinding.GameBoardBinding
+import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.Data
 import kotlin.math.abs
 
 
 class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClickListener{
+    companion object{
+        private var manager : ModelManager? = null
+
+        fun getNewIntent(context : Context, manager : ModelManager) : Intent {
+            val intent = Intent(context, SinglePlayerActivity::class.java)
+            this.manager = manager
+            return intent
+        }
+    }
+
     private lateinit var binding : GameBoardBinding
 
     private var tvs : ArrayList<TextView> = ArrayList()
@@ -27,6 +42,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
     private val swipe = 700
     private val swipeVelocity = 100
     private lateinit var gestureDetector: GestureDetector
+
+    private lateinit var manager: ModelManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +56,14 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = GameBoardBinding.inflate(layoutInflater)
+
+        var i : Intent? = activity?.intent
+
+        if (i != null) {
+            manager = i.getSerializableExtra("data") as ModelManager
+        }
+
+
         //add every text view to an array, to make it easier to iterate through each one
         tvs.add(binding.r1tv1)
         tvs.add(binding.r1tv2)
@@ -248,6 +273,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
                     Log.i("RESULT: ", "BEST")
                     idsSelected.clear()
                     assignRandomValues()
+
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){

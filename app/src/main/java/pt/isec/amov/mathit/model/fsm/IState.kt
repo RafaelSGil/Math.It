@@ -2,6 +2,7 @@ package pt.isec.amov.mathit.model.fsm
 
 import android.content.Context
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.levels.Levels
 
 interface IState {
     fun getState() : States?
@@ -20,4 +21,7 @@ interface IState {
     fun goTop5State(context : Context, manager: ModelManager)
     fun goWaitForLobbyState(context : Context, manager: ModelManager)
     fun goWaitMultiStartState(context : Context, manager: ModelManager)
+    fun addPoints(points : Int)
+    fun getPoints() : Int
+    fun getLevel() : Levels?
 }

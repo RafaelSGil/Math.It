@@ -3,6 +3,7 @@ package pt.isec.amov.mathit.model.fsm.implementation
 import android.content.Context
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
+import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.StateAdapter
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
@@ -18,5 +19,13 @@ class SinglePlayerState(
 
     override fun goStartState(context: Context, manager: ModelManager) {
         setState(States.START)
+    }
+
+    override fun addPoints(points: Int) {
+        data.setSinglePlayerScore(points)
+    }
+
+    override fun getLevel(): Levels? {
+        return data.getNextLevel()
     }
 }

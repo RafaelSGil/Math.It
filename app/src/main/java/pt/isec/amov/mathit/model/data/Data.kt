@@ -12,7 +12,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @SuppressLint("CommitPrefEdits")
-class Data(sharedPreferences: SharedPreferences?) {
+class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
     var editor = sharedPreferences?.edit()
     var playerName: String? = null
         set(value) {
@@ -26,13 +26,31 @@ class Data(sharedPreferences: SharedPreferences?) {
         private const val sharedPMultiplayerScore = "multiplayer_score"
         private const val sharedPSingleplayerScore = "singleplayer_score"
     }
-    private var multiplayerScore: Long? = null
-    private var singleplayerScore: Long? = null
+    private var multiplayerScore: Int = 0
+        set(value){
+            if(value == 0){
+                field = 0
+                return
+            }
+            field += value
+        }
+    private var singleplayerScore: Int = 0
+        set(value){
+            if(value == 0){
+                field = 0
+                return
+            }
+            field += value
+        }
 
     init {
         playerName = sharedPreferences?.getString(sharedPUsername, "Player" + (1..99999).shuffled().last())
-        multiplayerScore = sharedPreferences?.getLong(sharedPMultiplayerScore, 0)
-        singleplayerScore = sharedPreferences?.getLong(sharedPSingleplayerScore, 0)
+        if (sharedPreferences != null) {
+            multiplayerScore = sharedPreferences.getInt(sharedPMultiplayerScore, 0)
+        }
+        if (sharedPreferences != null) {
+            singleplayerScore = sharedPreferences.getInt(sharedPSingleplayerScore, 0)
+        }
     }
 
     private fun savePlayerName(username: String) {
@@ -40,19 +58,27 @@ class Data(sharedPreferences: SharedPreferences?) {
         editor?.commit()
     }
 
-    fun setSinglePlayerScore(newScore: Long) {
+    fun setSinglePlayerScore(newScore: Int) {
         if(newScore > singleplayerScore!!) {
             singleplayerScore = newScore
-            editor?.putLong(sharedPSingleplayerScore, singleplayerScore!!)
+            editor?.putInt(sharedPSingleplayerScore, singleplayerScore!!)
             updateDataInFirestore()
         }
     }
-    fun setMultiPlayerScore(newScore: Long) {
+    fun setMultiPlayerScore(newScore: Int) {
         if(newScore > multiplayerScore!!) {
             multiplayerScore = newScore
-            editor?.putLong(sharedPMultiplayerScore, multiplayerScore!!)
+            editor?.putInt(sharedPMultiplayerScore, multiplayerScore!!)
             updateDataInFirestore()
         }
+    }
+
+    fun getSinglePlayerPoints() : Int{
+        return singleplayerScore
+    }
+
+    fun getMultiPlayerPoints() : Int{
+        return multiplayerScore
     }
 
     private fun updateDataInFirestore() {

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.data.Player
+import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.implementation.SinglePlayerState
 import pt.isec.amov.mathit.model.fsm.implementation.StartState
 
@@ -18,6 +19,18 @@ class StatesContext(sharedPreferences: SharedPreferences){
 
     fun getState() : States? {
         return state.getState()
+    }
+
+    fun addPoints(points : Int){
+        state.addPoints(points)
+    }
+
+    fun getPoints() : Int{
+        return state.getPoints()
+    }
+
+    fun getLevel() : Levels?{
+        return state.getLevel()
     }
 
     fun goGameOverState(context : Context, manager: ModelManager) {

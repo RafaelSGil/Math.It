@@ -23,8 +23,8 @@ class Top5Activity : AppCompatActivity() {
             return intent
         }
     }
-    private var top5MultiplayerList: ArrayList<Player>? = null
-    private var top5SingleplayerList: ArrayList<Player>? = null
+    private var top5MultiplayerList: ArrayList<Player> = ArrayList()
+    private var top5SingleplayerList: ArrayList<Player> = ArrayList()
 
     enum class MODE {MULTIPLAYER, SINGLEPLAYER}
 
@@ -41,12 +41,20 @@ class Top5Activity : AppCompatActivity() {
 
         top5MultiplayerList = ArrayList()
         top5SingleplayerList = ArrayList()
+
+        getFirebaseData()
+        when(mode){
+            MODE.SINGLEPLAYER ->{
+                listTop5Singleplayer()
+            }
+            else ->{
+                listTop5Multiplayer()
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        getFirebaseData()
-        updateList()
     }
 
     private fun getFirebaseData() {
@@ -58,7 +66,7 @@ class Top5Activity : AppCompatActivity() {
                     val multiplayerScore = document.getLong("score")
                     val player = Player(name)
                     player.score = multiplayerScore!!
-                    top5MultiplayerList?.add(player)
+                    top5MultiplayerList.add(player)
                 }
             }
         db.collection("Top5_Singleplayer").get()
@@ -68,7 +76,7 @@ class Top5Activity : AppCompatActivity() {
                     val singleplayerScore = document.getLong("score")
                     val player = Player(name)
                     player.score = singleplayerScore!!
-                    top5SingleplayerList?.add(player)
+                    top5SingleplayerList.add(player)
                 }
             }
         updateList()
@@ -82,18 +90,18 @@ class Top5Activity : AppCompatActivity() {
     }
 
     private fun listTop5Singleplayer() {
-        top5SingleplayerList?.sortByDescending { it.score }
+        top5SingleplayerList.sortByDescending { it.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,
-            android.R.layout.simple_list_item_1, top5SingleplayerList!!.toArray())
+            android.R.layout.simple_list_item_1, top5SingleplayerList.toArray())
         binding.top5Listview.adapter = arrayAdapter
     }
 
     private fun listTop5Multiplayer() {
-        top5MultiplayerList?.sortByDescending { it.score }
+        top5MultiplayerList.sortByDescending { it.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,
-            android.R.layout.simple_list_item_1, top5MultiplayerList!!.toArray())
+            android.R.layout.simple_list_item_1, top5MultiplayerList.toArray())
         binding.top5Listview.adapter = arrayAdapter
     }
 
