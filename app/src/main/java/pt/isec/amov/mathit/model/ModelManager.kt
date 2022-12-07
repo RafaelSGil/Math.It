@@ -3,6 +3,7 @@ package pt.isec.amov.mathit.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArraySet
+import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.IState
@@ -14,6 +15,10 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
 
     fun getState() : States?{
         return this.context.getState()
+    }
+
+    fun getData() : Data {
+        return context.getData()
     }
 
     fun goGameOverState(context: Context, model: ModelManager) {

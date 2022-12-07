@@ -1,16 +1,18 @@
 package pt.isec.amov.mathit.controllers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import androidx.lifecycle.MutableLiveData
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.controllers.fragments.GameBoardFragment
 import pt.isec.amov.mathit.databinding.ActivitySinglePlayerBinding
 import pt.isec.amov.mathit.model.ModelManager
-
 
 class SinglePlayerActivity : AppCompatActivity(){
     companion object{
@@ -25,6 +27,7 @@ class SinglePlayerActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivitySinglePlayerBinding
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySinglePlayerBinding.inflate(layoutInflater)
@@ -37,22 +40,14 @@ class SinglePlayerActivity : AppCompatActivity(){
             add<GameBoardFragment>(R.id.fragment_container_view)
         }
 
-        val thread: Thread = object : Thread() {
-            override fun run() {
-                try {
-                    while (!this.isInterrupted) {
-                        sleep(100)
-                        runOnUiThread {
-                            binding.tvPoints.text = manager?.getPoints().toString()
-                        }
-                    }
-                } catch (e: InterruptedException) {
-                }
-            }
+
+        val mut : MutableLiveData<Int> = MutableLiveData()
+
+        mut.value = manager?.getData()?.singleplayerScore
+
+        mut.observe(this) {
+            Toast.makeText(this, manager?.getData()?.singleplayerScore.toString(),Toast.LENGTH_LONG).show();
         }
-
-        thread.start()
-
     }
 
 }

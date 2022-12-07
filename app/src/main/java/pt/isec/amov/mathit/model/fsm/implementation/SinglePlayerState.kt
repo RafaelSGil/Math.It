@@ -22,10 +22,14 @@ class SinglePlayerState(
     }
 
     override fun addPoints(points: Int) {
-        data.setSinglePlayerScore(points)
+        data.singleplayerScore = points
     }
 
     override fun getLevel(): Levels? {
-        return data.getNextLevel()
+        return data.getLevel()
+    }
+
+    override fun getPoints(): Int {
+        return data.singleplayerScore
     }
 }

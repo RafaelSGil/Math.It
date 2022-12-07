@@ -21,6 +21,10 @@ class StatesContext(sharedPreferences: SharedPreferences){
         return state.getState()
     }
 
+    fun getData() : Data{
+        return data
+    }
+
     fun addPoints(points : Int){
         state.addPoints(points)
     }

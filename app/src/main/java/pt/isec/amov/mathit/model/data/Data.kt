@@ -2,11 +2,7 @@ package pt.isec.amov.mathit.model.data
 
 import pt.isec.amov.mathit.model.data.levels.Levels
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
-import android.view.View
-import android.widget.ListView
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -26,7 +22,7 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
         private const val sharedPMultiplayerScore = "multiplayer_score"
         private const val sharedPSingleplayerScore = "singleplayer_score"
     }
-    private var multiplayerScore: Int = 0
+    var multiplayerScore: Int = 0
         set(value){
             if(value == 0){
                 field = 0
@@ -34,7 +30,7 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
             }
             field += value
         }
-    private var singleplayerScore: Int = 0
+    var singleplayerScore: Int = 0
         set(value){
             if(value == 0){
                 field = 0
@@ -71,14 +67,6 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
             editor?.putInt(sharedPMultiplayerScore, multiplayerScore!!)
             updateDataInFirestore()
         }
-    }
-
-    fun getSinglePlayerPoints() : Int{
-        return singleplayerScore
-    }
-
-    fun getMultiPlayerPoints() : Int{
-        return multiplayerScore
     }
 
     private fun updateDataInFirestore() {
@@ -122,10 +110,17 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
         db.collection("Top5_Singleplayer").document(playerName!!).set(values)
     }
 
-    var level: Levels? = null
+    private var level: Levels = Levels.LEVEL1
 
-    fun getNextLevel(): Levels? {
-        return level?.getNextLevel(level)
+    private fun nextLevel(){
+        level = level.getNextLevel(level)
+    }
+
+    fun getLevel(): Levels {
+        if(singleplayerScore > level.maxNumb){
+            nextLevel()
+        }
+        return level
     }
 }
 

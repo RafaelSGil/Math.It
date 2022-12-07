@@ -63,7 +63,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
             manager = i.getSerializableExtra("data") as ModelManager
         }
 
-
         //add every text view to an array, to make it easier to iterate through each one
         tvs.add(binding.r1tv1)
         tvs.add(binding.r1tv2)
@@ -197,6 +196,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
 
     private fun assignRandomValues(){
         var cellCounter = 0
+        var operations = manager.getLevel()?.operations
+
         for(view : TextView in tvs){
             //if the cell counter is between 5 and 7, it means its on the second row
             //if it is between 13 and 15, it means its on the fourth row
@@ -204,18 +205,18 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
             if((cellCounter < 5 || cellCounter > 7) && (cellCounter < 13 || cellCounter > 15)){
                 //one cell takes a number
                 if(cellCounter % 2 == 0){
-                    view.text = (0..10).shuffled().last().toString()
+                    view.text = (0..manager.getLevel()?.maxNumb!!).shuffled().last().toString()
                     ++cellCounter
                     continue
                 }
 
                 //the other cell takes an operation sign
-                view.text = operationSigns[0]
+                view.text = operations?.shuffled()?.last().toString()
                 ++cellCounter
                 continue
             }
 
-            view.text = operationSigns[0]
+            view.text = operations?.shuffled()?.last().toString()
             ++cellCounter
         }
 
@@ -265,12 +266,16 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
                 exception.printStackTrace()
             }
 
+            Log.i("POINTS", manager.getPoints().toString())
+
             if (idsSelected.size >= 5){
                 for(v : TextView in idsSelected){
                     Log.i("VIEWS: ", v.text.toString())
                 }
                 if (idsSelected.containsAll(bestCombination)){
                     Log.i("RESULT: ", "BEST")
+                    manager.addPoints(2)
+
                     idsSelected.clear()
                     assignRandomValues()
 
@@ -278,6 +283,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
                     Log.i("RESULT: ", "SECOND BEST")
+                    manager.addPoints(1)
+
                     idsSelected.clear()
                     assignRandomValues()
                     return result

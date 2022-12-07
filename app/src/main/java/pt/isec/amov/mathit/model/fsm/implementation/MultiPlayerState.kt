@@ -16,14 +16,14 @@ class MultiPlayerState(
     }
 
     override fun addPoints(points : Int) {
-        data.setMultiPlayerScore(points)
+        data.multiplayerScore = points
     }
 
     override fun getPoints(): Int {
-        return data.getMultiPlayerPoints()
+        return data.multiplayerScore
     }
 
-    override fun getLevel(): Levels? {
-        return data.getNextLevel()
+    override fun getLevel(): Levels{
+        return data.getLevel()
     }
 }

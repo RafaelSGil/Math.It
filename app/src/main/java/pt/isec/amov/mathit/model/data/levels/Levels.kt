@@ -38,10 +38,7 @@ enum class Levels {
     open var operations : ArrayList<String> = ArrayList()
     open var maxNumb = 0
 
-    fun getNextLevel(lvl : Levels?) : Levels{
-        if(lvl == null){
-            return LEVEL1
-        }
+    fun getNextLevel(lvl : Levels) : Levels{
         if(lvl == LEVEL1){
             return LEVEL2
         }
