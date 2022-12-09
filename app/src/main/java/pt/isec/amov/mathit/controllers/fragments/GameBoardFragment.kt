@@ -11,6 +11,7 @@ import android.view.View.OnClickListener
 import android.view.View.OnTouchListener
 import android.widget.TextView
 import android.widget.Toast
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import net.objecthunter.exp4j.ExpressionBuilder
 import pt.isec.amov.mathit.R
@@ -19,6 +20,7 @@ import pt.isec.amov.mathit.databinding.GameBoardBinding
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import kotlin.math.abs
+import kotlin.properties.Delegates
 
 
 class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClickListener{
@@ -44,6 +46,12 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
     private lateinit var gestureDetector: GestureDetector
 
     private lateinit var manager: ModelManager
+
+    private var points : Int by Delegates.observable(0){
+        _, _, _ ->
+        manager.addPoints(points)
+        binding.tvPoints.text = "Points: " + manager.getPoints().toString()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -266,15 +274,13 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
                 exception.printStackTrace()
             }
 
-            Log.i("POINTS", manager.getPoints().toString())
-
             if (idsSelected.size >= 5){
                 for(v : TextView in idsSelected){
                     Log.i("VIEWS: ", v.text.toString())
                 }
                 if (idsSelected.containsAll(bestCombination)){
                     Log.i("RESULT: ", "BEST")
-                    manager.addPoints(2)
+                    points = 2
 
                     idsSelected.clear()
                     assignRandomValues()
@@ -283,7 +289,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
                     Log.i("RESULT: ", "SECOND BEST")
-                    manager.addPoints(1)
+                    points = 1
 
                     idsSelected.clear()
                     assignRandomValues()

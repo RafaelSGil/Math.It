@@ -3,9 +3,12 @@ package pt.isec.amov.mathit.model.data
 import pt.isec.amov.mathit.model.data.levels.Levels
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.util.Log
+import androidx.databinding.ObservableField
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlin.properties.Delegates
 
 @SuppressLint("CommitPrefEdits")
 class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
@@ -37,7 +40,14 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
                 return
             }
             field += value
+
+            score = field
         }
+
+    var score: Int by Delegates.observable(0){
+            _, old, new ->
+        Log.i("POINTS CHANGED", score.toString())
+    }
 
     init {
         playerName = sharedPreferences?.getString(sharedPUsername, "Player" + (1..99999).shuffled().last())

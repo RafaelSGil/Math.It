@@ -8,32 +8,6 @@
     android:orientation="vertical"
     tools:context=".controllers.SinglePlayerActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fragment_container_view"
-        android:padding="20dp">
-        <TextView
-            android:id="@+id/tvPoints"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/points"
-            android:textSize="25sp"
-            android:textStyle="bold|italic"
-            android:textColor="@color/purple_200"/>
-        <TextView
-            android:id="@+id/tvLevel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/level"
-            android:textSize="25sp"
-            android:textStyle="bold|italic"
-            android:textColor="@color/purple_200"/>
-    </LinearLayout>
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
         android:layout_width="416dp"

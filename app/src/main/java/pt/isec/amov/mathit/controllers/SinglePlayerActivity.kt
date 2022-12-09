@@ -41,14 +41,6 @@ class SinglePlayerActivity : AppCompatActivity(){
         }
 
 
-        val mut : MutableLiveData<Int> = MutableLiveData()
-
-        mut.value = manager?.getData()?.singleplayerScore
-
-        mut.observe(this) {
-            Toast.makeText(this, manager?.getData()?.singleplayerScore.toString(),Toast.LENGTH_LONG).show();
-        }
     }
-
 }
 

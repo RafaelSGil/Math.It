@@ -30,6 +30,6 @@ class SinglePlayerState(
     }
 
     override fun getPoints(): Int {
-        return data.singleplayerScore
+        return data.score
     }
 }
