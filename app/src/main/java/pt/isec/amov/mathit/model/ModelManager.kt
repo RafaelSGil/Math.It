@@ -12,6 +12,7 @@ import pt.isec.amov.mathit.model.fsm.StatesContext
 
 class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
+    private var previousStates: States? = null
 
     fun getState() : States?{
         return this.context.getState()
@@ -37,6 +38,17 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.getLevel()
     }
 
+    fun reset(){
+        return context.reset()
+    }
+
+    fun redirectNextLevel(context: Context, model: ModelManager){
+        when(previousStates){
+            States.SINGLE_PLAYER -> goSinglePlayerState(context, model)
+            else -> goMultiPlayerState(context, model)
+        }
+    }
+
     fun goMultiPlayerState(context: Context, model: ModelManager) {
         this.context.goMultiPlayerState(context, model)
     }
@@ -54,6 +66,7 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     }
 
     fun goNextLevelState(context: Context, model: ModelManager) {
+        previousStates = getState()
         this.context.goNextLevelState(context, model)
     }
 

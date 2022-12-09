@@ -25,6 +25,7 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
         private const val sharedPMultiplayerScore = "multiplayer_score"
         private const val sharedPSingleplayerScore = "singleplayer_score"
     }
+
     var multiplayerScore: Int = 0
         set(value){
             if(value == 0){
@@ -40,14 +41,7 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
                 return
             }
             field += value
-
-            score = field
         }
-
-    var score: Int by Delegates.observable(0){
-            _, old, new ->
-        Log.i("POINTS CHANGED", score.toString())
-    }
 
     init {
         playerName = sharedPreferences?.getString(sharedPUsername, "Player" + (1..99999).shuffled().last())
@@ -57,6 +51,12 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
         if (sharedPreferences != null) {
             singleplayerScore = sharedPreferences.getInt(sharedPSingleplayerScore, 0)
         }
+    }
+
+    fun resetScoresLevels(){
+        singleplayerScore = 0
+        multiplayerScore = 0
+        level = Levels.LEVEL1
     }
 
     private fun savePlayerName(username: String) {
@@ -122,13 +122,9 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
 
     private var level: Levels = Levels.LEVEL1
 
-    private fun nextLevel(){
-        level = level.getNextLevel(level)
-    }
-
     fun getLevel(): Levels {
-        if(singleplayerScore > level.maxNumb){
-            nextLevel()
+        if(singleplayerScore > level.maxNumb && level != Levels.LEVEL8){
+            level = level.getNextLevel(level)
         }
         return level
     }

@@ -26,4 +26,8 @@ class MultiPlayerState(
     override fun getLevel(): Levels{
         return data.getLevel()
     }
+
+    override fun reset() {
+        data.resetScoresLevels()
+    }
 }

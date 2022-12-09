@@ -13,14 +13,17 @@ import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.controllers.fragments.GameBoardFragment
 import pt.isec.amov.mathit.databinding.ActivitySinglePlayerBinding
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.levels.Levels
 
 class SinglePlayerActivity : AppCompatActivity(){
     companion object{
         private var manager : ModelManager? = null
+        private lateinit var level : Levels
 
-        fun getNewIntent(context : Context, manager : ModelManager) : Intent {
+        fun getNewIntent(context : Context, manager : ModelManager, level : Levels) : Intent {
             val intent = Intent(context, SinglePlayerActivity::class.java)
             this.manager = manager
+            this.level = level
             return intent
         }
     }
@@ -34,6 +37,7 @@ class SinglePlayerActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         intent.putExtra("data", manager)
+        intent.putExtra("level", level)
 
         supportFragmentManager.commit {
             setReorderingAllowed(true)

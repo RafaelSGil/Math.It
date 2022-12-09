@@ -37,6 +37,10 @@ class StatesContext(sharedPreferences: SharedPreferences){
         return state.getLevel()
     }
 
+    fun reset(){
+        return state.reset()
+    }
+
     fun goGameOverState(context : Context, manager: ModelManager) {
         this.state.goGameOverState(context, manager)
     }

@@ -24,4 +24,5 @@ interface IState {
     fun addPoints(points : Int)
     fun getPoints() : Int
     fun getLevel() : Levels?
+    fun reset()
 }

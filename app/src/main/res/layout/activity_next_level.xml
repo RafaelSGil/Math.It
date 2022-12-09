@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".controllers.NextLevelActivity"
+    android:background="@drawable/gradient_theme"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btnPause"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/ic_pause"
+        android:layout_gravity="end|center"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="50dp"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nextLevel"
+            android:textSize="50sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:layout_margin="20dp"/>
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="5"
+            android:textSize="50sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:layout_marginTop="50dp" />
+    </LinearLayout>
+
+</LinearLayout>

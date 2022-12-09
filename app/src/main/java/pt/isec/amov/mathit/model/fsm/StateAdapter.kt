@@ -26,6 +26,10 @@ abstract class StateAdapter(
         return 0
     }
 
+    override fun reset() {
+        return
+    }
+
     override fun getLevel(): Levels? {
         return null
     }

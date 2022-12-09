@@ -7,6 +7,7 @@ import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.controllers.Top5Activity
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
+import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.StateAdapter
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
@@ -22,7 +23,7 @@ class StartState(
 
     override fun goSinglePlayerState(context: Context, manager : ModelManager) {
         setState(States.SINGLE_PLAYER)
-        startActivity(context, SinglePlayerActivity.getNewIntent(context, manager), null)
+        startActivity(context, SinglePlayerActivity.getNewIntent(context, manager, Levels.LEVEL1), null)
     }
 
     override fun goMultiPlayerState(context: Context, manager : ModelManager) {
