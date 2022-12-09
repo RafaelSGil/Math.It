@@ -50,7 +50,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
     private var points : Int by Delegates.observable(0){
         _, _, _ ->
         manager.addPoints(points)
-        binding.tvPoints.text = "Points: " + manager.getPoints().toString()
+        "Points: ${manager.getPoints()}".also { binding.tvPoints.text = it }
+        "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
     }
 
     override fun onCreateView(
@@ -109,6 +110,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
         operationSigns.addAll(arrayOf("+", "-", "*", "/"))
 
         assignRandomValues()
+
+        points = 0
     }
 
     private fun calculateBestCombination(){
@@ -204,7 +207,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
 
     private fun assignRandomValues(){
         var cellCounter = 0
-        var operations = manager.getLevel()?.operations
+        val operations = manager.getLevel()?.operations
 
         for(view : TextView in tvs){
             //if the cell counter is between 5 and 7, it means its on the second row
@@ -213,7 +216,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
             if((cellCounter < 5 || cellCounter > 7) && (cellCounter < 13 || cellCounter > 15)){
                 //one cell takes a number
                 if(cellCounter % 2 == 0){
-                    view.text = (0..manager.getLevel()?.maxNumb!!).shuffled().last().toString()
+                    view.text = (1..manager.getLevel()?.maxNumb!!).shuffled().last().toString()
                     ++cellCounter
                     continue
                 }

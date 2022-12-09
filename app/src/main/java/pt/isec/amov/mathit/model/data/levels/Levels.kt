@@ -5,34 +5,58 @@ enum class Levels {
     LEVEL1{
         override var operations : ArrayList<String> = arrayListOf<String>("+")
         override var maxNumb = 10
+        override fun toString(): String {
+            return "1"
+        }
     },
     LEVEL2{
         override var operations : ArrayList<String> = arrayListOf<String>("+")
         override var maxNumb = 20
+        override fun toString(): String {
+            return "2"
+        }
     },
     LEVEL3{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-")
         override var maxNumb = 20
+        override fun toString(): String {
+            return "3"
+        }
     },
     LEVEL4{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-")
         override var maxNumb = 40
+        override fun toString(): String {
+            return "4"
+        }
     },
     LEVEL5{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
         override var maxNumb = 40
+        override fun toString(): String {
+            return "5"
+        }
     },
     LEVEL6{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
         override var maxNumb = 80
+        override fun toString(): String {
+            return "6"
+        }
     },
     LEVEL7{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
         override var maxNumb = 80
+        override fun toString(): String {
+            return "7"
+        }
     },
     LEVEL8{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
         override var maxNumb = 160
+        override fun toString(): String {
+            return "8"
+        }
     };
 
     open var operations : ArrayList<String> = ArrayList()
