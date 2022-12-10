@@ -20,4 +20,6 @@ interface IState {
     fun goTop5State(context : Context, manager: ModelManager)
     fun goWaitForLobbyState(context : Context, manager: ModelManager)
     fun goWaitMultiStartState(context : Context, manager: ModelManager)
+    fun changeLocalPlayerName(name: String?)
+    fun changeLocalPlayerProfilePic(imagePath: String?)
 }

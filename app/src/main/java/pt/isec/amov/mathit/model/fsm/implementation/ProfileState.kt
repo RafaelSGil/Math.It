@@ -19,4 +19,12 @@ class ProfileState(
     override fun goStartState(context: Context, manager: ModelManager) {
         setState(States.START)
     }
+
+    override fun changeLocalPlayerName(name: String?) {
+        data.playerName = name
+    }
+
+    override fun changeLocalPlayerProfilePic(imagePath: String?) {
+        data.profilePicImagePath = imagePath
+    }
 }
