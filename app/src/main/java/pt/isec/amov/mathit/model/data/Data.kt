@@ -14,15 +14,24 @@ import com.google.firebase.ktx.Firebase
 @SuppressLint("CommitPrefEdits")
 class Data(sharedPreferences: SharedPreferences?) {
     var editor = sharedPreferences?.edit()
+    var profilePicImagePath: String? = null
+        set(value) {
+            if(!value.isNullOrEmpty()) {
+                field = value
+                savePlayerProfilePic(value)
+            }
+        }
+
     var playerName: String? = null
         set(value) {
-            if (!value.isNullOrEmpty()) {
+            if (!value.isNullOrEmpty() && value.length >= 8) {
                 field = value
                 savePlayerName(value)
             }
         }
     companion object {
         private const val sharedPUsername = "username"
+        private const val sharedPProfilePic = "profile_pic"
         private const val sharedPMultiplayerScore = "multiplayer_score"
         private const val sharedPSingleplayerScore = "singleplayer_score"
     }
@@ -31,12 +40,18 @@ class Data(sharedPreferences: SharedPreferences?) {
 
     init {
         playerName = sharedPreferences?.getString(sharedPUsername, "Player" + (1..99999).shuffled().last())
+        profilePicImagePath = sharedPreferences?.getString(sharedPProfilePic,"")
         multiplayerScore = sharedPreferences?.getLong(sharedPMultiplayerScore, 0)
         singleplayerScore = sharedPreferences?.getLong(sharedPSingleplayerScore, 0)
     }
 
     private fun savePlayerName(username: String) {
-        editor?.putString("username", username)
+        editor?.putString(sharedPUsername, username)
+        editor?.commit()
+    }
+
+    private fun savePlayerProfilePic(filepath: String) {
+        editor?.putString(sharedPProfilePic, filepath)
         editor?.commit()
     }
 

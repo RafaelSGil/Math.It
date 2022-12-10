@@ -76,4 +76,12 @@ abstract class StateAdapter(
     override fun goWaitMultiStartState(context : Context, manager: ModelManager) {
         return
     }
+
+    override fun changeLocalPlayerName(name: String?) {
+       return
+    }
+
+    override fun changeLocalPlayerProfilePic(imagePath: String?) {
+        return
+    }
 }

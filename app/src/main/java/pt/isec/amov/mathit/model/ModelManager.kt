@@ -81,7 +81,15 @@ class ModelManager(sharedPreferences: SharedPreferences) {
         return context.getLocalPlayerName()
     }
 
+    fun getLocalPlayerProfilePic(): String? {
+        return context.getLocalPlayerProfilePic()
+    }
+
     fun changeLocalPlayerName(name: String?) {
         return context.changeLocalPlayerName(name)
+    }
+
+    fun changeLocalPlayerProfilePic(imagePath: String?) {
+        return context.changeLocalPlayerProfilePic(imagePath)
     }
 }

@@ -85,8 +85,16 @@ class StatesContext(sharedPreferences: SharedPreferences){
         return data.playerName
     }
 
+    fun getLocalPlayerProfilePic(): String? {
+        return data.profilePicImagePath
+    }
+
     fun changeLocalPlayerName(name: String?) {
-        data.playerName = name
+        state.changeLocalPlayerName(name)
+    }
+
+    fun changeLocalPlayerProfilePic(imagePath: String?) {
+        state.changeLocalPlayerProfilePic(imagePath)
     }
 
 }
