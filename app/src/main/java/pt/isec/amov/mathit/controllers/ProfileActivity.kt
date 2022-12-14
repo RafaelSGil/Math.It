@@ -3,8 +3,10 @@ package pt.isec.amov.mathit.controllers
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -29,7 +31,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditProfileBinding
 
-    private var imagePath : String? = null
+    private var newImagePath : String? = null
     private var permissionsGranted = false
         set(value) {
             field = value
@@ -42,13 +44,12 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
         registerHandlers()
         verifyPermissions()
+        updateProfilePicView(manager?.getLocalPlayerProfilePic()!!)
     }
 
     override fun onResume() {
         super.onResume()
         binding.editProfileNameTextInput.hint = manager?.getLocalPlayerName()
-        imagePath = manager?.getLocalPlayerProfilePic()
-        updateProfilePicView()
     }
 
     private fun registerHandlers() {
@@ -59,24 +60,22 @@ class ProfileActivity : AppCompatActivity() {
         binding.buttonSaveProfile.setOnClickListener{
             Snackbar.make(it, "Profile saved", 1000).show()
             manager?.changeLocalPlayerName(binding.editProfileNameTextInput.text.toString())
-            manager?.changeLocalPlayerProfilePic(imagePath)
+            manager?.changeLocalPlayerProfilePic(newImagePath)
         }
     }
 
 
-    var startActivityForContentResult = registerForActivityResult(
+    private var startActivityForContentResult = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
-        imagePath = uri?.let { createFileFromUri(this, it) }
-        updateProfilePicView()
+        newImagePath = uri?.let { createFileFromUri(this, it) }
+        if(newImagePath != null)
+            updateProfilePicView(newImagePath!!)
     }
 
-    private fun updateProfilePicView() {
-        if (imagePath != null)
-            setPic(binding.playerProfilePic, imagePath!!)
-        else
-            binding.playerProfilePic.background = ResourcesCompat.getDrawable(resources,
-                R.drawable.default_profile_image,null)
+    private fun updateProfilePicView(imagePath: String) {
+        Log.i("DEBUG-AMOV", "updateProfilePicView: $imagePath")
+        binding.playerProfilePic.background = BitmapDrawable.createFromPath(imagePath)
     }
 
     private fun chooseImage() {
