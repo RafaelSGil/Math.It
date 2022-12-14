@@ -14,4 +14,5 @@
     <string name="save_profile_label">Save</string>
     <string name="profile_button_label">Profile</string>
     <string name="nextLevel">Loading next level in...</string>
+    <string name="time_left">Time left:</string>
 </resources>

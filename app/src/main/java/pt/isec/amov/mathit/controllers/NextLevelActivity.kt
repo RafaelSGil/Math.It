@@ -44,6 +44,8 @@ class NextLevelActivity : AppCompatActivity(), View.OnClickListener {
                 goNext()
             }
         }.start()
+
+        timer.cancel()
     }
 
     fun goNext(){

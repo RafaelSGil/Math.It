@@ -29,6 +29,21 @@
             android:textSize="25sp"
             android:textStyle="bold|italic"
             android:textColor="@color/purple_200"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp">
+        <ProgressBar
+            android:id="@+id/pbTimer"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:progressBackgroundTint="@color/purple_200"
+            android:progressTint="@color/dangerZone"/>
     </LinearLayout>
 
     <TableLayout
