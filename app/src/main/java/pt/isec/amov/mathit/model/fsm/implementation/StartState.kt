@@ -2,6 +2,7 @@ package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
 import androidx.core.content.ContextCompat.startActivity
+import pt.isec.amov.mathit.controllers.MultiPlayerWaitForLobbyActivity
 import pt.isec.amov.mathit.controllers.ProfileActivity
 import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.controllers.Top5Activity
@@ -37,5 +38,10 @@ class StartState(
     override fun goTop5State(context: Context, manager : ModelManager) {
         setState(States.TOP_5)
         startActivity(context, Top5Activity.getNewIntent(context, manager), null)
+    }
+
+    override fun goWaitForLobbyState(context: Context, manager: ModelManager) {
+        setState(States.WAIT_FOR_LOBBY)
+        startActivity(context, MultiPlayerWaitForLobbyActivity.getNewIntent(context, manager), null)
     }
 }

@@ -13,4 +13,8 @@
     <string name="edit_profile_name_label">Name</string>
     <string name="save_profile_label">Save</string>
     <string name="profile_button_label">Profile</string>
+    <string name="multiplayer_title">Multiplayer</string>
+    <string name="multiplayer_title_textview">Multiplayer</string>
+    <string name="host_game_title">Create game</string>
+    <string name="join_game_title">Available Games</string>
 </resources>
