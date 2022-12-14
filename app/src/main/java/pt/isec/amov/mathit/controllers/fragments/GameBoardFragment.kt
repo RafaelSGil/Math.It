@@ -3,6 +3,7 @@ package pt.isec.amov.mathit.controllers.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -34,22 +35,25 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     private lateinit var manager: ModelManager
     private lateinit var level : Levels
 
+    private var goNextLevel : Boolean = false
+
     private var points : Int by Delegates.observable(0){
         _, _, _ ->
         manager.addPoints(points)
         "Points: ${manager.getPoints()}".also { binding.tvPoints.text = it }
 
         if(manager.getLevel() != level){
-            "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
             //manager.goNextLevelState(contextActivity, manager)
-        }else{
-            "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
+            goNextLevel = true
         }
+        "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
 
-        assignRandomValues()
+//        assignRandomValues()
     }
 
     private lateinit var contextActivity: Context
+
+    private lateinit var timer : CountDownTimer
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -112,9 +116,19 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
         assignRandomValues()
 
-        manager.reset()
+        points = -1
 
-        points = 0
+        binding.pbTimer.max = level.timeToComplete.toInt()
+
+        timer = object : CountDownTimer(level.timeToComplete*1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.pbTimer.progress = (millisUntilFinished/1000).toInt()
+            }
+
+            override fun onFinish() {
+                manager.goStartState(contextActivity, manager)
+            }
+        }.start()
     }
 
     private fun calculateBestCombination(){
@@ -296,6 +310,12 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
                     points = 2
 
+                    if(goNextLevel){
+                        manager.goNextLevelState(contextActivity, manager)
+                        timer.cancel()
+                        return false
+                    }
+                    assignRandomValues()
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
@@ -303,6 +323,12 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
                     points = 1
 
+                    if(goNextLevel){
+                        manager.goNextLevelState(contextActivity, manager)
+                        timer.cancel()
+                        return false
+                    }
+                    assignRandomValues()
                     return result
                 }
 

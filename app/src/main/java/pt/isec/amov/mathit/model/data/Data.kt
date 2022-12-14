@@ -38,12 +38,18 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
                 field = 0
                 return
             }
+            if(value < 0){
+                return
+            }
             field += value
         }
     var singleplayerScore: Int = 0
         set(value){
             if(value == 0){
                 field = 0
+                return
+            }
+            if(value < 0){
                 return
             }
             field += value
@@ -131,7 +137,7 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
     private var level: Levels = Levels.LEVEL1
 
     fun getLevel(): Levels {
-        if(singleplayerScore > level.maxNumb && level != Levels.LEVEL8){
+        if(singleplayerScore > level.pointsToNextLevel && level != Levels.LEVEL8){
             level = level.getNextLevel(level)
         }
         return level
