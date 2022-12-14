@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import pt.isec.amov.mathit.databinding.ActivityMultiPlayerWaitStartBinding
+import com.google.android.material.snackbar.Snackbar
+import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitStartBinding
 import pt.isec.amov.mathit.model.ModelManager
 
 class MultiPlayerWaitStartActivity : AppCompatActivity() {
@@ -18,17 +19,19 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var binding: ActivityMultiPlayerWaitStartBinding
+    private lateinit var binding: ActivityMultiplayerWaitStartBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMultiPlayerWaitStartBinding.inflate(layoutInflater)
+        binding = ActivityMultiplayerWaitStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         registerHandlers()
     }
 
     private fun registerHandlers() {
-        //todo register all missing handlers
+        binding.btnCreateGame.setOnClickListener{
+            Snackbar.make(it, "coming soon", 1000).show()
+        }
     }
 }

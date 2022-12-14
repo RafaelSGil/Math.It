@@ -19,4 +19,9 @@ class WaitMultiStartState(
     override fun goWaitForLobbyState(context: Context, manager: ModelManager) {
         setState(States.WAIT_FOR_LOBBY)
     }
+
+    override fun goStartState(context: Context, manager: ModelManager) {
+        setState(States.START)
+    }
+
 }

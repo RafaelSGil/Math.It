@@ -30,7 +30,7 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         binding.ButtonMultiPlayer.setOnClickListener {
-            manager.goWaitForLobbyState(this, manager)
+            manager.goWaitMultiStartState(this, manager)
         }
 
         binding.btnSettings.setOnClickListener {

@@ -29,8 +29,6 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
     }
 
     private fun registerHandlers() {
-        binding.btnCreateGame.setOnClickListener {
-            Snackbar.make(it, "Coming soon", 1000).show()
-        }
+
     }
 }
