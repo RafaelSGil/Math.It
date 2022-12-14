@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"  />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,12 +15,28 @@
         tools:targetApi="31">
 
         <activity
+            android:name=".controllers.MultiPlayerWaitStartActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".controllers.MultiPlayerWaitForLobbyActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".controllers.MainMenuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -34,7 +48,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controllers.MainMenuActivity" />
         </activity>
-
         <activity
             android:name=".controllers.Top5Activity"
             android:parentActivityName=".controllers.MainMenuActivity">
@@ -42,7 +55,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controllers.MainMenuActivity" />
         </activity>
-
         <activity
             android:name=".controllers.ProfileActivity"
             android:parentActivityName=".controllers.MainMenuActivity">
@@ -50,15 +62,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controllers.MainMenuActivity" />
         </activity>
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="pt.isec.amov.mathit.fileprovider"
-            android:exported="false" android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
     </application>
 
 </manifest>

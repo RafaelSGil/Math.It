@@ -30,7 +30,7 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         binding.ButtonMultiPlayer.setOnClickListener {
-            Snackbar.make(it, "Coming Soon", Snackbar.LENGTH_LONG).show()
+            manager.goWaitMultiStartState(this, manager)
         }
 
         binding.btnSettings.setOnClickListener {

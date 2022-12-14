@@ -2,9 +2,7 @@ package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
 import androidx.core.content.ContextCompat.startActivity
-import pt.isec.amov.mathit.controllers.ProfileActivity
-import pt.isec.amov.mathit.controllers.SinglePlayerActivity
-import pt.isec.amov.mathit.controllers.Top5Activity
+import pt.isec.amov.mathit.controllers.*
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.fsm.StateAdapter
@@ -37,5 +35,10 @@ class StartState(
     override fun goTop5State(context: Context, manager : ModelManager) {
         setState(States.TOP_5)
         startActivity(context, Top5Activity.getNewIntent(context, manager), null)
+    }
+
+    override fun goWaitMultiStartState(context: Context, manager: ModelManager) {
+        setState(States.WAIT_MULTI_START)
+        startActivity(context, MultiPlayerWaitStartActivity.getNewIntent(context, manager), null)
     }
 }

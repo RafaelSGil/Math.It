@@ -1,5 +1,7 @@
 package pt.isec.amov.mathit.model.fsm.implementation
 
+import android.content.Context
+import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.fsm.StateAdapter
 import pt.isec.amov.mathit.model.fsm.States
@@ -12,5 +14,9 @@ class WaitForLobbyState(
 
     override fun getState(): States {
         return States.WAIT_FOR_LOBBY
+    }
+
+    override fun goWaitMultiStartState(context: Context, manager: ModelManager) {
+        setState(States.WAIT_MULTI_START)
     }
 }
