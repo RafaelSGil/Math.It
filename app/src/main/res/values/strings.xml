@@ -17,4 +17,5 @@
     <string name="multiplayer_title_textview">Multiplayer</string>
     <string name="host_game_title">Create game</string>
     <string name="join_game_title">Available Games</string>
+    <string name="nextLevel">Loading next level in…</string>
 </resources>

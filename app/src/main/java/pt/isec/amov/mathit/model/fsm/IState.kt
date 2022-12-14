@@ -2,6 +2,7 @@ package pt.isec.amov.mathit.model.fsm
 
 import android.content.Context
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.levels.Levels
 
 interface IState {
     fun getState() : States?
@@ -22,4 +23,8 @@ interface IState {
     fun goWaitMultiStartState(context : Context, manager: ModelManager)
     fun changeLocalPlayerName(name: String?)
     fun changeLocalPlayerProfilePic(imagePath: String?)
+    fun addPoints(points : Int)
+    fun getPoints() : Int
+    fun getLevel() : Levels?
+    fun reset()
 }

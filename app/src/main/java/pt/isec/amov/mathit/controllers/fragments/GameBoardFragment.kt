@@ -1,44 +1,78 @@
 package pt.isec.amov.mathit.controllers.fragments
 
-import android.graphics.Color
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
-import android.view.View.OnClickListener
-import android.view.View.OnTouchListener
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import net.objecthunter.exp4j.ExpressionBuilder
 import pt.isec.amov.mathit.R
+import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.databinding.GameBoardBinding
+import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.levels.Levels
 import kotlin.math.abs
+import kotlin.properties.Delegates
 
 
-class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClickListener{
+class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     private lateinit var binding : GameBoardBinding
 
     private var tvs : ArrayList<TextView> = ArrayList()
     private var operationSigns : ArrayList<String> = ArrayList()
     private var bestCombination : ArrayList<TextView> = ArrayList()
     private var secondBestCombination : ArrayList<TextView> = ArrayList()
+    private var idsSelected : ArrayList<TextView> = ArrayList();
 
     private val swipe = 700
     private val swipeVelocity = 100
     private lateinit var gestureDetector: GestureDetector
+
+    private lateinit var manager: ModelManager
+    private lateinit var level : Levels
+
+    private var points : Int by Delegates.observable(0){
+        _, _, _ ->
+        manager.addPoints(points)
+        "Points: ${manager.getPoints()}".also { binding.tvPoints.text = it }
+
+        if(manager.getLevel() != level){
+            "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
+            //manager.goNextLevelState(contextActivity, manager)
+        }else{
+            "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
+        }
+
+        assignRandomValues()
+    }
+
+    private lateinit var contextActivity: Context
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (container != null) {
+            contextActivity = container.context
+        }
         return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = GameBoardBinding.inflate(layoutInflater)
+
+        var i : Intent? = activity?.intent
+
+        if (i != null) {
+            manager = i.getSerializableExtra("data") as ModelManager
+            level = i.getSerializableExtra("level") as Levels
+        }
+
         //add every text view to an array, to make it easier to iterate through each one
         tvs.add(binding.r1tv1)
         tvs.add(binding.r1tv2)
@@ -70,13 +104,17 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
 
         gestureDetector = GestureDetector(context, GestureListener())
 
-        for(v : View in tvs){
+        for(v : TextView in tvs){
             v.setOnTouchListener(this)
         }
 
         operationSigns.addAll(arrayOf("+", "-", "*", "/"))
 
         assignRandomValues()
+
+        manager.reset()
+
+        points = 0
     }
 
     private fun calculateBestCombination(){
@@ -167,11 +205,23 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
             secondBestCombination.clear()
             secondBestCombination.addAll(listOf(binding.r1tv5, binding.r2tv5, binding.r3tv5, binding.r4tv5, binding.r5tv5))
         }
+
+        Log.i("BEST", "")
+        for(view : TextView in bestCombination){
+            Log.i("", view.text.toString())
+        }
+        Log.i("2º BEST", "")
+        for(view : TextView in secondBestCombination){
+            Log.i("", view.text.toString())
+        }
     }
 
 
     private fun assignRandomValues(){
         var cellCounter = 0
+        level = manager.getLevel()!!
+        val operations = level.operations
+
         for(view : TextView in tvs){
             //if the cell counter is between 5 and 7, it means its on the second row
             //if it is between 13 and 15, it means its on the fourth row
@@ -179,18 +229,18 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
             if((cellCounter < 5 || cellCounter > 7) && (cellCounter < 13 || cellCounter > 15)){
                 //one cell takes a number
                 if(cellCounter % 2 == 0){
-                    view.text = (0..10).shuffled().last().toString()
+                    view.text = (1..manager.getLevel()?.maxNumb!!).shuffled().last().toString()
                     ++cellCounter
                     continue
                 }
 
                 //the other cell takes an operation sign
-                view.text = operationSigns[0]
+                view.text = operations.shuffled().last().toString()
                 ++cellCounter
                 continue
             }
 
-            view.text = operationSigns[0]
+            view.text = operations.shuffled().last().toString()
             ++cellCounter
         }
 
@@ -198,7 +248,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
     }
 
     inner class GestureListener : SimpleOnGestureListener() {
-        var idsSelected : ArrayList<TextView> = ArrayList();
+
 
         override fun onDown(e: MotionEvent): Boolean {
             return true
@@ -241,23 +291,21 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
             }
 
             if (idsSelected.size >= 5){
-                for(v : TextView in idsSelected){
-                    Log.i("VIEWS: ", v.text.toString())
-                }
                 if (idsSelected.containsAll(bestCombination)){
-                    Log.i("RESULT: ", "BEST")
                     idsSelected.clear()
-                    assignRandomValues()
+
+                    points = 2
+
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
-                    Log.i("RESULT: ", "SECOND BEST")
                     idsSelected.clear()
-                    assignRandomValues()
+
+                    points = 1
+
                     return result
                 }
 
-                Log.i("RESULT: ", "LOST")
                 assignRandomValues()
             }
 
@@ -268,21 +316,5 @@ class GameBoardFragment : Fragment(R.layout.game_board), OnTouchListener, OnClic
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
         return gestureDetector.onTouchEvent(p1!!)
-    }
-
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            Log.i("COORDINATES1", p0.x.toString() + " " + p0.y.toString())
-            var loc = IntArray(2)
-            p0.getLocationOnScreen(loc)
-            Log.i("COORDINATES2", loc[0].toString() + " " + loc[1].toString())
-            p0.getLocationInWindow(loc)
-            Log.i("COORDINATES3", loc[0].toString() + " " + loc[1].toString())
-            var w = p0.x + p0.width
-            var h = p0.x + p0.height
-            Log.i("DIM", "$w $h")
-            var tv = p0 as TextView
-            Log.i("CONTENT", tv.text.toString())
-        }
     }
 }

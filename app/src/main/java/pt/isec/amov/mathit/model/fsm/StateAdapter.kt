@@ -3,6 +3,7 @@ package pt.isec.amov.mathit.model.fsm
 import android.content.Context
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
+import pt.isec.amov.mathit.model.data.levels.Levels
 
 abstract class StateAdapter(
     protected var context : StatesContext,
@@ -14,6 +15,22 @@ abstract class StateAdapter(
     }
 
     override fun getState(): States? {
+        return null
+    }
+
+    override fun addPoints(points: Int) {
+        return
+    }
+
+    override fun getPoints(): Int {
+        return 0
+    }
+
+    override fun reset() {
+        return
+    }
+
+    override fun getLevel(): Levels? {
         return null
     }
 

@@ -2,17 +2,13 @@ package pt.isec.amov.mathit.model.data
 
 import pt.isec.amov.mathit.model.data.levels.Levels
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
-import android.view.View
-import android.widget.ListView
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @SuppressLint("CommitPrefEdits")
-class Data(sharedPreferences: SharedPreferences?) {
+class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
     var editor = sharedPreferences?.edit()
     var profilePicImagePath: String? = null
         set(value) {
@@ -35,14 +31,35 @@ class Data(sharedPreferences: SharedPreferences?) {
         private const val sharedPMultiplayerScore = "multiplayer_score"
         private const val sharedPSingleplayerScore = "singleplayer_score"
     }
-    private var multiplayerScore: Long? = null
-    private var singleplayerScore: Long? = null
+
+    var multiplayerScore: Int = 0
+        set(value){
+            if(value == 0){
+                field = 0
+                return
+            }
+            field += value
+        }
+    var singleplayerScore: Int = 0
+        set(value){
+            if(value == 0){
+                field = 0
+                return
+            }
+            field += value
+        }
 
     init {
         playerName = sharedPreferences?.getString(sharedPUsername, "Player" + (1..99999).shuffled().last())
         profilePicImagePath = sharedPreferences?.getString(sharedPProfilePic,"")
-        multiplayerScore = sharedPreferences?.getLong(sharedPMultiplayerScore, 0)
-        singleplayerScore = sharedPreferences?.getLong(sharedPSingleplayerScore, 0)
+        multiplayerScore = sharedPreferences?.getLong(sharedPMultiplayerScore, 0)!!.toInt()
+        singleplayerScore = sharedPreferences.getLong(sharedPSingleplayerScore, 0).toInt()
+    }
+
+    fun resetScoresLevels(){
+        singleplayerScore = 0
+        multiplayerScore = 0
+        level = Levels.LEVEL1
     }
 
     private fun savePlayerName(username: String) {
@@ -55,17 +72,17 @@ class Data(sharedPreferences: SharedPreferences?) {
         editor?.commit()
     }
 
-    fun setSinglePlayerScore(newScore: Long) {
-        if(newScore > singleplayerScore!!) {
+    fun setSinglePlayerScore(newScore: Int) {
+        if(newScore > singleplayerScore) {
             singleplayerScore = newScore
-            editor?.putLong(sharedPSingleplayerScore, singleplayerScore!!)
+            editor?.putInt(sharedPSingleplayerScore, singleplayerScore)
             updateDataInFirestore()
         }
     }
-    fun setMultiPlayerScore(newScore: Long) {
-        if(newScore > multiplayerScore!!) {
+    fun setMultiPlayerScore(newScore: Int) {
+        if(newScore > multiplayerScore) {
             multiplayerScore = newScore
-            editor?.putLong(sharedPMultiplayerScore, multiplayerScore!!)
+            editor?.putInt(sharedPMultiplayerScore, multiplayerScore)
             updateDataInFirestore()
         }
     }
@@ -78,7 +95,7 @@ class Data(sharedPreferences: SharedPreferences?) {
                 val exists = it.exists()
                 if (!exists)
                     return@addOnSuccessListener
-                vM.update("score",multiplayerScore!!)
+                vM.update("score",multiplayerScore)
             }
             .addOnFailureListener { _ ->
                 addMultiplayerScoreDataToFirestore()
@@ -89,7 +106,7 @@ class Data(sharedPreferences: SharedPreferences?) {
                 val exists = it.exists()
                 if (!exists)
                     return@addOnSuccessListener
-                vS.update("score",singleplayerScore!!)
+                vS.update("score",singleplayerScore)
             }
             .addOnFailureListener { _ ->
                 addSingleplayerScoreDataToFirestore()
@@ -111,10 +128,13 @@ class Data(sharedPreferences: SharedPreferences?) {
         db.collection("Top5_Singleplayer").document(playerName!!).set(values)
     }
 
-    var level: Levels? = null
+    private var level: Levels = Levels.LEVEL1
 
-    fun getNextLevel(): Levels? {
-        return level?.getNextLevel(level)
+    fun getLevel(): Levels {
+        if(singleplayerScore > level.maxNumb && level != Levels.LEVEL8){
+            level = level.getNextLevel(level)
+        }
+        return level
     }
 }
 

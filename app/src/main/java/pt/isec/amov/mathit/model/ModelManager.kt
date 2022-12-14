@@ -3,20 +3,50 @@ package pt.isec.amov.mathit.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArraySet
+import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.data.Player
+import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.IState
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
 
-class ModelManager(sharedPreferences: SharedPreferences) {
+class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
+    private var previousStates: States? = null
 
     fun getState() : States?{
         return this.context.getState()
     }
 
+    fun getData() : Data {
+        return context.getData()
+    }
+
     fun goGameOverState(context: Context, model: ModelManager) {
         this.context.goGameOverState(context, model)
+    }
+
+    fun addPoints(points : Int){
+        this.context.addPoints(points)
+    }
+
+    fun getPoints() : Int{
+        return context.getPoints()
+    }
+
+    fun getLevel() : Levels?{
+        return context.getLevel()
+    }
+
+    fun reset(){
+        return context.reset()
+    }
+
+    fun redirectNextLevel(context: Context, model: ModelManager){
+        when(previousStates){
+            States.SINGLE_PLAYER -> goSinglePlayerState(context, model)
+            else -> goMultiPlayerState(context, model)
+        }
     }
 
     fun goMultiPlayerState(context: Context, model: ModelManager) {
@@ -36,6 +66,7 @@ class ModelManager(sharedPreferences: SharedPreferences) {
     }
 
     fun goNextLevelState(context: Context, model: ModelManager) {
+        previousStates = getState()
         this.context.goNextLevelState(context, model)
     }
 
