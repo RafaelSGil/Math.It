@@ -1,20 +1,35 @@
 package pt.isec.amov.mathit.controllers.fragments
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.View.OnClickListener
+import android.view.View.OnTouchListener
+import android.view.animation.AnimationUtils
 import android.widget.TextView
+import android.widget.Toast
+import androidx.constraintlayout.motion.widget.MotionScene.Transition
 import androidx.fragment.app.Fragment
+import com.google.protobuf.Value
 import net.objecthunter.exp4j.ExpressionBuilder
+import org.w3c.dom.Text
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.databinding.GameBoardBinding
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.levels.Levels
+import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.properties.Delegates
 
@@ -286,6 +301,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                             view.getLocationInWindow(location)
                             if(e1.rawY < location[1] + view.height && e1.rawY > location[1]){
                                 idsSelected.add(view)
+
                             }
                         }
                         result = true
@@ -296,12 +312,37 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                         view.getLocationInWindow(location)
                         if(e1.rawX < location[0] + view.width && e1.rawX > location[0]){
                             idsSelected.add(view)
+
                         }
                     }
                     result = true
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
+            }
+
+            var startColor = Color.YELLOW
+            var endColor = Color.WHITE
+
+            /*val mColors = arrayOf(ColorDrawable(Color.GRAY), ColorDrawable(Color.GREEN) , ColorDrawable(Color.GRAY))
+            val mTransition = TransitionDrawable(mColors)
+            idsSelected.get(0).background = mTransition
+            mTransition.startTransition(200)*/
+
+
+            for(v:TextView in idsSelected){
+                v.setBackgroundResource(R.drawable.background_animation)
+                val ani = v.background as AnimationDrawable
+                v.setTextColor(Color.GRAY)
+                ani.setEnterFadeDuration(100)
+                ani.setExitFadeDuration(400)
+                ani.start()
+
+                thread {
+                    Thread.sleep(500)
+
+                    ani.stop()
+                }
             }
 
             if (idsSelected.size >= 5){
@@ -319,6 +360,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
+                    Log.i("RESULT: ", "SECOND BEST")
+
                     idsSelected.clear()
 
                     points = 1
@@ -333,7 +376,9 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                 }
 
                 assignRandomValues()
+
             }
+
 
             idsSelected.clear()
             return result

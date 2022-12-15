@@ -44,7 +44,7 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
         registerHandlers()
         verifyPermissions()
-        updateProfilePicView(manager?.getLocalPlayerProfilePic()!!)
+        updateProfilePicView(manager?.getLocalPlayerProfilePic())
     }
 
     override fun onResume() {
@@ -73,8 +73,11 @@ class ProfileActivity : AppCompatActivity() {
             updateProfilePicView(newImagePath!!)
     }
 
-    private fun updateProfilePicView(imagePath: String) {
+    private fun updateProfilePicView(imagePath: String?) {
         Log.i("DEBUG-AMOV", "updateProfilePicView: $imagePath")
+        if(imagePath == null)
+            binding.playerProfilePic.background = ContextCompat.getDrawable(this,R.drawable.default_profile_image)
+
         binding.playerProfilePic.background = BitmapDrawable.createFromPath(imagePath)
     }
 
