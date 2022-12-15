@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -19,6 +20,7 @@ import android.widget.Toast
 import androidx.constraintlayout.motion.widget.MotionScene.Transition
 import androidx.fragment.app.Fragment
 import com.google.protobuf.Value
+import com.google.rpc.context.AttributeContext.Resource
 import net.objecthunter.exp4j.ExpressionBuilder
 import org.w3c.dom.Text
 import pt.isec.amov.mathit.R
@@ -314,6 +316,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
             }
 
             for(v:TextView in idsSelected){
+                val previousDrawable = v.background
                 v.setBackgroundResource(R.drawable.background_animation)
                 val ani = v.background as AnimationDrawable
                 v.setTextColor(Color.GRAY)
@@ -325,8 +328,11 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     Thread.sleep(500)
 
                     ani.stop()
+                    v.background = previousDrawable
+                    v.setTextColor(Color.BLACK)
                 }
             }
+
 
             if (idsSelected.size >= 5){
                 if (idsSelected.containsAll(bestCombination)){
