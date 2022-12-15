@@ -29,6 +29,10 @@ class NextLevelActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityNextLevelBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if(binding.tvTime.text.isBlank() || binding.tvTime.text.isEmpty()){
+            binding.tvTime.text = "5"
+        }
+
         val timer = object : CountDownTimer(5000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 when(binding.tvTime.text){
@@ -44,8 +48,6 @@ class NextLevelActivity : AppCompatActivity(), View.OnClickListener {
                 goNext()
             }
         }.start()
-
-        timer.cancel()
     }
 
     fun goNext(){

@@ -2,6 +2,7 @@ package pt.isec.amov.mathit.controllers.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -15,6 +16,7 @@ import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.databinding.GameBoardBinding
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.levels.Levels
+import pt.isec.amov.mathit.utils.MyCountDown
 import kotlin.math.abs
 import kotlin.properties.Delegates
 
@@ -53,7 +55,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
     private lateinit var contextActivity: Context
 
-    private lateinit var timer : CountDownTimer
+    private lateinit var timer : MyCountDown
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,6 +65,14 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         if (container != null) {
             contextActivity = container.context
         }
+
+        binding.pbTimer.max = (level.timeToComplete).toInt()
+        timer = MyCountDown(level.timeToComplete * 1000, binding.pbTimer, manager, contextActivity)
+        timer.start()
+
+        points = -1
+
+
         return binding.root
     }
 
@@ -70,7 +80,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         super.onCreate(savedInstanceState)
         binding = GameBoardBinding.inflate(layoutInflater)
 
-        var i : Intent? = activity?.intent
+        var i: Intent? = activity?.intent
 
         if (i != null) {
             manager = i.getSerializableExtra("data") as ModelManager
@@ -108,27 +118,13 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
         gestureDetector = GestureDetector(context, GestureListener())
 
-        for(v : TextView in tvs){
+        for (v: TextView in tvs) {
             v.setOnTouchListener(this)
         }
 
         operationSigns.addAll(arrayOf("+", "-", "*", "/"))
 
         assignRandomValues()
-
-        points = -1
-
-        binding.pbTimer.max = level.timeToComplete.toInt()
-
-        timer = object : CountDownTimer(level.timeToComplete*1000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                binding.pbTimer.progress = (millisUntilFinished/1000).toInt()
-            }
-
-            override fun onFinish() {
-                manager.goStartState(contextActivity, manager)
-            }
-        }.start()
     }
 
     private fun calculateBestCombination(){
@@ -304,11 +300,14 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                 exception.printStackTrace()
             }
 
+            binding.r5tv5.setBackgroundResource(R.drawable.bottom_cells)
+
             if (idsSelected.size >= 5){
                 if (idsSelected.containsAll(bestCombination)){
                     idsSelected.clear()
 
                     points = 2
+                    timer.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
                         manager.goNextLevelState(contextActivity, manager)
@@ -322,6 +321,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     idsSelected.clear()
 
                     points = 1
+                    timer.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
                         manager.goNextLevelState(contextActivity, manager)
@@ -332,6 +332,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     return result
                 }
 
+                timer.decreaseTime(level.timeToDecrement.toLong())
                 assignRandomValues()
             }
 

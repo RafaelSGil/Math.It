@@ -11,6 +11,7 @@ enum class Levels {
         override var pointsToNextLevel = 10
         override var timeToComplete : Long= 120
         override var timeToIncrement = 2
+        override var timeToDecrement = 15
     },
     LEVEL2{
         override var operations : ArrayList<String> = arrayListOf<String>("+")
@@ -21,6 +22,7 @@ enum class Levels {
         override var pointsToNextLevel = 20
         override var timeToComplete : Long= 120
         override var timeToIncrement = 2
+        override var timeToDecrement = 15
     },
     LEVEL3{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-")
@@ -32,6 +34,7 @@ enum class Levels {
         override var pointsToNextLevel = 35
         override var timeToComplete : Long= 100
         override var timeToIncrement = 6
+        override var timeToDecrement = 10
     },
     LEVEL4{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-")
@@ -42,6 +45,7 @@ enum class Levels {
         override var pointsToNextLevel = 55
         override var timeToComplete : Long= 100
         override var timeToIncrement = 6
+        override var timeToDecrement = 10
     },
     LEVEL5{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
@@ -52,6 +56,7 @@ enum class Levels {
         override var pointsToNextLevel = 80
         override var timeToComplete : Long= 90
         override var timeToIncrement = 10
+        override var timeToDecrement = 8
     },
     LEVEL6{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*")
@@ -62,6 +67,7 @@ enum class Levels {
         override var pointsToNextLevel = 110
         override var timeToComplete : Long= 90
         override var timeToIncrement = 10
+        override var timeToDecrement = 8
     },
     LEVEL7{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
@@ -72,6 +78,7 @@ enum class Levels {
         override var pointsToNextLevel = 145
         override var timeToComplete : Long= 60
         override var timeToIncrement = 15
+        override var timeToDecrement = 4
     },
     LEVEL8{
         override var operations : ArrayList<String> = arrayListOf<String>("+", "-", "*", "/")
@@ -81,6 +88,7 @@ enum class Levels {
         }
         override var timeToComplete : Long = 60
         override var timeToIncrement = 15
+        override var timeToDecrement = 4
     };
 
     open var operations : ArrayList<String> = ArrayList()
@@ -88,6 +96,7 @@ enum class Levels {
     open var pointsToNextLevel = 0
     open var timeToComplete : Long = 0
     open var timeToIncrement = 0
+    open var timeToDecrement = 0
 
     fun getNextLevel(lvl : Levels) : Levels{
         if(lvl == LEVEL1){
