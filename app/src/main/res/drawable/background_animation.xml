@@ -7,21 +7,21 @@
 
     <item
         android:drawable="@drawable/top_cells"
-        android:duration="200"
+        android:duration="100"
         />
 
     <item
         android:drawable="@drawable/right_cells"
-        android:duration="200"
+        android:duration="100"
         />
 
     <item
         android:drawable="@drawable/bottom_cells"
-        android:duration="200"
+        android:duration="100"
         />
     <item
         android:drawable="@drawable/left_cells"
-        android:duration="200"
+        android:duration="100"
         />
     
 </animation-list>

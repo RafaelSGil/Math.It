@@ -2,6 +2,7 @@ package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
 import androidx.core.content.ContextCompat
+import pt.isec.amov.mathit.controllers.GameOverActivity
 import pt.isec.amov.mathit.controllers.MainMenuActivity
 import pt.isec.amov.mathit.controllers.NextLevelActivity
 import pt.isec.amov.mathit.controllers.SinglePlayerActivity
@@ -21,11 +22,11 @@ class SinglePlayerState(
         return States.SINGLE_PLAYER
     }
 
-    override fun goStartState(context: Context, manager: ModelManager) {
-        setState(States.START)
+    override fun goGameOverState(context: Context, manager: ModelManager) {
+        setState(States.GAME_OVER)
         ContextCompat.startActivity(
             context,
-            MainMenuActivity.getNewIntent(context, manager),
+            GameOverActivity.getNewIntent(context, manager),
             null
         )
     }
