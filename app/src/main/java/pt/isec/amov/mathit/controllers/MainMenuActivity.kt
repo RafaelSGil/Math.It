@@ -33,6 +33,7 @@ class MainMenuActivity : AppCompatActivity() {
 
     override fun onResume() {
         manager.goStartState(this, manager)
+        manager.reset()
         super.onResume()
     }
 

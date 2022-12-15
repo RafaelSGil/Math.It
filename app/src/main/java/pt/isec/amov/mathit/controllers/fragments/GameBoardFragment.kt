@@ -4,6 +4,8 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -25,6 +27,7 @@ import pt.isec.amov.mathit.databinding.GameBoardBinding
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.utils.MyCountDown
+import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.properties.Delegates
 

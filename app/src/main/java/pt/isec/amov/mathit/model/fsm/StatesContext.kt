@@ -38,7 +38,7 @@ class StatesContext(sharedPreferences: SharedPreferences){
     }
 
     fun reset(){
-        return state.reset()
+        return data.resetScoresLevels()
     }
 
     fun goGameOverState(context : Context, manager: ModelManager) {
