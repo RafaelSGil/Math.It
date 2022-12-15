@@ -1,16 +1,24 @@
 package pt.isec.amov.mathit.controllers.fragments
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.View.OnClickListener
+import android.view.View.OnTouchListener
+import android.view.animation.AnimationUtils
 import android.widget.TextView
+import android.widget.Toast
+import androidx.constraintlayout.motion.widget.MotionScene.Transition
 import androidx.fragment.app.Fragment
+import com.google.protobuf.Value
 import net.objecthunter.exp4j.ExpressionBuilder
+import org.w3c.dom.Text
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.databinding.GameBoardBinding
@@ -282,6 +290,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                             view.getLocationInWindow(location)
                             if(e1.rawY < location[1] + view.height && e1.rawY > location[1]){
                                 idsSelected.add(view)
+
                             }
                         }
                         result = true
@@ -292,6 +301,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                         view.getLocationInWindow(location)
                         if(e1.rawX < location[0] + view.width && e1.rawX > location[0]){
                             idsSelected.add(view)
+
                         }
                     }
                     result = true
@@ -300,7 +310,20 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                 exception.printStackTrace()
             }
 
-            binding.r5tv5.setBackgroundResource(R.drawable.bottom_cells)
+            for(v:TextView in idsSelected){
+                v.setBackgroundResource(R.drawable.background_animation)
+                val ani = v.background as AnimationDrawable
+                v.setTextColor(Color.GRAY)
+                ani.setExitFadeDuration(400)
+                ani.setEnterFadeDuration(100)
+                ani.start()
+                thread {
+
+                    Thread.sleep(500)
+
+                    ani.stop()
+                }
+            }
 
             if (idsSelected.size >= 5){
                 if (idsSelected.containsAll(bestCombination)){
@@ -318,6 +341,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
+                    Log.i("RESULT: ", "SECOND BEST")
+
                     idsSelected.clear()
 
                     points = 1
@@ -334,7 +359,9 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
                 timer.decreaseTime(level.timeToDecrement.toLong())
                 assignRandomValues()
+
             }
+
 
             idsSelected.clear()
             return result
