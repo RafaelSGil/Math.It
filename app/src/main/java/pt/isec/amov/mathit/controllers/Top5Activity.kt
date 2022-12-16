@@ -48,6 +48,8 @@ class Top5Activity : AppCompatActivity() {
     }
 
     private fun getFirebaseData() {
+        top5MultiplayerList.clear()
+        top5SingleplayerList.clear()
         val db = Firebase.firestore
         db.collection("Top5_Multiplayer").orderBy("score", Query.Direction.DESCENDING).limit(5).get()
             .addOnSuccessListener { result ->
