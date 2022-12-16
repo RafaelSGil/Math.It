@@ -78,12 +78,9 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
         editor?.commit()
     }
 
-    fun setSinglePlayerScore(newScore: Int) {
-        if(newScore > singleplayerScore) {
-            singleplayerScore = newScore
-            editor?.putInt(sharedPSingleplayerScore, singleplayerScore)
-            updateDataInFirestore()
-        }
+    fun setSinglePlayerScore() {
+        editor?.putInt(sharedPSingleplayerScore, singleplayerScore)
+        updateDataInFirestore()
     }
     fun setMultiPlayerScore(newScore: Int) {
         if(newScore > multiplayerScore) {

@@ -26,7 +26,7 @@ class SinglePlayerState(
         setState(States.GAME_OVER)
         ContextCompat.startActivity(
             context,
-            GameOverActivity.getNewIntent(context, manager),
+            GameOverActivity.getNewIntent(context, manager, true),
             null
         )
     }

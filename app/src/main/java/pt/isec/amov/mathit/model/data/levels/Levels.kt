@@ -9,7 +9,7 @@ enum class Levels {
             return "1"
         }
         override var pointsToNextLevel = 10
-        override var timeToComplete : Long= 10
+        override var timeToComplete : Long= 120
         override var timeToIncrement = 2
         override var timeToDecrement = 15
     },

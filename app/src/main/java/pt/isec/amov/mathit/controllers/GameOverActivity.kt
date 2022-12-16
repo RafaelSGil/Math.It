@@ -13,10 +13,12 @@ import pt.isec.amov.mathit.model.data.levels.Levels
 class GameOverActivity : AppCompatActivity() {
     companion object{
         private lateinit var manager : ModelManager
+        private var isSinglePlayer : Boolean = false
 
-        fun getNewIntent(context : Context, manager : ModelManager) : Intent {
+        fun getNewIntent(context : Context, manager : ModelManager, isSinglePlayer : Boolean) : Intent {
             val intent = Intent(context, GameOverActivity::class.java)
             this.manager = manager
+            this.isSinglePlayer = isSinglePlayer
             return intent
         }
     }
@@ -30,12 +32,25 @@ class GameOverActivity : AppCompatActivity() {
 
         Log.i("GAME", "OVER")
 
-        "Points: ${manager.getPoints()}".also { binding.tvPoints.text = it }
+        when(isSinglePlayer){
+            true ->{"Points: ${manager.getPointsSinglePlayer()}".also { binding.tvPoints.text = it }}
+
+            false -> {"Points: ${manager.getPointsMultiPlayer()}".also { binding.tvPoints.text = it }}
+        }
+
         "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
 
         binding.btnMainMenu.setOnClickListener {
             Log.i("CLICK", "OLA")
             manager.goStartState(this, manager)
+        }
+
+        binding.btnSave.setOnClickListener {
+            if(isSinglePlayer){
+                manager.sendSinglePlayerScoreToFirebase()
+                manager.goStartState(this, manager)
+                return@setOnClickListener
+            }
         }
     }
 }
