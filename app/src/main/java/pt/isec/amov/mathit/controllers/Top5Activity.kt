@@ -54,9 +54,9 @@ class Top5Activity : AppCompatActivity() {
         db.collection("Top5_Multiplayer").orderBy("score", Query.Direction.DESCENDING).limit(5).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    val name = document.id
+                    val name = document.getString("player_name")
                     val multiplayerScore = document.getLong("score")
-                    val player = Player(name)
+                    val player = Player(name!!)
                     player.score = multiplayerScore!!
                     top5MultiplayerList.add(player)
                     updateList()
@@ -65,9 +65,9 @@ class Top5Activity : AppCompatActivity() {
         db.collection("Top5_Singleplayer").orderBy("score", Query.Direction.DESCENDING).limit(5).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    val name = document.id
+                    val name = document.getString("player_name")
                     val singleplayerScore = document.getLong("score")
-                    val player = Player(name)
+                    val player = Player(name!!)
                     player.score = singleplayerScore!!
                     top5SingleplayerList.add(player)
                     updateList()

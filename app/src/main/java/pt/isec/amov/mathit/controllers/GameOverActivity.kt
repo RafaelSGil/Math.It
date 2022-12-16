@@ -47,6 +47,7 @@ class GameOverActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener {
             if(isSinglePlayer){
+
                 manager.sendSinglePlayerScoreToFirebase()
                 manager.goStartState(this, manager)
                 return@setOnClickListener
