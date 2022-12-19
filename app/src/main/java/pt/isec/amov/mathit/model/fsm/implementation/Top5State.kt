@@ -1,6 +1,7 @@
 package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
+import android.util.Log
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.fsm.StateAdapter
@@ -18,5 +19,6 @@ class Top5State(
 
     override fun goStartState(context: Context, manager: ModelManager) {
         setState(States.START)
+        Log.i("DEBUG-AMOV", "goStartState: ")
     }
 }

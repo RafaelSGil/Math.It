@@ -1,6 +1,10 @@
 package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
+import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
+import pt.isec.amov.mathit.controllers.MultiPlayerWaitForLobbyActivity
+import pt.isec.amov.mathit.controllers.ProfileActivity
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.fsm.StateAdapter
@@ -18,6 +22,7 @@ class WaitMultiStartState(
 
     override fun goWaitForLobbyState(context: Context, manager: ModelManager) {
         setState(States.WAIT_FOR_LOBBY)
+        startActivity(context, MultiPlayerWaitForLobbyActivity.getNewIntent(context, manager), null)
     }
 
     override fun goStartState(context: Context, manager: ModelManager) {

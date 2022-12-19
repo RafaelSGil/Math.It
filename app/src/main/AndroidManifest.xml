@@ -24,17 +24,20 @@
 
         <activity
             android:name=".controllers.MultiPlayerWaitStartActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".controllers.MainMenuActivity">
             <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controllers.MainMenuActivity" />
         </activity>
         <activity
             android:name=".controllers.MultiPlayerWaitForLobbyActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".controllers.MultiPlayerWaitStartActivity">
             <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controllers.MultiPlayerWaitStartActivity" />
+
         </activity>
         <activity
             android:name=".controllers.MainMenuActivity"

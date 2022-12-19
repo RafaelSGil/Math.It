@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.AdapterView
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitStartBinding
 import pt.isec.amov.mathit.model.ModelManager
@@ -26,12 +28,28 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
         binding = ActivityMultiplayerWaitStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.availableGamesListView.emptyView = binding.emptyServersView
         registerHandlers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        manager?.goWaitMultiStartState(this, manager!!)
     }
 
     private fun registerHandlers() {
         binding.btnCreateGame.setOnClickListener{
-            Snackbar.make(it, "coming soon", 1000).show()
+            createMultiplayerGame();
         }
+        binding.availableGamesListView.setOnItemClickListener { parent, view, position, id ->
+            Log.i("DEBUG-AMOV", "registerHandlers: ${position}")
+        }
+
+    }
+
+    private fun createMultiplayerGame() {
+        Log.i("DEBUG-AMOV", "starting Server")
+        manager?.startServer()
+        manager?.goWaitForLobbyState(this, manager!!)
     }
 }

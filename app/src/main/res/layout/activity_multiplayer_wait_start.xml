@@ -53,7 +53,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -77,8 +76,15 @@
             android:id="@+id/availableGamesListView"
             android:layout_width="wrap_content"
             android:layout_height="520dp"
-            android:textAlignment="center"
-            />
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/empty_servers_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_empty_prompt"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:visibility="gone" />
     </LinearLayout>
 
 

@@ -13,6 +13,7 @@ import pt.isec.amov.mathit.model.fsm.StatesContext
 class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
     private var previousStates: States? = null
+    private var connectionManager: ConnectionManager = ConnectionManager(this)
 
     fun getState() : States?{
         return this.context.getState()
@@ -122,5 +123,9 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
 
     fun changeLocalPlayerProfilePic(imagePath: String?) {
         return context.changeLocalPlayerProfilePic(imagePath)
+    }
+
+    fun startServer() {
+        connectionManager.startServer()
     }
 }
