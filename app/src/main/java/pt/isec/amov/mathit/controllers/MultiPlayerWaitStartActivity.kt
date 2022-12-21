@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.AdapterView
+import androidx.core.view.get
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitStartBinding
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.ServerData
 
 class MultiPlayerWaitStartActivity : AppCompatActivity() {
     companion object{
@@ -42,8 +44,8 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
         binding.btnCreateGame.setOnClickListener{
             createMultiplayerGame();
         }
-        binding.availableGamesListView.setOnItemClickListener { parent, view, position, id ->
-            Log.i("DEBUG-AMOV", "registerHandlers: ${position}")
+        binding.availableGamesListView.setOnItemClickListener { _, _, position, _ ->
+            manager?.startClient(position)
         }
 
     }

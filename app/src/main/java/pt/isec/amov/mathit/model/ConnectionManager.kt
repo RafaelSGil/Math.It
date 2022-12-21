@@ -12,6 +12,7 @@ import org.json.JSONObject
 import pt.isec.amov.mathit.model.data.ServerData
 import pt.isec.amov.mathit.utils.jsonObjectToServerData
 import pt.isec.amov.mathit.utils.serverDataToJson
+import java.io.IOException
 import java.net.*
 import kotlin.concurrent.thread
 
@@ -58,6 +59,18 @@ object ConnectionManager {
             strIPAddress, serverSocket.localPort,
         "test")
         startServerSender()
+        startServerCommunication()
+    }
+
+    private fun startServerCommunication() {
+        thread {
+            Log.i("DEBUG-AMOV", "startServerCommunication: started client request handler")
+            while (keepSending) {
+                val clientSocket = serverSocket.accept()
+                Log.i("DEBUG-AMOV", "startServerCommunication: Client connected")
+            }
+            Log.i("DEBUG-AMOV", "startServerCommunication: ended client request handler")
+        }
     }
 
     private  fun startServerSender() {
@@ -140,15 +153,23 @@ object ConnectionManager {
         keepReceiving = false
     }
 
-    fun startClient(host: String, port: Int) {
-        val socket = Socket()
-        socket.connect(InetSocketAddress(host, port), 5000)
+    private var socket: Socket? = null
+
+    fun startClient(index: Int) {
         thread {
-            startCommunication(socket)
+            val serverData = serverList[index]
+            try {
+                socket = Socket(InetAddress.getByName(serverData.host), serverData.port)
+                thread {
+                    startCommunication()
+                }
+            } catch (e: IOException) {
+                Log.i("DEBUG-AMOV", "startClient: falied to connect to server $e")
+            }
         }
     }
 
-    private fun startCommunication(socket: Socket) {
-        //todo
+    private fun startCommunication() {
+        Log.i("DEBUG-AMOV", "startCommunication: connected to a server")
     }
 }

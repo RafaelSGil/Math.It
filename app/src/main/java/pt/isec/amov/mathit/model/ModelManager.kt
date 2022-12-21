@@ -140,4 +140,8 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     fun closeServer() {
         ConnectionManager.closeServer()
     }
+
+    fun startClient(index: Int) {
+        ConnectionManager.startClient(index)
+    }
 }

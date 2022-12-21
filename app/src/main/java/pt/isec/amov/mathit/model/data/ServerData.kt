@@ -12,6 +12,6 @@ class ServerData(var host: String, var port: Int, var name: String) {
     }
 
     override fun toString(): String {
-        return "$name'lobby - $host:$port"
+        return "$name's lobby - $host:$port"
     }
 }
