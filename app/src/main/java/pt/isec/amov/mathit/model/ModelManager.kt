@@ -3,6 +3,7 @@ package pt.isec.amov.mathit.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArraySet
+import android.widget.ListView
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
@@ -13,7 +14,6 @@ import pt.isec.amov.mathit.model.fsm.StatesContext
 class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
     private var previousStates: States? = null
-    private var connectionManager: ConnectionManager = ConnectionManager(this)
 
     fun getState() : States?{
         return this.context.getState()
@@ -125,7 +125,19 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.changeLocalPlayerProfilePic(imagePath)
     }
 
-    fun startServer() {
-        connectionManager.startServer()
+    fun startServer(applicationContext: Context) {
+        ConnectionManager.startServer(applicationContext)
+    }
+
+    fun startServerListener(listView: ListView) {
+        ConnectionManager.startServerListener(listView)
+    }
+
+    fun closeServerListener() {
+        ConnectionManager.closeServerListener()
+    }
+
+    fun closeServer() {
+        ConnectionManager.closeServer()
     }
 }

@@ -1,12 +1,19 @@
 package pt.isec.amov.mathit.controllers
 
+import android.Manifest.permission.ACCESS_WIFI_STATE
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMainBinding
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.utils.NetUtils
 
 class MainMenuActivity : AppCompatActivity() {
     companion object{
@@ -22,6 +29,7 @@ class MainMenuActivity : AppCompatActivity() {
     private lateinit var manager : ModelManager
 
     private lateinit var binding : ActivityMainBinding
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -37,14 +45,27 @@ class MainMenuActivity : AppCompatActivity() {
         super.onResume()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun registerHandlers() {
         binding.ButtonSinglePlayer.setOnClickListener {
             manager.goSinglePlayerState(this, manager)
         }
 
         binding.ButtonMultiPlayer.setOnClickListener {
+            if (checkSelfPermission(ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted, request it
+                requestPermissionLauncher.launch(ACCESS_WIFI_STATE)
+                //requestPermissions(arrayOf(ACCESS_WIFI_STATE), 0)
+                Snackbar.make(it, "No permissions to access internet", 2000).show()
+            }
+            if (!NetUtils.verifyNetworkStateV3(this)) {
+                Toast.makeText(this,"No network available",Toast.LENGTH_LONG).show()
+                //finish()
+                return@setOnClickListener
+            }
             manager.goWaitMultiStartState(this, manager)
         }
+
 
         binding.btnSettings.setOnClickListener {
             manager.goProfileState(this, manager)
@@ -54,5 +75,9 @@ class MainMenuActivity : AppCompatActivity() {
             manager.goTop5State(this, manager)
         }
     }
+
+    val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { }
 }
 

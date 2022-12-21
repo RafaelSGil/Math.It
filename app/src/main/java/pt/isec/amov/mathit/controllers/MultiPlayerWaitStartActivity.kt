@@ -35,6 +35,7 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         manager?.goWaitMultiStartState(this, manager!!)
+        manager?.startServerListener(binding.availableGamesListView)
     }
 
     private fun registerHandlers() {
@@ -48,8 +49,12 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
     }
 
     private fun createMultiplayerGame() {
-        Log.i("DEBUG-AMOV", "starting Server")
-        manager?.startServer()
+        manager?.startServer(applicationContext)
         manager?.goWaitForLobbyState(this, manager!!)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        manager?.closeServerListener()
     }
 }
