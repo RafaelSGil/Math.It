@@ -9,7 +9,7 @@ import android.view.View
 import pt.isec.amov.mathit.databinding.ActivityNextLevelBinding
 import pt.isec.amov.mathit.model.ModelManager
 
-class NextLevelActivity : AppCompatActivity(), View.OnClickListener {
+class NextLevelActivity : AppCompatActivity(){
     companion object{
         private var manager : ModelManager? = null
 
@@ -48,13 +48,16 @@ class NextLevelActivity : AppCompatActivity(), View.OnClickListener {
                 goNext()
             }
         }.start()
+
+
+        binding.btnPause.apply {
+            setOnClickListener {
+                manager?.goPauseState(context, manager!!)
+            }
+        }
     }
 
     fun goNext(){
         manager?.redirectNextLevel(this, manager!!)
-    }
-
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
     }
 }
