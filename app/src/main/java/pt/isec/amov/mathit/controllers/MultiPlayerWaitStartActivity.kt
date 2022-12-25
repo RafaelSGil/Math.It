@@ -46,6 +46,7 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
         }
         binding.availableGamesListView.setOnItemClickListener { _, _, position, _ ->
             manager?.startClient(position)
+            manager?.goWaitForLobbyState(this, manager!!)
         }
 
     }

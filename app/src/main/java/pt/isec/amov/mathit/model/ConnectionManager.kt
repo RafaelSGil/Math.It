@@ -1,7 +1,9 @@
 package pt.isec.amov.mathit.model
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -9,10 +11,14 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
+import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.ServerData
 import pt.isec.amov.mathit.utils.jsonObjectToServerData
 import pt.isec.amov.mathit.utils.serverDataToJson
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
+import java.io.PrintWriter
 import java.net.*
 import kotlin.concurrent.thread
 
@@ -32,8 +38,12 @@ object ConnectionManager {
     private var senderThread: Thread? = null
     private var keepSending = false
     private var keepReceiving = false
+    private var keepConnected = false
+    private var isHost = false
     private var localServerData: ServerData? = null
     private var serverList: ArrayList<ServerData> = ArrayList()
+    private var playersList: ArrayList<Player> = ArrayList()
+    private var connectedClients: ArrayList<Socket> = ArrayList()
 
 
     private fun startMulticastSocket() {
@@ -43,21 +53,41 @@ object ConnectionManager {
         val networkInterface = NetworkInterface.getByIndex(0)
         multicastSocket.joinGroup(inetSocketAddress, networkInterface)
     }
+
     var strIPAddress: String = ""
-    fun startServer(context: Context) {
-        val wifiManager = context.applicationContext.getSystemService(AppCompatActivity.WIFI_SERVICE)
-                as WifiManager
-        val ip = wifiManager.connectionInfo.ipAddress // Deprecated in API Level 31. Suggestion NetworkCallback
-        strIPAddress = String.format("%d.%d.%d.%d",
-            ip and 0xff,
-            (ip shr 8) and 0xff,
-            (ip shr 16) and 0xff,
-            (ip shr 24) and 0xff
-        )
+    fun startServer(context: Context, name: String) {
+
+        val connectivityManager = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val linkProperties = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)
+            val addresses = linkProperties!!.linkAddresses
+            for (address in addresses) {
+                val inetAddress = address.address
+                if (inetAddress is Inet4Address) {
+                    val ipAddress = inetAddress.hostAddress
+                    if (ipAddress != null) {
+                        strIPAddress = ipAddress
+                        break
+                    }
+                }
+            }
+        } else {
+            val wifiManager = context.applicationContext.getSystemService(AppCompatActivity.WIFI_SERVICE)
+                    as WifiManager
+            val ip = wifiManager.connectionInfo.ipAddress // Deprecated in API Level 31. Suggestion NetworkCallback
+            strIPAddress = String.format("%d.%d.%d.%d",
+                ip and 0xff,
+                (ip shr 8) and 0xff,
+                (ip shr 16) and 0xff,
+                (ip shr 24) and 0xff
+            )
+        }
+
         serverSocket = ServerSocket(0) //automatic port
         localServerData = ServerData(
             strIPAddress, serverSocket.localPort,
-        "test")
+        name)
+        isHost = true
         startServerSender()
         startServerCommunication()
     }
@@ -68,8 +98,47 @@ object ConnectionManager {
             while (keepSending) {
                 val clientSocket = serverSocket.accept()
                 Log.i("DEBUG-AMOV", "startServerCommunication: Client connected")
+                //add to list
+                connectedClients.add(clientSocket)
+                //startClientRequestHandler
+                startClientRequestHandler(clientSocket)
             }
             Log.i("DEBUG-AMOV", "startServerCommunication: ended client request handler")
+        }
+    }
+
+    private fun startClientRequestHandler(clientSocket: Socket?) {
+        thread {
+            while (clientSocket?.isClosed == false) {
+                val receivedMessage = receiveFromSocket(clientSocket)
+                Log.i("DEBUG-AMOV", "startClientRequestHandler: received request from client $receivedMessage")
+                val message = "Hello there little client"
+                sendToSocket(clientSocket, message)
+            }
+        }
+    }
+
+    private fun sendToSocket(socket: Socket, data: String) {
+        val writer = PrintWriter(socket.getOutputStream())
+        writer.println(data)
+        writer.flush()
+        Log.i("DEBUG-AMOV", "sendToSocket: sent message to client $data")
+    }
+
+    private fun receiveFromSocket(socket: Socket): String {
+        val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+        val receivedObject = reader.readLine()
+        Log.i("DEBUG-AMOV", "receiveFromSocket: received request from client $receivedObject")
+        return receivedObject
+    }
+
+    private fun sendDataToAllClients() {
+        thread {
+            for(clientSocket in connectedClients) {
+                val message = "Hello There dashjdasjd sadh kasjdh as"
+                sendToSocket(clientSocket, message)
+                Log.i("DEBUG-AMOV", "sendDataToAllClients: Sending Data to all clients: $message")
+            }
         }
     }
 
@@ -156,11 +225,13 @@ object ConnectionManager {
     private var socket: Socket? = null
 
     fun startClient(index: Int) {
+        isHost = false
         thread {
             val serverData = serverList[index]
             try {
                 socket = Socket(InetAddress.getByName(serverData.host), serverData.port)
                 thread {
+                    keepConnected = true
                     startCommunication()
                 }
             } catch (e: IOException) {
@@ -171,5 +242,16 @@ object ConnectionManager {
 
     private fun startCommunication() {
         Log.i("DEBUG-AMOV", "startCommunication: connected to a server")
+        val initMessage = "Hello there server"
+        sendToSocket(socket!!, initMessage)
+        while(keepConnected && socket != null && socket?.isClosed == false) {
+            Log.i("DEBUG-AMOV", "startCommunication: waiting for server message")
+            val receivedObject = receiveFromSocket(socket!!)
+            Log.i("DEBUG-AMOV", "startCommunication: Received message from server: $receivedObject")
+        }
+    }
+
+    fun isHost(): Boolean {
+        return isHost;
     }
 }

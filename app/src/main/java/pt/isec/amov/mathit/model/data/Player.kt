@@ -1,6 +1,11 @@
 package pt.isec.amov.mathit.model.data
 
-class Player(private var name: String) {
+class Player(name: String) {
+    private var _name = name
+    var name: String
+        get() { return _name}
+        set(value) {_name = value}
+
     var score: Long = 0
         set(value) {
             if(value >= 0)

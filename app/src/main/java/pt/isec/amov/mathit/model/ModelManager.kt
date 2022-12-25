@@ -2,12 +2,9 @@ package pt.isec.amov.mathit.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.ArraySet
 import android.widget.ListView
 import pt.isec.amov.mathit.model.data.Data
-import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
-import pt.isec.amov.mathit.model.fsm.IState
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
 
@@ -126,7 +123,7 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     }
 
     fun startServer(applicationContext: Context) {
-        ConnectionManager.startServer(applicationContext)
+        ConnectionManager.startServer(applicationContext, context.getLocalPlayerName()!!)
     }
 
     fun startServerListener(listView: ListView) {
@@ -143,5 +140,9 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
 
     fun startClient(index: Int) {
         ConnectionManager.startClient(index)
+    }
+
+    fun isHost(): Boolean {
+        return ConnectionManager.isHost()
     }
 }

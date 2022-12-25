@@ -1,9 +1,11 @@
 package pt.isec.amov.mathit.controllers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitForLobbyBinding
 import pt.isec.amov.mathit.model.ModelManager
@@ -28,7 +30,19 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         registerHandlers()
     }
 
-    private fun registerHandlers() {
+    override fun onResume() {
+        super.onResume()
+        binding.currentLevel.text = manager?.getLevel().toString()
+        if(manager?.isHost() == true){
+            binding.btnNextLevel.visibility = View.VISIBLE
+        } else {
+            binding.btnNextLevel.visibility = View.GONE
+        }
+    }
 
+    private fun registerHandlers() {
+        binding.btnNextLevel.setOnClickListener{
+            manager?.goMultiPlayerState(this, manager!!)
+        }
     }
 }

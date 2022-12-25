@@ -21,4 +21,6 @@
     <string name="time_left">Time left:</string>
     <string name="start_next_level">Next Level</string>
     <string name="list_empty_prompt">There are no games available</string>
+    <string name="waiting_for_game_to_start">Waiting for game to proceed</string>
+    <string name="current_level">Current Level</string>
 </resources>

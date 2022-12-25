@@ -7,24 +7,64 @@
     android:background="@drawable/gradient_theme"
     tools:context=".controllers.MultiPlayerWaitForLobbyActivity">
 
-    <LinearLayout
-        android:layout_width="312dp"
-        android:layout_height="606dp"
-        android:background="@color/purple_200"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <TextView
+        android:id="@+id/wait_for_lobby_top_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/waiting_for_game_to_start"
+        android:textAlignment="center"
+        android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/current_level_label"
+        android:layout_width="159dp"
+        android:layout_height="32dp"
+        android:text="@string/current_level"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.063"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wait_for_lobby_top_label"
+        app:layout_constraintVertical_bias="0.412" />
+
+    <TextView
+        android:id="@+id/current_level"
+        android:layout_width="159dp"
+        android:layout_height="32dp"
+        android:text="0"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/current_level_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.781"
+        app:layout_constraintStart_toEndOf="@+id/current_level_label"
+        app:layout_constraintTop_toTopOf="@+id/current_level_label"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="344dp"
+        android:layout_height="482dp"
+        android:layout_marginTop="100dp"
+        android:background="@color/purple_200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wait_for_lobby_top_label"
         app:layout_constraintVertical_bias="0.855">
 
         <ListView
             android:id="@+id/lobby_players_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnNextLevel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start_next_level"

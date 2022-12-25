@@ -1,5 +1,7 @@
 package pt.isec.amov.mathit.model.fsm.implementation
 
+import android.content.Context
+import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.StateAdapter
@@ -13,6 +15,10 @@ class MultiPlayerState(
 
     override fun getState(): States {
         return States.MULTI_PLAYER
+    }
+
+    override fun goWaitForLobbyState(context: Context, manager: ModelManager) {
+        setState(States.WAIT_FOR_LOBBY)
     }
 
     override fun addPoints(points : Int) {
