@@ -53,4 +53,8 @@ class SinglePlayerState(
     override fun reset() {
         data.resetScoresLevels()
     }
+
+    override fun goStartState(context: Context, manager: ModelManager) {
+        setState(States.START)
+    }
 }
