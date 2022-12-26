@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".controllers.GameOverActivity"
+    android:background="@drawable/gradient_theme"
+    android:orientation="vertical">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/game_over"
+            android:textSize="50sp"
+            android:textAlignment="center"
+            android:textColor="@color/signCell"
+            android:layout_marginBottom="50dp"
+            />
+
+        <TextView
+            android:id="@+id/tvPoints"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textColor="@color/signCell"
+            android:text="@string/points"
+            android:layout_marginTop="30dp"
+            android:paddingEnd="200dp"
+            tools:ignore="RtlSymmetry" />
+        <TextView
+            android:id="@+id/tvLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textColor="@color/signCell"
+            android:text="@string/level"
+            android:layout_marginTop="30dp"
+            android:paddingEnd="200dp"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp">
+        <Button
+            android:id="@+id/btnMainMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/main_menu"
+            android:layout_margin="30dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@color/purple_200"
+            android:background="@drawable/round_btn" />
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="30dp"
+            android:text="@string/save_to_top_5"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@color/purple_200"
+            android:background="@drawable/round_btn"/>
+    </LinearLayout>
+</LinearLayout>

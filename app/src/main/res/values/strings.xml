@@ -19,4 +19,7 @@
     <string name="join_game_title">Available Games</string>
     <string name="nextLevel">Loading next level in…</string>
     <string name="time_left">Time left:</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="save_to_top_5">Save To TOP 5</string>
 </resources>
