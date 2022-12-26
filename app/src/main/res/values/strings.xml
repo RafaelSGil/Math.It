@@ -22,4 +22,6 @@
     <string name="game_over">GAME OVER</string>
     <string name="main_menu">Main Menu</string>
     <string name="save_to_top_5">Save To TOP 5</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
 </resources>

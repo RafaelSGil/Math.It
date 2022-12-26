@@ -340,8 +340,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     timer.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
-                        manager.goNextLevelState(contextActivity, manager)
                         timer.cancel()
+                        manager.goNextLevelState(contextActivity, manager)
                         return false
                     }
                     assignRandomValues()
@@ -356,8 +356,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     timer.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
-                        manager.goNextLevelState(contextActivity, manager)
                         timer.cancel()
+                        manager.goNextLevelState(contextActivity, manager)
                         return false
                     }
                     assignRandomValues()
