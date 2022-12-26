@@ -1,11 +1,9 @@
 package pt.isec.amov.mathit.model.fsm.implementation
 
 import android.content.Context
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import pt.isec.amov.mathit.controllers.GameOverActivity
-import pt.isec.amov.mathit.controllers.MainMenuActivity
-import pt.isec.amov.mathit.controllers.NextLevelActivity
-import pt.isec.amov.mathit.controllers.SinglePlayerActivity
+import pt.isec.amov.mathit.controllers.*
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.data.levels.Levels

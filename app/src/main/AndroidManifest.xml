@@ -18,6 +18,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MathIt"
         tools:targetApi="31">
+
+        <activity
+            android:name=".controllers.PauseActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".controllers.GameOverActivity"
             android:exported="false">
@@ -81,5 +89,4 @@
                 android:value=".controllers.MainMenuActivity" />
         </activity>
     </application>
-
 </manifest>

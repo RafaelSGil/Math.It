@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".controllers.PauseActivity"
+    android:background="@drawable/gradient_theme"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="200dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pause"
+            android:textColor="@color/purple_200"
+            android:textSize="50sp"
+            android:textAlignment="center"/>
+
+        <LinearLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="250dp">
+            <Button
+                android:id="@+id/btnResume"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/round_btn"
+                android:text="@string/resume"
+                android:textColor="@color/purple_200"
+                android:textSize="20sp"
+                android:padding="10dp"
+                android:layout_margin="20dp"/>
+            <Button
+                android:id="@+id/btnMainMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/round_btn"
+                android:text="@string/main_menu"
+                android:textColor="@color/purple_200"
+                android:textSize="20sp"
+                android:padding="10dp"
+                android:layout_margin="20dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

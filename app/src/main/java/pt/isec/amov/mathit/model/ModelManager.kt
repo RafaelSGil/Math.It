@@ -45,7 +45,9 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     fun redirectNextLevel(context: Context, model: ModelManager){
         when(previousStates){
             States.SINGLE_PLAYER -> goSinglePlayerState(context, model)
-            else -> goMultiPlayerState(context, model)
+            States.MULTI_PLAYER -> goMultiPlayerState(context, model)
+            States.NEXT_LEVEL -> goNextLevelState(context, model)
+            else -> goStartState(context, model)
         }
     }
 
@@ -70,8 +72,12 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         this.context.goNextLevelState(context, model)
     }
 
-    fun goPauseState(context: Context, model: ModelManager) {
-        this.context.goPauseState(context, model)
+    fun goNextLevelState(context: Context, model: ModelManager, time : Int) {
+        this.context.goNextLevelState(context, model, time)
+    }
+
+    fun goPauseState(context: Context, model: ModelManager, time : Int) {
+        this.context.goPauseState(context, model, time)
     }
 
     fun goProfileState(context: Context, model: ModelManager) {
