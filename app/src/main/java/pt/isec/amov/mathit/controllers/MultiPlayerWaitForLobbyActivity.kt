@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import pt.isec.amov.mathit.controllers.fragments.MultiplayerGameBoardFragment
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitForLobbyBinding
 import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
@@ -47,9 +48,16 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         manager?.addPropertyChangeListener(ConnectionManager.PLAYERS_PROP) {
             updatePlayersList()
         }
-        binding.btnNextLevel.setOnClickListener{
-            manager?.goMultiPlayerState(this, manager!!)
+        manager?.addPropertyChangeListener(ConnectionManager.STARTING_MULTIPLAYER) {
+            startMultiplayer()
         }
+        binding.btnNextLevel.setOnClickListener{
+            manager?.goMultiPlayerState(this, manager!!, "host")
+        }
+    }
+
+    private fun startMultiplayer() {
+        manager?.goMultiPlayerState(this, manager!!, "client")
     }
 
     private fun updatePlayersList() {

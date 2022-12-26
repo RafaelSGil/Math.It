@@ -28,11 +28,6 @@ class NextLevelState(
         )
     }
 
-    override fun goMultiPlayerState(context: Context, manager: ModelManager) {
-        setState(States.MULTI_PLAYER)
-
-    }
-
     override fun goPauseState(context: Context, manager: ModelManager, time : Int) {
         setState(States.PAUSE)
         ContextCompat.startActivity(

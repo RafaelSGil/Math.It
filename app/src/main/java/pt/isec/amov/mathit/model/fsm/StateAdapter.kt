@@ -38,7 +38,7 @@ abstract class StateAdapter(
         return
     }
 
-    override fun goMultiPlayerState(context : Context, manager: ModelManager) {
+    override fun goMultiPlayerState(context : Context, manager: ModelManager, mode: String) {
         return
     }
 

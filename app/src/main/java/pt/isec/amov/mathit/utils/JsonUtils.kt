@@ -1,10 +1,12 @@
 package pt.isec.amov.mathit.utils
 
+import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
-import pt.isec.amov.mathit.model.data.LevelData
+import pt.isec.amov.mathit.model.data.multiplayer.LevelData
 import pt.isec.amov.mathit.model.data.Player
-import pt.isec.amov.mathit.model.data.ServerData
+import pt.isec.amov.mathit.model.data.Table
+import pt.isec.amov.mathit.model.data.multiplayer.ServerData
 
 fun serverDataToJson(server: ServerData): JSONObject {
     val jsonObject = JSONObject().also {
@@ -70,26 +72,37 @@ fun playerJsonObjectToPlayerList(jsonObject: JSONObject) : ArrayList<Player> {
     }
 }
 
+
 fun levelDataToJsonObject(levelData: LevelData) :JSONObject {
     val jsonObject = JSONObject()
     jsonObject.put("next_level", levelData.level)
-    val jsonArray = JSONArray()
-    for(value in levelData.values) {
-        jsonArray.put(value)
+    val jsonArrayTables = JSONArray()
+    for(table in levelData.tables) {
+        val jsonArrayValues = JSONArray()
+        for(value in table.cells){
+            jsonArrayValues.put(value)
+        }
+        jsonArrayTables.put(jsonArrayValues)
     }
-    jsonObject.put("values", jsonArray)
+    jsonObject.put("tables", jsonArrayTables)
+    Log.i("DEBUG-AMOV", "levelDataToJsonObject: $jsonObject")
     return jsonObject
 }
 
-fun levelDatJsonObjectToLevelData(jsonObject: JSONObject): LevelData? {
+fun levelDataJsonObjectToLevelData(jsonObject: JSONObject): LevelData? {
     return try {
         val level = jsonObject.getInt("next_level")
-        val values = jsonObject.getJSONArray("values")
-        val valuesList =  ArrayList<String>()
-        for (i in 0 until values.length()) {
-            valuesList.add(values.get(i).toString())
+        val jsonArrayTables = jsonObject.getJSONArray("tables")
+        val tables = ArrayList<Table>()
+        for (i in 0 until jsonArrayTables.length()) {
+            val jsonArrayValues = jsonArrayTables.getJSONArray(i)
+            val cells = ArrayList<String>()
+            for (j in 0 until jsonArrayValues.length()) {
+                cells.add(jsonArrayValues.getString(j))
+            }
+            tables.add(Table().also { it.cells = cells })
         }
-        LevelData(level, valuesList)
+        return LevelData(level, tables)
     } catch (_:java.lang.Exception) {
         null
     }

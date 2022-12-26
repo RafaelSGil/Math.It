@@ -45,14 +45,13 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     fun redirectNextLevel(context: Context, model: ModelManager){
         when(previousStates){
             States.SINGLE_PLAYER -> goSinglePlayerState(context, model)
-            States.MULTI_PLAYER -> goMultiPlayerState(context, model)
             States.NEXT_LEVEL -> goNextLevelState(context, model)
             else -> goStartState(context, model)
         }
     }
 
-    fun goMultiPlayerState(context: Context, model: ModelManager) {
-        this.context.goMultiPlayerState(context, model)
+    fun goMultiPlayerState(context: Context, model: ModelManager, mode: String) {
+        this.context.goMultiPlayerState(context, model, mode)
     }
 
     fun goMultiPlayerTopState(context: Context, model: ModelManager) {
@@ -136,7 +135,7 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
 
     fun startServerListener(listView: ListView) {
         val localPlayer: Player? = getData().playerName?.let { Player(it) }
-        ConnectionManager.startServerListener(listView, localPlayer)
+        ConnectionManager.startServerListener(listView, localPlayer, getData().profilePicImagePath)
     }
 
     fun closeServerListener() {

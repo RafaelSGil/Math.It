@@ -53,8 +53,8 @@ class StatesContext(sharedPreferences: SharedPreferences){
         this.state.goGameOverState(context, manager)
     }
 
-    fun goMultiPlayerState(context : Context, manager: ModelManager) {
-        this.state.goMultiPlayerState(context, manager)
+    fun goMultiPlayerState(context : Context, manager: ModelManager, mode: String) {
+        this.state.goMultiPlayerState(context, manager, mode)
     }
 
     fun goMultiPlayerTopState(context : Context, manager: ModelManager) {

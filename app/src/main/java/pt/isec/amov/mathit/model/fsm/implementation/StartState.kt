@@ -24,10 +24,6 @@ class StartState(
         startActivity(context, SinglePlayerActivity.getNewIntent(context, manager, Levels.LEVEL1), null)
     }
 
-    override fun goMultiPlayerState(context: Context, manager : ModelManager) {
-        setState(States.MULTI_PLAYER)
-    }
-
     override fun goProfileState(context: Context, manager : ModelManager) {
         setState(States.PROFILE)
         startActivity(context, ProfileActivity.getNewIntent(context, manager), null)

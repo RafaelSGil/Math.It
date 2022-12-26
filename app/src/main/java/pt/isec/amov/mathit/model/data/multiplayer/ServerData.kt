@@ -1,4 +1,4 @@
-package pt.isec.amov.mathit.model.data
+package pt.isec.amov.mathit.model.data.multiplayer
 
 
 class ServerData(var host: String, var port: Int, var name: String) {
@@ -13,5 +13,12 @@ class ServerData(var host: String, var port: Int, var name: String) {
 
     override fun toString(): String {
         return "$name's lobby - $host:$port"
+    }
+
+    override fun hashCode(): Int {
+        var result = host.hashCode()
+        result = 31 * result + port
+        result = 31 * result + name.hashCode()
+        return result
     }
 }

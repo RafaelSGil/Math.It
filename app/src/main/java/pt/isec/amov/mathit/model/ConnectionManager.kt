@@ -12,14 +12,13 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import pt.isec.amov.mathit.model.data.Player
-import pt.isec.amov.mathit.model.data.ServerData
+import pt.isec.amov.mathit.model.data.Table
+import pt.isec.amov.mathit.model.data.multiplayer.LevelData
+import pt.isec.amov.mathit.model.data.multiplayer.ServerData
 import pt.isec.amov.mathit.utils.*
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.io.PrintWriter
+import java.io.*
 import java.net.*
 import kotlin.concurrent.thread
 
@@ -34,6 +33,7 @@ import kotlin.concurrent.thread
 @Suppress("DEPRECATION")
 object ConnectionManager {
     const val PLAYERS_PROP = "players"
+    const val STARTING_MULTIPLAYER = "starting_multiplayer"
     private const val multicastHost = "230.30.30.30"
     private const val multicastPort = 4004
     private lateinit var multicastSocket: MulticastSocket
@@ -48,6 +48,9 @@ object ConnectionManager {
     private var playersList: ArrayList<Player> = ArrayList()
     private var connectedClients: ArrayList<Socket> = ArrayList()
     private lateinit var localPlayer: Player
+    private lateinit var profilePicPath: String
+    private var tableList: ArrayList<Table> = ArrayList()
+    private var levelOfPlayer: HashMap<String, Int> = HashMap()
 
 
     private fun startMulticastSocket() {
@@ -121,6 +124,7 @@ object ConnectionManager {
                     if (jsonObject.has("name")) {
                         //received player info
                         val player = jsonObjectToPlayer(jsonObject)
+                        //receiveImage(player!!.name, clientSocket)
                         if (!playersList.contains(player)) {
                             player?.let { playersList.add(player) }
                             val handler = Handler(Looper.getMainLooper())
@@ -129,6 +133,8 @@ object ConnectionManager {
                             }
                         }
                         sendDataToAllClients(playerListToJsonObject(playersList).toString())
+                    } else if(jsonObject.has("level_finished")) {
+                        //save player info (points, etc)
                     }
                 } catch (e:java.lang.Exception) {
                     Log.i("DEBUG-AMOV", "startClientRequestHandler: Something went wrong $e")
@@ -137,6 +143,24 @@ object ConnectionManager {
                 //sendToSocket(clientSocket, message)
             }
         }
+    }
+
+    fun sendLevelDataToPlayers(levelData: LevelData){
+        this.levelData = levelData
+        val jsonObject = levelDataToJsonObject(levelData)
+        sendDataToAllClients(jsonObject.toString())
+    }
+
+    private fun receiveImage(playerName: String, socket: Socket) {
+        val inputStream = BufferedInputStream(socket.getInputStream())
+        val file = File(playerName)
+        val fileOutputStream = FileOutputStream(file)
+        val buffer = ByteArray(1024)
+        var count: Int
+        while (inputStream.read(buffer).also { count = it } > 0) {
+            fileOutputStream.write(buffer, 0, count)
+        }
+        fileOutputStream.close()
     }
 
     private fun sendToSocket(socket: Socket, data: String) {
@@ -207,7 +231,9 @@ object ConnectionManager {
         keepSending = false
     }
 
-    fun startServerListener(listView: ListView, localPlayer: Player?) {
+    fun startServerListener(listView: ListView, localPlayer: Player?, imagePath: String?) {
+        if(imagePath != null)
+            profilePicPath = imagePath
         if (localPlayer == null)
             this.localPlayer = Player("temporary")
         else
@@ -276,12 +302,15 @@ object ConnectionManager {
         return result
     }
 
+    var levelData: LevelData? = null
+
     private fun startCommunication() {
         //receives data from the server
         Log.i("DEBUG-AMOV", "startCommunication: connected to a server")
         val jsonObjectOfPlayer = playerToJson(localPlayer)
         Thread.sleep(500)
         sendToSocket(socket!!, jsonObjectOfPlayer.toString())
+        //sendImage(profilePicPath, socket!!)
 
         while(keepConnected && socket != null && socket?.isClosed == false) {
             Log.i("DEBUG-AMOV", "startCommunication: waiting for server message")
@@ -297,11 +326,32 @@ object ConnectionManager {
                         pcs.firePropertyChange(PLAYERS_PROP, null, null)
                         Log.i("DEBUG-AMOV", "startCommunication: firing property")
                     }
-                } // else if ...
+                } else if(jsonObject.has("next_level")) {
+                    levelData = levelDataJsonObjectToLevelData(jsonObject)!!
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(STARTING_MULTIPLAYER, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                    }
+                }
             } catch (e: java.lang.Exception) {
                 Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")
             }
         }
+    }
+
+    private fun sendImage(imagePath: String?, socket: Socket) {
+        if(imagePath==null)
+            return
+        val outputStream = BufferedOutputStream(socket.getOutputStream())
+        val fileInputStream = FileInputStream(imagePath)
+        val buffer = ByteArray(1024)
+        var count: Int
+        while (fileInputStream.read(buffer).also { count = it } > 0) {
+            outputStream.write(buffer, 0, count)
+        }
+        outputStream.flush()
+        fileInputStream.close()
     }
 
     fun isHost(): Boolean {

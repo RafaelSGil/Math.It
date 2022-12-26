@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
@@ -12,6 +13,7 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.MutableLiveData
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.controllers.fragments.GameBoardFragment
+import pt.isec.amov.mathit.controllers.fragments.MultiplayerGameBoardFragment
 import pt.isec.amov.mathit.databinding.ActivitySinglePlayerBinding
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.levels.Levels
@@ -44,6 +46,12 @@ class SinglePlayerActivity : AppCompatActivity(){
             setReorderingAllowed(true)
             add<GameBoardFragment>(R.id.fragment_container_view)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("DEBUG-AMOV", "onPause: exiting singleplayer activity")
+        finish()
     }
 }
 

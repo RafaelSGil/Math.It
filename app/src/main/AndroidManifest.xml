@@ -27,6 +27,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".controllers.MultiPlayerActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".controllers.GameOverActivity"
             android:exported="false">
             <meta-data
