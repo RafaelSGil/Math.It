@@ -18,7 +18,7 @@ class MyCountDown(millisInFuture: Long, var progressBar : ProgressBar, var manag
             }
 
             override fun onFinish() {
-                manager.goStartState(context, manager)
+                manager.goGameOverState(context, manager)
             }
 
         }.start()

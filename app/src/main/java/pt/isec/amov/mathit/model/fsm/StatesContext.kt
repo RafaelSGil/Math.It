@@ -33,6 +33,14 @@ class StatesContext(sharedPreferences: SharedPreferences){
         return state.getPoints()
     }
 
+    fun getPointsSinglePlayer() : Int{
+        return data.singleplayerScore
+    }
+
+    fun getPointsMultiPlayer() : Int{
+        return data.multiplayerScore
+    }
+
     fun getLevel() : Levels?{
         return state.getLevel()
     }
@@ -118,4 +126,7 @@ class StatesContext(sharedPreferences: SharedPreferences){
         state.changeLocalPlayerProfilePic(imagePath)
     }
 
+    fun setSinglePlayerScore(){
+        data.setSinglePlayerScore()
+    }
 }

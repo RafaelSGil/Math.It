@@ -158,4 +158,16 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     fun getConnectedPlayers(): List<Player> {
         return ConnectionManager.getConnectedPlayers()
     }
+
+    fun sendSinglePlayerScoreToFirebase(){
+        context.setSinglePlayerScore()
+    }
+
+    fun getPointsSinglePlayer() : Int{
+        return context.getPointsSinglePlayer()
+    }
+
+    fun getPointsMultiPlayer() : Int{
+        return context.getPointsMultiPlayer()
+    }
 }

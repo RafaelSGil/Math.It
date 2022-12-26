@@ -58,12 +58,10 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         "Points: ${manager.getPoints()}".also { binding.tvPoints.text = it }
 
         if(manager.getLevel() != level){
-            //manager.goNextLevelState(contextActivity, manager)
             goNextLevel = true
         }
         "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
 
-//        assignRandomValues()
     }
 
     private lateinit var contextActivity: Context
@@ -325,7 +323,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                 ani.start()
                 thread {
 
-                    Thread.sleep(500)
+                    Thread.sleep(250)
 
                     ani.stop()
                     v.background = previousDrawable
@@ -373,6 +371,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
 
             idsSelected.clear()
+
+            Thread.sleep(250)
             return result
         }
     }

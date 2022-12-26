@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,9 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MathIt"
         tools:targetApi="31">
-
         <activity
-            android:name=".controllers.MultiPlayerActivity"
+            android:name=".controllers.GameOverActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -34,19 +34,17 @@
         </activity>
         <activity
             android:name=".controllers.MultiPlayerWaitStartActivity"
-            android:exported="false"
-            android:parentActivityName=".controllers.MainMenuActivity">
+            android:exported="false">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controllers.MainMenuActivity" />
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
         <activity
             android:name=".controllers.MultiPlayerWaitForLobbyActivity"
-            android:exported="false"
-            android:parentActivityName=".controllers.MultiPlayerWaitStartActivity">
+            android:exported="false">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controllers.MultiPlayerWaitStartActivity" />
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
         <activity
             android:name=".controllers.MainMenuActivity"
