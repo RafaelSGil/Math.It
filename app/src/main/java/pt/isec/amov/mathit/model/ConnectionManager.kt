@@ -47,6 +47,7 @@ object ConnectionManager {
     private var serverList: ArrayList<ServerData> = ArrayList()
     private var playersList: ArrayList<Player> = ArrayList()
     private var connectedClients: ArrayList<Socket> = ArrayList()
+    private lateinit var localPlayer: Player
 
 
     private fun startMulticastSocket() {
@@ -132,8 +133,8 @@ object ConnectionManager {
                 } catch (e:java.lang.Exception) {
                     Log.i("DEBUG-AMOV", "startClientRequestHandler: Something went wrong $e")
                 }
-                val message = "Hello there little client"
-                sendToSocket(clientSocket, message)
+                //val message = "Hello there little client"
+                //sendToSocket(clientSocket, message)
             }
         }
     }
@@ -168,6 +169,8 @@ object ConnectionManager {
     private  fun startServerSender() {
         Log.i("DEBUG-AMOV", "startServerSender:  started")
         keepSending = true
+        if(!playersList.contains(localPlayer))
+            playersList.add(localPlayer)
         thread {
             while (keepSending) {
                 if (multicastSocket.isClosed) {
@@ -204,7 +207,11 @@ object ConnectionManager {
         keepSending = false
     }
 
-    fun startServerListener(listView: ListView) {
+    fun startServerListener(listView: ListView, localPlayer: Player?) {
+        if (localPlayer == null)
+            this.localPlayer = Player("temporary")
+        else
+            this.localPlayer = localPlayer
         Log.i("DEBUG-AMOV", "startServerListener:  started")
         startMulticastSocket()
         keepReceiving = true
@@ -272,8 +279,8 @@ object ConnectionManager {
     private fun startCommunication() {
         //receives data from the server
         Log.i("DEBUG-AMOV", "startCommunication: connected to a server")
-        val player = Player("Test").also { it.score = 0 }
-        val jsonObjectOfPlayer = playerToJson(player)
+        val jsonObjectOfPlayer = playerToJson(localPlayer)
+        Thread.sleep(500)
         sendToSocket(socket!!, jsonObjectOfPlayer.toString())
 
         while(keepConnected && socket != null && socket?.isClosed == false) {
@@ -288,8 +295,9 @@ object ConnectionManager {
                     val handler = Handler(Looper.getMainLooper())
                     handler.post{
                         pcs.firePropertyChange(PLAYERS_PROP, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
                     }
-                } // else if ...}
+                } // else if ...
             } catch (e: java.lang.Exception) {
                 Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")
             }

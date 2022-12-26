@@ -1,14 +1,13 @@
 package pt.isec.amov.mathit.controllers
 
 import android.R
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitForLobbyBinding
 import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
@@ -54,6 +53,7 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
     }
 
     private fun updatePlayersList() {
+        Log.i("DEBUG-AMOV", "updatePlayersList: updating list of players in lobby")
         val players = manager?.getConnectedPlayers() ?: return
         players.sortedBy { player -> player.score }
         val arrayAdapter: ArrayAdapter<*>

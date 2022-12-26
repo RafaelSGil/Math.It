@@ -2,6 +2,7 @@ package pt.isec.amov.mathit.utils
 
 import org.json.JSONArray
 import org.json.JSONObject
+import pt.isec.amov.mathit.model.data.LevelData
 import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.ServerData
 
@@ -66,6 +67,31 @@ fun playerJsonObjectToPlayerList(jsonObject: JSONObject) : ArrayList<Player> {
         players
     } catch (_:java.lang.Exception) {
         ArrayList()
+    }
+}
+
+fun levelDataToJsonObject(levelData: LevelData) :JSONObject {
+    val jsonObject = JSONObject()
+    jsonObject.put("next_level", levelData.level)
+    val jsonArray = JSONArray()
+    for(value in levelData.values) {
+        jsonArray.put(value)
+    }
+    jsonObject.put("values", jsonArray)
+    return jsonObject
+}
+
+fun levelDatJsonObjectToLevelData(jsonObject: JSONObject): LevelData? {
+    return try {
+        val level = jsonObject.getInt("next_level")
+        val values = jsonObject.getJSONArray("values")
+        val valuesList =  ArrayList<String>()
+        for (i in 0 until values.length()) {
+            valuesList.add(values.get(i).toString())
+        }
+        LevelData(level, valuesList)
+    } catch (_:java.lang.Exception) {
+        null
     }
 }
 

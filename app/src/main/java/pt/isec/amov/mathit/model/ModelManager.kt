@@ -129,7 +129,8 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     }
 
     fun startServerListener(listView: ListView) {
-        ConnectionManager.startServerListener(listView)
+        val localPlayer: Player? = getData().playerName?.let { Player(it) }
+        ConnectionManager.startServerListener(listView, localPlayer)
     }
 
     fun closeServerListener() {

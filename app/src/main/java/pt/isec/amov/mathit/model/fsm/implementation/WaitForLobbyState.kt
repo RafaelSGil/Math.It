@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
+import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.StateAdapter
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
@@ -20,5 +21,17 @@ class WaitForLobbyState(
     override fun goWaitMultiStartState(context: Context, manager: ModelManager) {
         setState(States.WAIT_MULTI_START)
         Log.i("DEBUG-AMOV", "goWaitMultiStartState: ")
+    }
+
+    override fun addPoints(points: Int) {
+        data.singleplayerScore = points
+    }
+
+    override fun getLevel(): Levels? {
+        return data.getLevel()
+    }
+
+    override fun getPoints(): Int {
+        return data.singleplayerScore
     }
 }

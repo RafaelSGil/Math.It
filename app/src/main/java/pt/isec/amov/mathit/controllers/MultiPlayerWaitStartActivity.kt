@@ -4,13 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.AdapterView
-import androidx.core.view.get
-import com.google.android.material.snackbar.Snackbar
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitStartBinding
 import pt.isec.amov.mathit.model.ModelManager
-import pt.isec.amov.mathit.model.data.ServerData
 
 class MultiPlayerWaitStartActivity : AppCompatActivity() {
     companion object{
@@ -42,12 +37,11 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
 
     private fun registerHandlers() {
         binding.btnCreateGame.setOnClickListener{
-            createMultiplayerGame();
+            createMultiplayerGame()
         }
         binding.availableGamesListView.setOnItemClickListener { _, _, position, _ ->
-            if(manager?.startClient(position) == true) {
-                manager?.goWaitForLobbyState(this, manager!!)
-            }
+            manager?.goWaitForLobbyState(this, manager!!)
+            manager?.startClient(position)
         }
     }
 
