@@ -12,10 +12,12 @@ import pt.isec.amov.mathit.model.ModelManager
 class PauseActivity : AppCompatActivity() {
     companion object{
         private var manager : ModelManager? = null
+        private var time : Int = 0
 
-        fun getNewIntent(context : Context, manager : ModelManager) : Intent {
+        fun getNewIntent(context : Context, manager : ModelManager, time : Int) : Intent {
             val intent = Intent(context, PauseActivity::class.java)
             this.manager = manager
+            this.time = time
             return intent
         }
     }
@@ -30,7 +32,7 @@ class PauseActivity : AppCompatActivity() {
 
         binding.btnResume.apply {
             setOnClickListener {
-                manager?.redirectNextLevel(context, manager!!)
+                manager?.goNextLevelState(context, manager!!, time)
             }
         }
 

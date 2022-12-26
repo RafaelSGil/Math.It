@@ -58,7 +58,11 @@ abstract class StateAdapter(
         return
     }
 
-    override fun goPauseState(context : Context, manager: ModelManager) {
+    override fun goNextLevelState(context: Context, manager: ModelManager, time: Int) {
+        return
+    }
+
+    override fun goPauseState(context : Context, manager: ModelManager, time: Int) {
         return
     }
 

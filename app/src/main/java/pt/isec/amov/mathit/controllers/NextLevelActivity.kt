@@ -12,10 +12,18 @@ import pt.isec.amov.mathit.model.ModelManager
 class NextLevelActivity : AppCompatActivity(){
     companion object{
         private var manager : ModelManager? = null
+        private var time : Int? = null
 
         fun getNewIntent(context : Context, manager : ModelManager) : Intent {
             val intent = Intent(context, NextLevelActivity::class.java)
             this.manager = manager
+            return intent
+        }
+
+        fun getNewIntent(context : Context, manager : ModelManager, time : Int) : Intent{
+            val intent = Intent(context, NextLevelActivity::class.java)
+            this.manager = manager
+            this.time = time
             return intent
         }
     }
@@ -29,11 +37,18 @@ class NextLevelActivity : AppCompatActivity(){
         binding = ActivityNextLevelBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        var milisec = 5000
+
         if(binding.tvTime.text.isBlank() || binding.tvTime.text.isEmpty()){
             binding.tvTime.text = "5"
         }
 
-        val timer = object : CountDownTimer(5000, 1000) {
+        if(time != null){
+            milisec = time!! * 1000
+            binding.tvTime.text = time.toString()
+        }
+
+        val timer = object : CountDownTimer(milisec.toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 when(binding.tvTime.text){
                     "5" -> binding.tvTime.text = "4"
@@ -45,6 +60,7 @@ class NextLevelActivity : AppCompatActivity(){
             }
 
             override fun onFinish() {
+                time = null
                 goNext()
             }
         }.start()
@@ -52,7 +68,7 @@ class NextLevelActivity : AppCompatActivity(){
 
         binding.btnPause.apply {
             setOnClickListener {
-                manager?.goPauseState(context, manager!!)
+                manager?.goPauseState(context, manager!!, binding.tvTime.text.toString().toInt())
             }
         }
     }

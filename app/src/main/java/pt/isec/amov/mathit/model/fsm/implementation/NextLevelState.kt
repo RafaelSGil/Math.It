@@ -33,11 +33,11 @@ class NextLevelState(
 
     }
 
-    override fun goPauseState(context: Context, manager: ModelManager) {
+    override fun goPauseState(context: Context, manager: ModelManager, time : Int) {
         setState(States.PAUSE)
         ContextCompat.startActivity(
             context,
-            PauseActivity.getNewIntent(context, manager),
+            PauseActivity.getNewIntent(context, manager, time),
             null
         )
     }

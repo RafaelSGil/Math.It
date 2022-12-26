@@ -73,8 +73,12 @@ class StatesContext(sharedPreferences: SharedPreferences){
         this.state.goNextLevelState(context, manager)
     }
 
-    fun goPauseState(context : Context, manager: ModelManager) {
-        this.state.goPauseState(context, manager)
+    fun goNextLevelState(context : Context, manager: ModelManager, time: Int) {
+        this.state.goNextLevelState(context, manager, time)
+    }
+
+    fun goPauseState(context : Context, manager: ModelManager, time : Int) {
+        this.state.goPauseState(context, manager, time)
     }
 
     fun goProfileState(context : Context, manager: ModelManager) {

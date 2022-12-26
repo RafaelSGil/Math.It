@@ -72,9 +72,12 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         this.context.goNextLevelState(context, model)
     }
 
-    fun goPauseState(context: Context, model: ModelManager) {
-        previousStates = getState()
-        this.context.goPauseState(context, model)
+    fun goNextLevelState(context: Context, model: ModelManager, time : Int) {
+        this.context.goNextLevelState(context, model, time)
+    }
+
+    fun goPauseState(context: Context, model: ModelManager, time : Int) {
+        this.context.goPauseState(context, model, time)
     }
 
     fun goProfileState(context: Context, model: ModelManager) {

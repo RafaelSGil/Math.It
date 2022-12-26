@@ -38,15 +38,6 @@ class SinglePlayerState(
         )
     }
 
-    override fun goPauseState(context: Context, manager: ModelManager) {
-        setState(States.PAUSE)
-        ContextCompat.startActivity(
-            context,
-            PauseActivity.getNewIntent(context, manager),
-            null
-        )
-    }
-
     override fun addPoints(points: Int) {
         data.singleplayerScore = points
     }
