@@ -12,6 +12,13 @@ class Player(name: String) {
                 field = value
         }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Player) return false
+        if (name != other.name) return false
+        return true
+    }
+
     override fun toString(): String {
         return "Score: $score Player: $name"
     }

@@ -45,10 +45,10 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
             createMultiplayerGame();
         }
         binding.availableGamesListView.setOnItemClickListener { _, _, position, _ ->
-            manager?.startClient(position)
-            manager?.goWaitForLobbyState(this, manager!!)
+            if(manager?.startClient(position) == true) {
+                manager?.goWaitForLobbyState(this, manager!!)
+            }
         }
-
     }
 
     private fun createMultiplayerGame() {

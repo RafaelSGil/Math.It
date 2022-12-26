@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.ServerData
-import pt.isec.amov.mathit.utils.jsonObjectToServerData
-import pt.isec.amov.mathit.utils.serverDataToJson
+import pt.isec.amov.mathit.utils.*
+import java.beans.PropertyChangeListener
+import java.beans.PropertyChangeSupport
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -30,9 +31,11 @@ import kotlin.concurrent.thread
 * receive the above json and list it on the view
 * */
 
+@Suppress("DEPRECATION")
 object ConnectionManager {
-    private var multicastHost = "230.30.30.30"
-    private var multicastPort = 4004
+    const val PLAYERS_PROP = "players"
+    private const val multicastHost = "230.30.30.30"
+    private const val multicastPort = 4004
     private lateinit var multicastSocket: MulticastSocket
     private lateinit var serverSocket: ServerSocket
     private var senderThread: Thread? = null
@@ -54,7 +57,7 @@ object ConnectionManager {
         multicastSocket.joinGroup(inetSocketAddress, networkInterface)
     }
 
-    var strIPAddress: String = ""
+    private var strIPAddress: String = ""
     fun startServer(context: Context, name: String) {
 
         val connectivityManager = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -112,6 +115,23 @@ object ConnectionManager {
             while (clientSocket?.isClosed == false) {
                 val receivedMessage = receiveFromSocket(clientSocket)
                 Log.i("DEBUG-AMOV", "startClientRequestHandler: received request from client $receivedMessage")
+                try {
+                    val jsonObject = JSONObject(receivedMessage)
+                    if (jsonObject.has("name")) {
+                        //received player info
+                        val player = jsonObjectToPlayer(jsonObject)
+                        if (!playersList.contains(player)) {
+                            player?.let { playersList.add(player) }
+                            val handler = Handler(Looper.getMainLooper())
+                            handler.post{
+                                pcs.firePropertyChange(PLAYERS_PROP, null, null)
+                            }
+                        }
+                        sendDataToAllClients(playerListToJsonObject(playersList).toString())
+                    }
+                } catch (e:java.lang.Exception) {
+                    Log.i("DEBUG-AMOV", "startClientRequestHandler: Something went wrong $e")
+                }
                 val message = "Hello there little client"
                 sendToSocket(clientSocket, message)
             }
@@ -126,18 +146,21 @@ object ConnectionManager {
     }
 
     private fun receiveFromSocket(socket: Socket): String {
-        val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
-        val receivedObject = reader.readLine()
-        Log.i("DEBUG-AMOV", "receiveFromSocket: received request from client $receivedObject")
-        return receivedObject
+        return try {
+            val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+            val receivedObject = reader.readLine()
+            Log.i("DEBUG-AMOV", "receiveFromSocket: received request from client $receivedObject")
+            receivedObject
+        } catch (_:java.lang.Exception) {
+            ""
+        }
     }
 
-    private fun sendDataToAllClients() {
+    private fun sendDataToAllClients(data: String) {
         thread {
             for(clientSocket in connectedClients) {
-                val message = "Hello There dashjdasjd sadh kasjdh as"
-                sendToSocket(clientSocket, message)
-                Log.i("DEBUG-AMOV", "sendDataToAllClients: Sending Data to all clients: $message")
+                sendToSocket(clientSocket, data)
+                Log.i("DEBUG-AMOV", "sendDataToAllClients: Sending Data to all clients: $data")
             }
         }
     }
@@ -198,11 +221,10 @@ object ConnectionManager {
                 val jsonString = String(receivedObject)
                 val jsonObject = JSONObject(jsonString)
                 val server = jsonObjectToServerData(jsonObject)
-                if(server.host == strIPAddress)
+                if(server?.host == strIPAddress)
                     continue
                 if(!serverList.contains(server))
-                    serverList.add(server)
-                Log.i("DEBUG-AMOV", "startServerListener:  received serverData")
+                    server?.let { serverList.add(it) }
                 listServers(listView)
             }
         }
@@ -220,13 +242,19 @@ object ConnectionManager {
 
     fun closeServerListener() {
         keepReceiving = false
+        serverList.clear()
     }
 
     private var socket: Socket? = null
 
-    fun startClient(index: Int) {
+    fun startClient(index: Int) : Boolean {
         isHost = false
+        var result = true
         thread {
+            if(index > serverList.size) {
+                result = false
+                return@thread
+            }
             val serverData = serverList[index]
             try {
                 socket = Socket(InetAddress.getByName(serverData.host), serverData.port)
@@ -235,23 +263,52 @@ object ConnectionManager {
                     startCommunication()
                 }
             } catch (e: IOException) {
-                Log.i("DEBUG-AMOV", "startClient: falied to connect to server $e")
+                Log.i("DEBUG-AMOV", "startClient: failed to connect to server $e")
             }
         }
+        return result
     }
 
     private fun startCommunication() {
+        //receives data from the server
         Log.i("DEBUG-AMOV", "startCommunication: connected to a server")
-        val initMessage = "Hello there server"
-        sendToSocket(socket!!, initMessage)
+        val player = Player("Test").also { it.score = 0 }
+        val jsonObjectOfPlayer = playerToJson(player)
+        sendToSocket(socket!!, jsonObjectOfPlayer.toString())
+
         while(keepConnected && socket != null && socket?.isClosed == false) {
             Log.i("DEBUG-AMOV", "startCommunication: waiting for server message")
             val receivedObject = receiveFromSocket(socket!!)
             Log.i("DEBUG-AMOV", "startCommunication: Received message from server: $receivedObject")
+            try {
+                val jsonObject = JSONObject(receivedObject)
+                if (jsonObject.has("players")) {
+                    //received list of players
+                    playersList = playerJsonObjectToPlayerList(jsonObject)
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(PLAYERS_PROP, null, null)
+                    }
+                } // else if ...}
+            } catch (e: java.lang.Exception) {
+                Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")
+            }
         }
     }
 
     fun isHost(): Boolean {
-        return isHost;
+        return isHost
+    }
+
+    private var pcs: PropertyChangeSupport = PropertyChangeSupport(this)
+    fun addPropertyChangeListener(
+        property: String?,
+        listener: PropertyChangeListener?
+    ) {
+        pcs.addPropertyChangeListener(property, listener)
+    }
+
+    fun getConnectedPlayers(): List<Player> {
+        return playersList
     }
 }

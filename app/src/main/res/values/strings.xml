@@ -23,4 +23,5 @@
     <string name="list_empty_prompt">There are no games available</string>
     <string name="waiting_for_game_to_start">Waiting for game to proceed</string>
     <string name="current_level">Current Level</string>
+    <string name="no_players_connected">There are no players connected</string>
 </resources>

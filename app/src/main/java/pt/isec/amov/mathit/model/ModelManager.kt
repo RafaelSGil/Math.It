@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.widget.ListView
 import pt.isec.amov.mathit.model.data.Data
+import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
+import java.beans.PropertyChangeListener
 
 class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
@@ -138,11 +140,22 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         ConnectionManager.closeServer()
     }
 
-    fun startClient(index: Int) {
-        ConnectionManager.startClient(index)
+    fun startClient(index: Int): Boolean {
+        return ConnectionManager.startClient(index)
     }
 
     fun isHost(): Boolean {
         return ConnectionManager.isHost()
+    }
+
+    fun addPropertyChangeListener(
+        property: String?,
+        listener: PropertyChangeListener?
+    ) {
+        ConnectionManager.addPropertyChangeListener(property, listener)
+    }
+
+    fun getConnectedPlayers(): List<Player> {
+        return ConnectionManager.getConnectedPlayers()
     }
 }

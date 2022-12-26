@@ -74,9 +74,9 @@
 
         <ListView
             android:id="@+id/availableGamesListView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="520dp"
-            android:textAlignment="center" />
+            android:textAlignment="center"/>
 
         <TextView
             android:id="@+id/empty_servers_view"
