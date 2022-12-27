@@ -30,6 +30,7 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiplayerWaitForLobbyBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ConnectionManager.resetPlayers()
         registerHandlers()
     }
 
@@ -41,6 +42,7 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         } else {
             binding.btnNextLevel.visibility = View.GONE
         }
+        updatePlayersList()
         binding.lobbyPlayersListView.emptyView = binding.emptyPlayersView
     }
 

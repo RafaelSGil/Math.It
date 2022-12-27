@@ -9,12 +9,14 @@ import android.util.Log
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import net.objecthunter.exp4j.ExpressionBuilder
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.databinding.GameBoardBinding
 import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.Table
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.data.multiplayer.LevelData
@@ -52,7 +54,7 @@ class MultiplayerGameBoardFragment : Fragment(R.layout.game_board), View.OnTouch
         manager.addPoints(points)
         "Points: ${manager.getPoints()}".also { binding.tvPoints.text = it }
 
-        if(manager.getLevel() != level){
+        if(manager.getPoints() >= manager.getLevel()!!.pointsToNextLevel){
             goNextLevel = true
         }
         "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
@@ -395,7 +397,8 @@ class MultiplayerGameBoardFragment : Fragment(R.layout.game_board), View.OnTouch
                     if(goNextLevel){
                         timer.cancel()
                         if(mode == MODE.CLIENT) {
-                            //ConnectionManager.sendNextLevel
+                            ConnectionManager.sendNextLevel(Player(manager.getLocalPlayerName()!!).also {
+                                it.score = manager.getPoints().toLong() })
                         }
                         manager.goWaitForLobbyState(contextActivity, manager)
                         return false
@@ -413,8 +416,11 @@ class MultiplayerGameBoardFragment : Fragment(R.layout.game_board), View.OnTouch
 
                     if(goNextLevel){
                         timer.cancel()
-                        manager.goNextLevelState(contextActivity, manager)
-
+                        if(mode == MODE.CLIENT) {
+                            ConnectionManager.sendNextLevel(Player(manager.getLocalPlayerName()!!).also {
+                                it.score = manager.getPoints().toLong() })
+                        }
+                        manager.goWaitForLobbyState(contextActivity, manager)
                         return false
                     }
                     assignLevelToView()

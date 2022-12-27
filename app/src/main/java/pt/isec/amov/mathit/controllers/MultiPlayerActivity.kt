@@ -40,4 +40,8 @@ class MultiPlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        finish()
+    }
 }

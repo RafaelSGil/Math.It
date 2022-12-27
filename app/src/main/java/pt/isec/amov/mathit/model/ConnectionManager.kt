@@ -163,6 +163,13 @@ object ConnectionManager {
         fileOutputStream.close()
     }
 
+    fun closeEverything() {
+        closeServer()
+        closeServerSender()
+        closeServerListener()
+        keepConnected = false
+    }
+
     private fun sendToSocket(socket: Socket, data: String) {
         val writer = PrintWriter(socket.getOutputStream())
         writer.println(data)
@@ -223,12 +230,16 @@ object ConnectionManager {
 
     fun closeServer() {
         closeServerSender()
+        if(!isHost)
+            return
         if(!serverSocket.isClosed)
             serverSocket.close()
     }
 
     private fun closeServerSender() {
         keepSending = false
+        if(this::multicastSocket.isInitialized &&!multicastSocket.isClosed)
+            multicastSocket.close()
     }
 
     fun startServerListener(listView: ListView, localPlayer: Player?, imagePath: String?) {
@@ -249,16 +260,21 @@ object ConnectionManager {
                     keepReceiving = false
                 }
                 val packet = DatagramPacket(buffer, buffer.size)
-                multicastSocket.receive(packet)
-                val receivedObject = packet.data
-                val jsonString = String(receivedObject)
-                val jsonObject = JSONObject(jsonString)
-                val server = jsonObjectToServerData(jsonObject)
-                if(server?.host == strIPAddress)
-                    continue
-                if(!serverList.contains(server))
-                    server?.let { serverList.add(it) }
-                listServers(listView)
+                try {
+                    multicastSocket.receive(packet)
+                    val receivedObject = packet.data
+                    val jsonString = String(receivedObject)
+                    val jsonObject = JSONObject(jsonString)
+                    val server = jsonObjectToServerData(jsonObject)
+                    if (server?.host == strIPAddress)
+                        continue
+                    if (!serverList.contains(server))
+                        server?.let { serverList.add(it) }
+                    listServers(listView)
+                } catch (_:Exception) {
+                    keepSending = false
+                    keepReceiving = false
+                }
             }
         }
     }
@@ -302,6 +318,10 @@ object ConnectionManager {
         return result
     }
 
+    fun resetPlayers() {
+        playersList.clear()
+    }
+
     var levelData: LevelData? = null
 
     private fun startCommunication() {
@@ -336,6 +356,7 @@ object ConnectionManager {
                 }
             } catch (e: java.lang.Exception) {
                 Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")
+                keepConnected = false
             }
         }
     }
@@ -368,5 +389,10 @@ object ConnectionManager {
 
     fun getConnectedPlayers(): List<Player> {
         return playersList
+    }
+
+    fun sendNextLevel(player: Player) {
+        val message = playerToJson(player)
+        thread { sendToSocket(socket!!, message.toString()) }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitStartBinding
+import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
 
 class MultiPlayerWaitStartActivity : AppCompatActivity() {
@@ -24,7 +25,7 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiplayerWaitStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        ConnectionManager.closeEverything()
         binding.availableGamesListView.emptyView = binding.emptyServersView
         registerHandlers()
     }
@@ -52,6 +53,5 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        manager?.closeServerListener()
     }
 }
