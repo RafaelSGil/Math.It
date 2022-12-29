@@ -55,12 +55,12 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     private var points : Int by Delegates.observable(0){
         _, _, _ ->
         manager.addPoints(points)
-        "Points: ${manager.getPoints()}".also { binding.tvPoints.text = it }
+        "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
 
         if(manager.getLevel() != level){
             goNextLevel = true
         }
-        "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
+        "${resources.getString(R.string.level)} ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }
 
     }
 

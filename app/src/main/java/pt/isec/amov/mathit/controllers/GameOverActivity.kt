@@ -33,9 +33,9 @@ class GameOverActivity : AppCompatActivity() {
         Log.i("GAME", "OVER")
 
         when(isSinglePlayer){
-            true ->{"Points: ${manager.getPointsSinglePlayer()}".also { binding.tvPoints.text = it }}
+            true ->{"${resources.getString(R.string.points)} ${manager.getPointsSinglePlayer()}".also { binding.tvPoints.text = it }}
 
-            false -> {"Points: ${manager.getPointsMultiPlayer()}".also { binding.tvPoints.text = it }}
+            false -> {"${resources.getString(R.string.level)} ${manager.getPointsMultiPlayer()}".also { binding.tvPoints.text = it }}
         }
 
         "Level: ${manager.getLevel().toString()}".also { binding.tvLevel.text = it }

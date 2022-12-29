@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Math.It</string>
+    <string name="app_name" translatable="false">Math.It</string>
     <string name="welcome_message">Welcome my friend</string>
     <string name="SinglePlayer">Singleplayer</string>
     <string name="MultiPlayer">Multiplayer</string>
