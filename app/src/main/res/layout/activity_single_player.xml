@@ -17,5 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/game_board"
+        android:name="pt.isec.amov.mathit.controllers.fragments.GameBoardFragment"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

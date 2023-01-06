@@ -13,6 +13,7 @@ import java.beans.PropertyChangeListener
 class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
     private var previousStates: States? = null
+    var tvsValues : java.util.ArrayList<String> = java.util.ArrayList<String>()
 
     fun getState() : States?{
         return this.context.getState()
