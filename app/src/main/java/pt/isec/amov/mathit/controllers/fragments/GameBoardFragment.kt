@@ -119,14 +119,12 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
 
         if(viewModel.hasBeenInitiated){
-            Log.i("ONCREATEVIEW", "onCreateView: HAS BEEN INITIATED " + viewModel.timer.value)
             binding.pbTimer.max = (level.timeToComplete).toInt()
             timer = MyCountDown((viewModel.timer.value!! * 1000).toLong(), viewModel, manager, contextActivity)
             timer?.start()
             binding.pbTimer.progress = viewModel.timer.value!!
         }
         if(!viewModel.hasBeenInitiated){
-            Log.i("ONCREATEVIEW", "onCreateView: INITIATING")
             binding.pbTimer.max = (level.timeToComplete).toInt()
             assignRandomValues()
             timer = MyCountDown(level.timeToComplete*1000, viewModel, manager, contextActivity)
@@ -137,17 +135,11 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
         points = -1
 
-//        if(viewModel.tvsValues.value?.size == 0 || viewModel.tvsValues.value == null){
-//            Log.i("OLA", "VAI CRIAR")
-//            viewModel.assignRandomValues(manager.getLevel()!!, tvs)
-//        }
-
         viewModel.timer.observe(viewLifecycleOwner){
             binding.pbTimer.progress = viewModel.timer.value!!
         }
 
         viewModel.tvsValues.observe(viewLifecycleOwner){
-            Log.i("observable", "tvsValues update " + viewModel.tvsValues.value)
             val values = viewModel.tvsValues.value
 
             for ((counter, v: TextView) in tvs.withIndex()) {
@@ -166,11 +158,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     }
 
     override fun onPause() {
+        timer?.cancel()
         super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun calculateBestCombination(){
@@ -381,8 +370,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
-                    Log.i("RESULT: ", "SECOND BEST")
-
                     idsSelected.clear()
 
                     points = 1

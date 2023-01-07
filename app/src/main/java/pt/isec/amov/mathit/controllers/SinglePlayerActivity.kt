@@ -50,7 +50,6 @@ class SinglePlayerActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         if(savedInstanceState == null){
-            Log.i("SINGLE_PLAYER", "onCreate: ACTIVITY VAI LANÇAR FRAGMENT")
             intent.putExtra("data", manager)
             intent.putExtra("level", level)
             intent.putExtra("viewModel", viewModel)

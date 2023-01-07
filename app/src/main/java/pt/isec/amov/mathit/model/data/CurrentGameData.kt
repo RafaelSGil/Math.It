@@ -20,7 +20,6 @@ class CurrentGameData : java.io.Serializable {
     fun assignRandomValues(tvs : ArrayList<String>){
         tvsValues.value?.clear()
         tvsValues.value = tvs
-        Log.i("assignRandomValues", "" + tvsValues.value.toString())
     }
 
     fun initiateViewModel(){
