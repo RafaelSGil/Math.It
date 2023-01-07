@@ -58,8 +58,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     }
 
     private lateinit var contextActivity: Context
-
-    private lateinit var timer : MyCountDown
     private lateinit var tvsValues : ArrayList<String>
     private lateinit var viewModel : DataViewModel
 
@@ -119,18 +117,19 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
             contextActivity = container.context
         }
 
-        binding.pbTimer.max = (level.timeToComplete).toInt()
-        timer = MyCountDown(level.timeToComplete * 1000, binding.pbTimer, manager, contextActivity)
-        timer.start()
+        if(!viewModel.hasBeenInitiated){
+            viewModel.startCountDown(level.timeToComplete*1000, binding.pbTimer, manager, contextActivity)
+        }
 
         points = -1
 
         if(viewModel.tvsValues.value?.size == 0 || viewModel.tvsValues.value == null){
-            assignRandomValues()
+            Log.i("OLA", "VAI CRIAR")
+            viewModel.assignRandomValues(manager.getLevel()!!, tvs)
         }
 
         viewModel.tvsValues.observe(viewLifecycleOwner){
-            Log.i("observable", "observable")
+            Log.i("observable", "tvsValues update")
             val values = viewModel.tvsValues.value
 
             for ((counter, v: TextView) in tvs.withIndex()) {
@@ -144,12 +143,10 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     }
 
     override fun onPause() {
-        timer.cancel()
         super.onPause()
     }
 
     override fun onResume() {
-        timer.start()
         super.onResume()
     }
 
@@ -252,43 +249,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
     }
 
-
-    private fun assignRandomValues(){
-        var cellCounter = 0
-        level = manager.getLevel()!!
-        val operations = level.operations
-        val values : MutableLiveData<ArrayList<String>> by lazy {
-            MutableLiveData<ArrayList<String>>().apply {
-                value = ArrayList()
-            }
-        }
-
-        for(view : TextView in tvs){
-            //if the cell counter is between 5 and 7, it means its on the second row
-            //if it is between 13 and 15, it means its on the fourth row
-            //this rows only take operation signs
-            if((cellCounter < 5 || cellCounter > 7) && (cellCounter < 13 || cellCounter > 15)){
-                //one cell takes a number
-                if(cellCounter % 2 == 0){
-                    values.value?.add((1..manager.getLevel()?.maxNumb!!).shuffled().last().toString())
-                    ++cellCounter
-                    continue
-                }
-
-                //the other cell takes an operation sign
-                values.value?.add(operations.shuffled().last().toString())
-                ++cellCounter
-                continue
-            }
-
-            values.value?.add(operations.shuffled().last().toString())
-            ++cellCounter
-        }
-
-        Log.i("assignRandomValues", "" + values.value.toString())
-        values.value?.let { viewModel.refreshValues(it) }
-    }
-
     inner class GestureListener : SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {
             return true
@@ -356,14 +316,14 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     idsSelected.clear()
 
                     points = 2
-                    timer.addTime(level.timeToIncrement.toLong())
+                    viewModel.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
-                        timer.cancel()
+                        //timer.cancel()
                         manager.goNextLevelState(contextActivity, manager)
                         return false
                     }
-                    assignRandomValues()
+                    viewModel.assignRandomValues(manager.getLevel()!!, tvs)
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
@@ -372,19 +332,19 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     idsSelected.clear()
 
                     points = 1
-                    timer.addTime(level.timeToIncrement.toLong())
+                    viewModel.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
-                        timer.cancel()
+                        //timer.cancel()
                         manager.goNextLevelState(contextActivity, manager)
                         return false
                     }
-                    assignRandomValues()
+                    viewModel.assignRandomValues(manager.getLevel()!!, tvs)
                     return result
                 }
 
-                timer.decreaseTime(level.timeToDecrement.toLong())
-                assignRandomValues()
+                viewModel.decreaseTime(level.timeToDecrement.toLong())
+                viewModel.assignRandomValues(manager.getLevel()!!, tvs)
 
             }
 

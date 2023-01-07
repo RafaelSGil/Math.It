@@ -28,6 +28,10 @@ class MyCountDown(millisInFuture: Long, var progressBar : ProgressBar, var manag
         resetTime()
     }
 
+    fun getProgress() : Int{
+        return progressBar.progress
+    }
+
     fun addTime(timeToAdd : Long){
         if(currentTimer + (timeToAdd*1000) > timeLimit){
             currentTimer = timeLimit

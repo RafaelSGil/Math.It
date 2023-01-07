@@ -74,9 +74,9 @@ class MultiplayerGameBoardFragment : Fragment(R.layout.game_board), View.OnTouch
             contextActivity = container.context
         }
 
-        binding.pbTimer.max = (level.timeToComplete).toInt()
-        timer = MyCountDown(level.timeToComplete * 1000, binding.pbTimer, manager, contextActivity)
-        timer.start()
+//        binding.pbTimer.max = (level.timeToComplete).toInt()
+//        timer = MyCountDown(level.timeToComplete * 1000, manager, contextActivity)
+//        timer.start()
 
         points = -1
 
