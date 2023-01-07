@@ -58,6 +58,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     }
 
     private lateinit var contextActivity: Context
+    private var timer : MyCountDown? = null
     private lateinit var tvsValues : ArrayList<String>
     private lateinit var viewModel : DataViewModel
 
@@ -66,6 +67,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.i("BOTA LUME", "onCreateView: VOU COMEÇAR MEU BRO")
         binding = GameBoardBinding.inflate(layoutInflater)
 
         var i: Intent? = activity?.intent
@@ -82,7 +84,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         tvs.add(binding.r1tv3)
         tvs.add(binding.r1tv4)
         tvs.add(binding.r1tv5)
-
 
         tvs.add(binding.r2tv1)
         tvs.add(binding.r2tv3)
@@ -117,19 +118,36 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
             contextActivity = container.context
         }
 
+        if(viewModel.hasBeenInitiated){
+            Log.i("ONCREATEVIEW", "onCreateView: HAS BEEN INITIATED " + viewModel.timer.value)
+            binding.pbTimer.max = (level.timeToComplete).toInt()
+            timer = MyCountDown((viewModel.timer.value!! * 1000).toLong(), viewModel, manager, contextActivity)
+            timer?.start()
+            binding.pbTimer.progress = viewModel.timer.value!!
+        }
         if(!viewModel.hasBeenInitiated){
-            viewModel.startCountDown(level.timeToComplete*1000, binding.pbTimer, manager, contextActivity)
+            Log.i("ONCREATEVIEW", "onCreateView: INITIATING")
+            binding.pbTimer.max = (level.timeToComplete).toInt()
+            assignRandomValues()
+            timer = MyCountDown(level.timeToComplete*1000, viewModel, manager, contextActivity)
+            timer?.start()
+            binding.pbTimer.progress = viewModel.timer.value!!
+            viewModel.initiateViewModel()
         }
 
         points = -1
 
-        if(viewModel.tvsValues.value?.size == 0 || viewModel.tvsValues.value == null){
-            Log.i("OLA", "VAI CRIAR")
-            viewModel.assignRandomValues(manager.getLevel()!!, tvs)
+//        if(viewModel.tvsValues.value?.size == 0 || viewModel.tvsValues.value == null){
+//            Log.i("OLA", "VAI CRIAR")
+//            viewModel.assignRandomValues(manager.getLevel()!!, tvs)
+//        }
+
+        viewModel.timer.observe(viewLifecycleOwner){
+            binding.pbTimer.progress = viewModel.timer.value!!
         }
 
         viewModel.tvsValues.observe(viewLifecycleOwner){
-            Log.i("observable", "tvsValues update")
+            Log.i("observable", "tvsValues update " + viewModel.tvsValues.value)
             val values = viewModel.tvsValues.value
 
             for ((counter, v: TextView) in tvs.withIndex()) {
@@ -140,6 +158,11 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        timer?.cancel()
+        super.onDestroyView()
     }
 
     override fun onPause() {
@@ -249,6 +272,37 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
     }
 
+    private fun assignRandomValues(){
+        var cellCounter = 0
+        level = manager.getLevel()!!
+        val operations = level.operations
+        val values : ArrayList<String> = ArrayList()
+
+        for(view : TextView in tvs){
+            //if the cell counter is between 5 and 7, it means its on the second row
+            //if it is between 13 and 15, it means its on the fourth row
+            //this rows only take operation signs
+            if((cellCounter < 5 || cellCounter > 7) && (cellCounter < 13 || cellCounter > 15)){
+                //one cell takes a number
+                if(cellCounter % 2 == 0){
+                    values.add((1..manager.getLevel()?.maxNumb!!).shuffled().last().toString())
+                    ++cellCounter
+                    continue
+                }
+
+                //the other cell takes an operation sign
+                values.add(operations.shuffled().last().toString())
+                ++cellCounter
+                continue
+            }
+
+            values.add(operations.shuffled().last().toString())
+            ++cellCounter
+        }
+
+        viewModel.assignRandomValues(values)
+    }
+
     inner class GestureListener : SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {
             return true
@@ -316,14 +370,14 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     idsSelected.clear()
 
                     points = 2
-                    viewModel.addTime(level.timeToIncrement.toLong())
+                    timer?.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
-                        //timer.cancel()
+                        timer?.cancel()
                         manager.goNextLevelState(contextActivity, manager)
                         return false
                     }
-                    viewModel.assignRandomValues(manager.getLevel()!!, tvs)
+                    assignRandomValues()
                     return result
                 }
                 if(idsSelected.containsAll(secondBestCombination)){
@@ -332,19 +386,19 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                     idsSelected.clear()
 
                     points = 1
-                    viewModel.addTime(level.timeToIncrement.toLong())
+                    timer?.addTime(level.timeToIncrement.toLong())
 
                     if(goNextLevel){
-                        //timer.cancel()
+                        timer?.cancel()
                         manager.goNextLevelState(contextActivity, manager)
                         return false
                     }
-                    viewModel.assignRandomValues(manager.getLevel()!!, tvs)
+                    assignRandomValues()
                     return result
                 }
 
-                viewModel.decreaseTime(level.timeToDecrement.toLong())
-                viewModel.assignRandomValues(manager.getLevel()!!, tvs)
+                timer?.decreaseTime(level.timeToDecrement.toLong())
+                assignRandomValues()
 
             }
 

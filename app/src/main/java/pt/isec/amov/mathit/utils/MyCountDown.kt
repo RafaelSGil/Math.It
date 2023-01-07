@@ -2,10 +2,12 @@ package pt.isec.amov.mathit.utils
 
 import android.content.Context
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.ProgressBar
+import pt.isec.amov.mathit.model.DataViewModel
 import pt.isec.amov.mathit.model.ModelManager
 
-class MyCountDown(millisInFuture: Long, var progressBar : ProgressBar, var manager: ModelManager, var context: Context) {
+class MyCountDown(millisInFuture: Long, var viewModel : DataViewModel, var manager: ModelManager, var context: Context) {
     private var currentTimer = millisInFuture
     private var timeLimit = millisInFuture
     private var timer : CountDownTimer? = null
@@ -13,8 +15,9 @@ class MyCountDown(millisInFuture: Long, var progressBar : ProgressBar, var manag
     private fun resetTime(){
         timer = object : CountDownTimer(currentTimer, 1000){
             override fun onTick(millisUntilFinished: Long) {
-                progressBar.progress = (millisUntilFinished/1000).toInt()
+                viewModel.updateTimer((millisUntilFinished/1000).toInt())
                 currentTimer -= 1
+                Log.i("TIMER", "onTick: $currentTimer")
             }
 
             override fun onFinish() {
@@ -26,10 +29,6 @@ class MyCountDown(millisInFuture: Long, var progressBar : ProgressBar, var manag
 
     fun start(){
         resetTime()
-    }
-
-    fun getProgress() : Int{
-        return progressBar.progress
     }
 
     fun addTime(timeToAdd : Long){

@@ -15,19 +15,17 @@ class DataViewModel(private val data : CurrentGameData) : ViewModel(), java.io.S
     val tvsValues : LiveData<ArrayList<String>>
         get() = data.tvsValues
 
+    val timer : LiveData<Int>
+        get() = data.timer
 
     val hasBeenInitiated : Boolean
         get() = data.hasBeenInitiated
 
-    fun assignRandomValues(level : Levels, tvs : ArrayList<TextView>) = data.assignRandomValues(level, tvs)
+    fun assignRandomValues(tvs : ArrayList<String>) = data.assignRandomValues(tvs)
 
-    fun startCountDown(millisInFuture: Long, progressBar : ProgressBar, manager: ModelManager,
-                       context: Context)
-    = data.startCountDown(millisInFuture, progressBar, manager, context)
+    fun updateTimer(time : Int) = data.updateTimer(time)
 
-    fun addTime(time : Long) = data.addTime(time)
-    fun decreaseTime(time : Long) = data.decreaseTime(time)
-    fun getProgress() : Int? = data.getProgress()
+    fun initiateViewModel() = data.initiateViewModel()
 
     class Factory(private val data: CurrentGameData) : ViewModelProvider.Factory{
         @Suppress("UNCHECKED_CAST")

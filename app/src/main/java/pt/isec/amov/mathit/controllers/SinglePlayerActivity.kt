@@ -49,13 +49,16 @@ class SinglePlayerActivity : AppCompatActivity(){
         binding = ActivitySinglePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        intent.putExtra("data", manager)
-        intent.putExtra("level", level)
-        intent.putExtra("viewModel", viewModel)
+        if(savedInstanceState == null){
+            Log.i("SINGLE_PLAYER", "onCreate: ACTIVITY VAI LANÇAR FRAGMENT")
+            intent.putExtra("data", manager)
+            intent.putExtra("level", level)
+            intent.putExtra("viewModel", viewModel)
 
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            add<GameBoardFragment>(R.id.fragment_container_view)
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                add<GameBoardFragment>(R.id.fragment_container_view)
+            }
         }
     }
 }
