@@ -9,7 +9,7 @@ object PlayersData {
 
     fun updatePlayer(player: Player){
         if(players.contains(player)){
-            val p = players.get(players.indexOf(player))
+            val p = players[players.indexOf(player)]
             p.level = player.level
             p.score = player.score
         }

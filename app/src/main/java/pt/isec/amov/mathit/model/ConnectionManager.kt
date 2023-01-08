@@ -33,6 +33,7 @@ import kotlin.concurrent.thread
 object ConnectionManager {
     const val PLAYERS_PROP = "players"
     const val STARTING_MULTIPLAYER = "starting_multiplayer"
+    const val INITIATE_FRAGMENT = "initiate_fragment"
     const val NEXT_BOARD = "next_board"
     private const val multicastHost = "230.30.30.30"
     private const val multicastPort = 4004
@@ -177,10 +178,22 @@ object ConnectionManager {
             val receivedObject = receiveFromSocket(socketClient!!)
             Log.i("DEBUG-AMOV", "startCommunication: Received message from server: $receivedObject")
             try {
+                if(receivedObject == "start_game"){
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(INITIATE_FRAGMENT, null, null)
+                    }
+
+                    continue
+                }
+
                 val jsonObject = JSONObject(receivedObject)
                 if (jsonObject.has("players")) {
                     //received list of players
-                    PlayersData.addAll(playerJsonObjectToPlayerList(jsonObject))
+                    val listPlayers = playerJsonObjectToPlayerList(jsonObject)
+                    for (p in listPlayers){
+                        PlayersData.addPlayer(p)
+                    }
                     val handler = Handler(Looper.getMainLooper())
                     handler.post{
                         pcs.firePropertyChange(PLAYERS_PROP, null, null)
@@ -193,7 +206,7 @@ object ConnectionManager {
                     val handler = Handler(Looper.getMainLooper())
                     handler.post{
                         pcs.firePropertyChange(STARTING_MULTIPLAYER, null, null)
-                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                        Log.i("STARTING_MULTIPLAYER", "startCommunication: firing property")
                     }
                     continue
                 }
@@ -225,7 +238,7 @@ object ConnectionManager {
     fun askForNextBoard(currentBoard: Int, tilesSelected: ArrayList<String>, username : String,
                         points : Int, level : Int){
         val jsonObject = newMoveToJsonObject(NewMove(currentBoard, tilesSelected, username, points, level))
-        sendToSocket(socketClient!!, jsonObject.toString())
+        send(socketClient!!, jsonObject.toString())
     }
 
     fun sendLevelDataToPlayers(levelData: NextLevelData){
@@ -260,6 +273,12 @@ object ConnectionManager {
         Log.i("DEBUG-AMOV", "sendToSocket: sent message to client $data")
     }
 
+    private fun send(socket: Socket, data: String) {
+        val writer = PrintWriter(socket.getOutputStream())
+        writer.println(data)
+        Log.i("DEBUG-AMOV", "sendToSocket: sent message to client $data")
+    }
+
     private fun receiveFromSocket(socket: Socket): String {
         return try {
             val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
@@ -271,7 +290,7 @@ object ConnectionManager {
         }
     }
 
-    private fun sendDataToAllClients(data: String) {
+    fun sendDataToAllClients(data: String) {
         thread {
             for(clientSocket in connectedClients) {
                 sendToSocket(clientSocket, data)
@@ -425,7 +444,7 @@ object ConnectionManager {
         return isHost
     }
 
-    private var pcs: PropertyChangeSupport = PropertyChangeSupport(this)
+    var pcs: PropertyChangeSupport = PropertyChangeSupport(this)
     fun addPropertyChangeListener(
         property: String?,
         listener: PropertyChangeListener?

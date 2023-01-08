@@ -7,10 +7,12 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import org.json.JSONObject
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.controllers.fragments.ClientGameFragment
 import pt.isec.amov.mathit.controllers.fragments.HostGameFragment
 import pt.isec.amov.mathit.databinding.ActivityMultiPlayerBinding
+import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.DataViewModel
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.CurrentGameData
@@ -49,6 +51,8 @@ class MultiPlayerActivity : AppCompatActivity() {
                         setReorderingAllowed(true)
                         add<HostGameFragment>(R.id.fragment_container_view)
                     }
+
+                    ConnectionManager.sendDataToAllClients("start_game")
                 }
                 else -> {
                     intent.putExtra("data", manager)

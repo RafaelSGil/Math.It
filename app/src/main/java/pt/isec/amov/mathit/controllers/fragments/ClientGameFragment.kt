@@ -107,25 +107,6 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
             timer?.start()
             binding.pbTimer.progress = viewModel.timer.value!!
         }
-        if(!viewModel.hasBeenInitiated){
-            binding.pbTimer.max = (level.timeToComplete).toInt()
-            timer = MyCountDown(level.timeToComplete*1000, viewModel, manager, contextActivity)
-            timer?.start()
-            binding.pbTimer.progress = viewModel.timer.value!!
-            viewModel.initiateViewModel()
-        }
-
-        viewModel.timer.observe(viewLifecycleOwner){
-            binding.pbTimer.progress = viewModel.timer.value!!
-        }
-
-        viewModel.tvsValues.observe(viewLifecycleOwner){
-            val values = viewModel.tvsValues.value!!
-
-            for ((counter, v: TextView) in tvs.withIndex()) {
-                v.text = values[counter]
-            }
-        }
 
         manager.addPropertyChangeListener(ConnectionManager.STARTING_MULTIPLAYER){
             viewModel.assignRandomValues(ConnectionManager.levelData?.board!!)
@@ -141,6 +122,12 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                 else -> Levels.LEVEL1
             }
             "${resources.getString(R.string.level)} $level".also { binding.tvLevel.text = it }
+            "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
+            binding.pbTimer.max = (level.timeToComplete).toInt()
+            timer = MyCountDown(level.timeToComplete*1000, viewModel, manager, contextActivity)
+            timer?.start()
+            binding.pbTimer.progress = viewModel.timer.value!!
+            viewModel.initiateViewModel()
         }
 
         manager.addPropertyChangeListener(ConnectionManager.NEXT_BOARD){
@@ -148,6 +135,22 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
             viewModel.updateBoardIndex(ConnectionManager.nextBoard?.nextBoardIndex!!)
             manager.addPoints(ConnectionManager.nextBoard?.pointsEarned!!)
             "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
+        }
+
+        viewModel.timer.observe(viewLifecycleOwner){
+            binding.pbTimer.progress = viewModel.timer.value!!
+        }
+
+        viewModel.tvsValues.observe(viewLifecycleOwner){
+            val values = viewModel.tvsValues.value!!
+
+            if(values.isEmpty()){
+                return@observe
+            }
+
+            for ((counter, v: TextView) in tvs.withIndex()) {
+                v.text = values[counter]
+            }
         }
 
         return binding.root

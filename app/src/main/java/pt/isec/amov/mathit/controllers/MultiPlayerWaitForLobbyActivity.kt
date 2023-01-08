@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitForLobbyBinding
 import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.multiplayer.PlayersData
 
 class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
     companion object{
@@ -29,7 +30,6 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiplayerWaitForLobbyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ConnectionManager.resetPlayers()
         registerHandlers()
     }
 
@@ -49,22 +49,18 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         manager?.addPropertyChangeListener(ConnectionManager.PLAYERS_PROP) {
             updatePlayersList()
         }
-        manager?.addPropertyChangeListener(ConnectionManager.STARTING_MULTIPLAYER) {
-            startMultiplayer()
+        manager?.addPropertyChangeListener(ConnectionManager.INITIATE_FRAGMENT) {
+            manager?.goMultiPlayerState(this, manager!!, "client")
         }
         binding.btnNextLevel.setOnClickListener{
             manager?.goMultiPlayerState(this, manager!!, "host")
         }
     }
 
-    private fun startMultiplayer() {
-        manager?.goMultiPlayerState(this, manager!!, "client")
-    }
-
     private fun updatePlayersList() {
         Log.i("DEBUG-AMOV", "updatePlayersList: updating list of players in lobby")
-        val players = manager?.getConnectedPlayers() ?: return
-        Log.i("Players", "" + players)
+        val players = PlayersData.getPlayers()
+        Log.i("Players | update list", "" + players)
         players.sortedBy { player -> player.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,

@@ -45,6 +45,7 @@ class CurrentGameData : java.io.Serializable {
     }
 
     fun assignRandomValues(tvs : ArrayList<String>){
+        Log.i("ELE ETÀ A ENTRAR", "assignRandomValues: ")
         tvsValues.value?.clear()
         tvsValues.value = tvs
     }

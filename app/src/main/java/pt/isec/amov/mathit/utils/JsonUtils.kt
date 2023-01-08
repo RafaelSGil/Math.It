@@ -29,7 +29,7 @@ fun playerToJson(player: Player) : JSONObject {
     val jsonObject = JSONObject().also {
         it.put("player_name", player.name)
         it.put("score", player.score)
-        it.put("level", player.level)
+        it.put("level", 0)
     }
     return jsonObject
 }
@@ -61,15 +61,16 @@ fun playerJsonObjectToPlayerList(jsonObject: JSONObject) : ArrayList<Player> {
         val players = ArrayList<Player>()
         val jsonArray = jsonObject.getJSONArray("players")
         for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            val name = jsonObject.getString("name")
-            val score = jsonObject.getLong("score")
-            val level = jsonObject.getInt("level")
+            val jObj = jsonArray.getJSONObject(i)
+            val name = jObj.getString("player_name")
+            val score = jObj.getLong("score")
+            val level = jObj.getInt("level")
             players.add(Player(name).also { it.score = score; it.level= level })
         }
+        Log.i("A ver", "playerJsonObjectToPlayerList: $players")
         players
     } catch (_:java.lang.Exception) {
-        ArrayList()
+        return ArrayList<Player>().also { it.add(Player("OLA")) }
     }
 }
 
@@ -81,7 +82,7 @@ fun levelDataToJsonObject(levelData: NextLevelData) :JSONObject {
     for(i in levelData.board){
         jsonArrayBoard.put(i)
     }
-    jsonObject.put("tables", jsonArrayBoard)
+    jsonObject.put("board", jsonArrayBoard)
     Log.i("DEBUG-AMOV", "levelDataToJsonObject: $jsonObject")
     return jsonObject
 }
