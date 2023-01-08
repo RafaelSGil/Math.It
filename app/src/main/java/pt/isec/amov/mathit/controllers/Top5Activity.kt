@@ -3,17 +3,15 @@ package pt.isec.amov.mathit.controllers
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pt.isec.amov.mathit.databinding.ActivityTop5Binding
 import pt.isec.amov.mathit.model.ModelManager
-import pt.isec.amov.mathit.model.data.Player
+import pt.isec.amov.mathit.model.data.multiplayer.Player
 
 
 class Top5Activity : AppCompatActivity() {

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.widget.ListView
 import pt.isec.amov.mathit.model.data.Data
-import pt.isec.amov.mathit.model.data.Player
+import pt.isec.amov.mathit.model.data.multiplayer.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext

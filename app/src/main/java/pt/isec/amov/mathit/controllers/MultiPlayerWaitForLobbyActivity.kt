@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import pt.isec.amov.mathit.controllers.fragments.MultiplayerGameBoardFragment
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitForLobbyBinding
 import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
@@ -65,6 +64,7 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
     private fun updatePlayersList() {
         Log.i("DEBUG-AMOV", "updatePlayersList: updating list of players in lobby")
         val players = manager?.getConnectedPlayers() ?: return
+        Log.i("Players", "" + players)
         players.sortedBy { player -> player.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,

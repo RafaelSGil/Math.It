@@ -4,24 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import pt.isec.amov.mathit.R
 import pt.isec.amov.mathit.controllers.fragments.GameBoardFragment
-import pt.isec.amov.mathit.controllers.fragments.MultiplayerGameBoardFragment
 import pt.isec.amov.mathit.databinding.ActivitySinglePlayerBinding
 import pt.isec.amov.mathit.model.DataViewModel
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.CurrentGameData
 import pt.isec.amov.mathit.model.data.levels.Levels
-import java.util.ArrayList
 
 class SinglePlayerActivity : AppCompatActivity(){
     companion object{

@@ -59,7 +59,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
     private lateinit var contextActivity: Context
     private var timer : MyCountDown? = null
-    private lateinit var tvsValues : ArrayList<String>
+
     private lateinit var viewModel : DataViewModel
 
     override fun onCreateView(
@@ -67,7 +67,6 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.i("BOTA LUME", "onCreateView: VOU COMEÇAR MEU BRO")
         binding = GameBoardBinding.inflate(layoutInflater)
 
         var i: Intent? = activity?.intent
@@ -140,10 +139,10 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
 
         viewModel.tvsValues.observe(viewLifecycleOwner){
-            val values = viewModel.tvsValues.value
+            val values = viewModel.tvsValues.value!!
 
             for ((counter, v: TextView) in tvs.withIndex()) {
-                v.text = values?.get(counter).toString()
+                v.text = values[counter]
             }
 
             calculateBestCombination()

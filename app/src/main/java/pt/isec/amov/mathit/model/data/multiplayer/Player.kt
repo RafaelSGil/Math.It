@@ -1,4 +1,4 @@
-package pt.isec.amov.mathit.model.data
+package pt.isec.amov.mathit.model.data.multiplayer
 
 class Player(name: String) {
     private var _name = name
@@ -9,8 +9,10 @@ class Player(name: String) {
     var score: Long = 0
         set(value) {
             if(value >= 0)
-                field = value
+                field += value
         }
+
+    var level : Int = 0
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
