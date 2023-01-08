@@ -37,6 +37,11 @@ class DataViewModel(private val data : CurrentGameData) : ViewModel(), java.io.S
     val boardIndex : LiveData<Int>
         get() = data.boardIndex
 
+    val currentLevel : LiveData<Int>
+        get() = data.currentLevel
+
+    fun updateCurrentLeve(level : Int) = data.updateCurrentLeve(level)
+
     fun updateBoardIndex(index : Int) = data.updateBoardIndex(index)
 
     fun assignRandomValues(tvs : ArrayList<String>) = data.assignRandomValues(tvs)

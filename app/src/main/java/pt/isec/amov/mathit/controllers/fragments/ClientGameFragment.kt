@@ -102,14 +102,6 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
 
         if(viewModel.hasBeenInitiated){
-            binding.pbTimer.max = (level.timeToComplete).toInt()
-            timer = MyCountDown((viewModel.timer.value!! * 1000).toLong(), viewModel, manager, contextActivity)
-            timer?.start()
-            binding.pbTimer.progress = viewModel.timer.value!!
-        }
-
-        manager.addPropertyChangeListener(ConnectionManager.STARTING_MULTIPLAYER){
-            viewModel.assignRandomValues(ConnectionManager.levelData?.board!!)
             level = when(ConnectionManager.levelData?.level!!){
                 1 -> Levels.LEVEL1
                 2 -> Levels.LEVEL2
@@ -121,7 +113,15 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                 8 -> Levels.LEVEL8
                 else -> Levels.LEVEL1
             }
-            "${resources.getString(R.string.level)} $level".also { binding.tvLevel.text = it }
+            binding.pbTimer.max = (level.timeToComplete).toInt()
+            timer = MyCountDown((viewModel.timer.value!! * 1000).toLong(), viewModel, manager, contextActivity)
+            timer?.start()
+            binding.pbTimer.progress = viewModel.timer.value!!
+        }
+
+        manager.addPropertyChangeListener(ConnectionManager.STARTING_MULTIPLAYER){
+            viewModel.assignRandomValues(ConnectionManager.levelData?.board!!)
+            viewModel.updateCurrentLeve(ConnectionManager.levelData?.level!!)
             "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
             binding.pbTimer.max = (level.timeToComplete).toInt()
             timer = MyCountDown(level.timeToComplete*1000, viewModel, manager, contextActivity)
@@ -150,6 +150,25 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
             for ((counter, v: TextView) in tvs.withIndex()) {
                 v.text = values[counter]
+            }
+        }
+
+        viewModel.currentLevel.observe(viewLifecycleOwner){
+            try {
+                level = when(ConnectionManager.levelData?.level!!){
+                    1 -> Levels.LEVEL1
+                    2 -> Levels.LEVEL2
+                    3 -> Levels.LEVEL3
+                    4 -> Levels.LEVEL4
+                    5 -> Levels.LEVEL5
+                    6 -> Levels.LEVEL6
+                    7 -> Levels.LEVEL7
+                    8 -> Levels.LEVEL8
+                    else -> Levels.LEVEL1
+                }
+                "${resources.getString(R.string.level)} $level".also { binding.tvLevel.text = it }
+            }catch (_:java.lang.Exception){
+                Log.i("EXCEPTION", "Client fragment level attribution")
             }
         }
 

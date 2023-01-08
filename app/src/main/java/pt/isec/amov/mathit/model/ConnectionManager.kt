@@ -151,7 +151,7 @@ object ConnectionManager {
                         val points = determineHowManyPointsWereWon(currentBoard?.tilesSelected, currentBoard?.currentBoard)
                         val nextBoard = currentBoards[currentBoard?.currentBoard!! + 1]
                         val jObj = nextBoardDataToJsonObject(NextBoardData(nextBoard, points, currentBoard.currentBoard + 1))
-                        sendToSocket(clientSocket, jObj.toString())
+                        send(clientSocket, jObj.toString())
                         PlayersData.updatePlayer(Player(currentBoard.username)
                             .also { it.level = currentBoard.level; it.score = (currentBoard.points + points).toLong()  })
                     }
@@ -210,7 +210,7 @@ object ConnectionManager {
                     }
                     continue
                 }
-                if(jsonObject.has("next_board")){
+                if(jsonObject.has("points_earned")){
                     nextBoard = jsonObjectToNextBoardData(jsonObject)
                     val handler = Handler(Looper.getMainLooper())
                     handler.post{
@@ -274,9 +274,11 @@ object ConnectionManager {
     }
 
     private fun send(socket: Socket, data: String) {
-        val writer = PrintWriter(socket.getOutputStream())
-        writer.println(data)
-        Log.i("DEBUG-AMOV", "sendToSocket: sent message to client $data")
+        thread {
+            val writer = PrintWriter(socket.getOutputStream(), true)
+            writer.println(data)
+            Log.i("DEBUG-AMOV", "sendToSocket: sent message to client $data")
+        }
     }
 
     private fun receiveFromSocket(socket: Socket): String {

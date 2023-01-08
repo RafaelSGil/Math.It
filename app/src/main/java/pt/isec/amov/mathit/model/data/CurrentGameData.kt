@@ -36,6 +36,14 @@ class CurrentGameData : java.io.Serializable {
     val boardIndex : LiveData<Int>
         get() = _boardIndex
 
+    private var _currentLevel : MutableLiveData<Int> = MutableLiveData(1)
+    val currentLevel : LiveData<Int>
+        get() = _currentLevel
+
+    fun updateCurrentLeve(level : Int){
+        _currentLevel.value = level
+    }
+
     fun updateBoardIndex(index : Int){
         _boardIndex.value = index
     }
