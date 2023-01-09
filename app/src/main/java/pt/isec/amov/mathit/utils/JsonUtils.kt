@@ -186,3 +186,11 @@ fun jsonObjectToWaitForNewLevel(jsonObject: JSONObject) : WaitForNewLevel?{
         null
     }
 }
+
+fun gameOverToJsonObject() : JSONObject{
+    val jsonObject = JSONObject().also {
+        it.put("game_over", "")
+    }
+
+    return jsonObject
+}

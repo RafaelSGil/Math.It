@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.ProgressBar
+import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.DataViewModel
 import pt.isec.amov.mathit.model.ModelManager
 
@@ -21,6 +22,9 @@ class MyCountDown(millisInFuture: Long, var viewModel : DataViewModel, var manag
 
             override fun onFinish() {
                 manager.goGameOverState(context, manager)
+                if(manager.isHost()){
+                    ConnectionManager.sendDataToAllClients(gameOverToJsonObject().toString())
+                }
             }
 
         }.start()

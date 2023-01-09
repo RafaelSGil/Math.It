@@ -17,6 +17,7 @@ class NextLevelActivity : AppCompatActivity(){
         fun getNewIntent(context : Context, manager : ModelManager) : Intent {
             val intent = Intent(context, NextLevelActivity::class.java)
             this.manager = manager
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
 

@@ -37,6 +37,7 @@ object ConnectionManager {
     const val INITIATE_FRAGMENT = "initiate_fragment"
     const val NEXT_BOARD = "next_board"
     const val WAIT_NEW_LEVEL = "wait_new_level"
+    const val HOST_GAME_OVER = ""
 
     private const val multicastHost = "230.30.30.30"
     private const val multicastPort = 4004
@@ -261,6 +262,7 @@ object ConnectionManager {
                         pcs.firePropertyChange(NEXT_BOARD, null, null)
                         Log.i("DEBUG-AMOV", "startCommunication: firing property")
                     }
+                    continue
                 }
                 if(jsonObject.has("wait_new_level")){
                     waitForNewLevel = jsonObjectToWaitForNewLevel(jsonObject)
@@ -269,6 +271,15 @@ object ConnectionManager {
                         pcs.firePropertyChange(WAIT_NEW_LEVEL, null, null)
                         Log.i("DEBUG-AMOV", "startCommunication: firing property")
                     }
+                    continue
+                }
+                if(jsonObject.has("game_over")){
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(HOST_GAME_OVER, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                    }
+                    continue
                 }
             } catch (e: java.lang.Exception) {
                 Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")

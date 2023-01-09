@@ -160,6 +160,13 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
             manager.goWaitForLobbyState(contextActivity, manager)
         }
 
+        manager.addPropertyChangeListener(ConnectionManager.HOST_GAME_OVER){
+            activity?.supportFragmentManager?.beginTransaction()?.remove(getThis())?.commit();
+            activity?.finish()
+            manager.setStartBoard(viewModel.tvsValues.value!!)
+            manager.goSinglePlayerState(contextActivity, manager, "board")
+        }
+
         viewModel.timer.observe(viewLifecycleOwner){
             binding.pbTimer.progress = viewModel.timer.value!!
         }

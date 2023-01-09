@@ -30,4 +30,5 @@
     <string name="save_to_top_5">Guardar no TOP 5</string>
     <string name="pause">Pausa</string>
     <string name="resume">Continuar</string>
+    <string name="wait_for_players">Espere port mais jogadores</string>
 </resources>

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitForLobbyBinding
 import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
@@ -54,6 +55,9 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
             manager?.goMultiPlayerState(this, manager!!, "client")
         }
         binding.btnNextLevel.setOnClickListener{
+            if(PlayersData.getPlayers().size < 2){
+                return@setOnClickListener
+            }
             manager?.goMultiPlayerState(this, manager!!, "host")
         }
     }
