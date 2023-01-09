@@ -31,4 +31,6 @@
     <string name="resume">Continuar</string>
     <string name="creditsTitle">Créditos</string>
     <string name="this_project_was_made_by">Projeto feito por:</string>
+    <string name="wait_for_players">Espere port mais jogadores</string>
+>>>>>>> main
 </resources>

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.widget.ListView
 import pt.isec.amov.mathit.model.data.Data
-import pt.isec.amov.mathit.model.data.Player
+import pt.isec.amov.mathit.model.data.multiplayer.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
@@ -35,7 +35,7 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.getPoints()
     }
 
-    fun getLevel() : Levels?{
+    fun getLevel() : Levels{
         return context.getLevel()
     }
 
@@ -92,6 +92,10 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         this.context.goSinglePlayerState(context, model)
     }
 
+    fun goSinglePlayerState(context: Context, manager: ModelManager, board : String){
+        this.context.goSinglePlayerState(context, manager, board)
+    }
+
     fun goSinglePlayerTopState(context: Context, model: ModelManager) {
         this.context.goSinglePlayerTopState(context, model)
     }
@@ -130,8 +134,8 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.changeLocalPlayerProfilePic(imagePath)
     }
 
-    fun startServer(applicationContext: Context) {
-        ConnectionManager.startServer(applicationContext, context.getLocalPlayerName()!!)
+    fun startServer(applicationContext: Context, level : Int) {
+        ConnectionManager.startServer(applicationContext, context.getLocalPlayerName()!!, level)
     }
 
     fun startServerListener(listView: ListView) {
@@ -170,11 +174,23 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         context.setSinglePlayerScore()
     }
 
+    fun sendMultiPlayerScoreToFirebase(){
+        context.setMultiPlayerScore()
+    }
+
     fun getPointsSinglePlayer() : Int{
         return context.getPointsSinglePlayer()
     }
 
     fun getPointsMultiPlayer() : Int{
         return context.getPointsMultiPlayer()
+    }
+
+    fun setStartBoard(board : ArrayList<String>){
+        context.setStartBoard(board)
+    }
+
+    fun getStartBoard() : ArrayList<String>{
+        return context.getStartBoard()
     }
 }

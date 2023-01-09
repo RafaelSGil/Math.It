@@ -3,10 +3,7 @@ package pt.isec.amov.mathit.utils
 import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
-import pt.isec.amov.mathit.model.data.multiplayer.LevelData
-import pt.isec.amov.mathit.model.data.Player
-import pt.isec.amov.mathit.model.data.Table
-import pt.isec.amov.mathit.model.data.multiplayer.ServerData
+import pt.isec.amov.mathit.model.data.multiplayer.*
 
 fun serverDataToJson(server: ServerData): JSONObject {
     val jsonObject = JSONObject().also {
@@ -30,18 +27,21 @@ fun jsonObjectToServerData(jsonObject: JSONObject): ServerData? {
 
 fun playerToJson(player: Player) : JSONObject {
     val jsonObject = JSONObject().also {
-        it.put("name", player.name)
+        it.put("player_name", player.name)
         it.put("score", player.score)
+        it.put("level", 0)
     }
     return jsonObject
 }
 
 fun jsonObjectToPlayer(jsonObject: JSONObject) : Player? {
     return try {
-        val name = jsonObject.getString("name")
+        val name = jsonObject.getString("player_name")
         val score = jsonObject.getLong("score")
+        val level = jsonObject.getInt("level")
         val player = Player(name)
         player.score = score
+        player.level = level
         player
     } catch (_:java.lang.Exception) {
         null
@@ -61,50 +61,136 @@ fun playerJsonObjectToPlayerList(jsonObject: JSONObject) : ArrayList<Player> {
         val players = ArrayList<Player>()
         val jsonArray = jsonObject.getJSONArray("players")
         for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            val name = jsonObject.getString("name")
-            val score = jsonObject.getLong("score")
-            players.add(Player(name).also { it.score = score })
+            val jObj = jsonArray.getJSONObject(i)
+            val name = jObj.getString("player_name")
+            val score = jObj.getLong("score")
+            val level = jObj.getInt("level")
+            players.add(Player(name).also { it.score = score; it.level= level })
         }
+        Log.i("A ver", "playerJsonObjectToPlayerList: $players")
         players
     } catch (_:java.lang.Exception) {
-        ArrayList()
+        return ArrayList<Player>().also { it.add(Player("OLA")) }
     }
 }
 
 
-fun levelDataToJsonObject(levelData: LevelData) :JSONObject {
+fun levelDataToJsonObject(levelData: NextLevelData) :JSONObject {
     val jsonObject = JSONObject()
     jsonObject.put("next_level", levelData.level)
-    val jsonArrayTables = JSONArray()
-    for(table in levelData.tables) {
-        val jsonArrayValues = JSONArray()
-        for(value in table.cells){
-            jsonArrayValues.put(value)
-        }
-        jsonArrayTables.put(jsonArrayValues)
+    val jsonArrayBoard = JSONArray()
+    for(i in levelData.board){
+        jsonArrayBoard.put(i)
     }
-    jsonObject.put("tables", jsonArrayTables)
+    jsonObject.put("board", jsonArrayBoard)
     Log.i("DEBUG-AMOV", "levelDataToJsonObject: $jsonObject")
     return jsonObject
 }
 
-fun levelDataJsonObjectToLevelData(jsonObject: JSONObject): LevelData? {
+fun levelDataJsonObjectToLevelData(jsonObject: JSONObject): NextLevelData? {
     return try {
         val level = jsonObject.getInt("next_level")
-        val jsonArrayTables = jsonObject.getJSONArray("tables")
-        val tables = ArrayList<Table>()
-        for (i in 0 until jsonArrayTables.length()) {
-            val jsonArrayValues = jsonArrayTables.getJSONArray(i)
-            val cells = ArrayList<String>()
-            for (j in 0 until jsonArrayValues.length()) {
-                cells.add(jsonArrayValues.getString(j))
-            }
-            tables.add(Table().also { it.cells = cells })
+        val jsonArrayBoard = jsonObject.getJSONArray("board")
+
+        val board = ArrayList<String>()
+        for(i in 0 until jsonArrayBoard.length()){
+            board.add(jsonArrayBoard.getString(i))
         }
-        return LevelData(level, tables)
+        return NextLevelData(level, board)
     } catch (_:java.lang.Exception) {
         null
     }
 }
 
+fun newMoveToJsonObject(move : NewMove) : JSONObject{
+    val jsonObject = JSONObject().also {
+        it.put("current_board", move.currentBoard)
+        it.put("username", move.username)
+        it.put("points", move.points)
+        it.put("level", move.level)
+    }
+
+    val jsonArrayTiles = JSONArray()
+    for(tile in move.tilesSelected){
+        jsonArrayTiles.put(tile)
+    }
+
+    jsonObject.put("tiles_selected", jsonArrayTiles)
+
+    return jsonObject
+}
+
+fun jsonObjectToNewMove(jsonObject: JSONObject) : NewMove?{
+    return try {
+        val currentBoard = jsonObject.getInt("current_board")
+        val username = jsonObject.getString("username")
+        val points = jsonObject.getInt("points")
+        val level = jsonObject.getInt("level")
+        val jsonArrayTiles = jsonObject.getJSONArray("tiles_selected")
+
+        val tilesSelected = ArrayList<String>()
+        for(i in 0 until jsonArrayTiles.length()){
+            tilesSelected.add(jsonArrayTiles.getString(i))
+        }
+
+        return NewMove(currentBoard, tilesSelected, username, points, level)
+    } catch (_:java.lang.Exception) {
+        null
+    }
+}
+
+fun jsonObjectToNextBoardData(jsonObject: JSONObject) : NextBoardData?{
+    return try {
+        val pointsEarned = jsonObject.getInt("points_earned")
+        val boardIndex = jsonObject.getInt("next_board_index")
+
+        val jsonArray = jsonObject.getJSONArray("next_board")
+        val board = ArrayList<String>()
+        for(i in 0 until jsonArray.length()){
+            board.add(jsonArray.getString(i))
+        }
+        return NextBoardData(board, pointsEarned, boardIndex)
+    } catch (_:java.lang.Exception){
+        null
+    }
+}
+
+fun nextBoardDataToJsonObject(nextBoardData: NextBoardData) : JSONObject{
+    val jsonObject = JSONObject().also{
+        it.put("points_earned", nextBoardData.pointsEarned)
+        it.put("next_board_index", nextBoardData.nextBoardIndex)
+    }
+
+    val jsonArray = JSONArray()
+    for(tiles in nextBoardData.newBoard){
+        jsonArray.put(tiles)
+    }
+    jsonObject.put("next_board", jsonArray)
+
+    return jsonObject
+}
+
+fun waitForNewLevelToJsonObject(wait : WaitForNewLevel) : JSONObject{
+    val jsonObject = JSONObject().also {
+        it.put("wait_new_level", "")
+        it.put("points", wait.points)
+    }
+    return jsonObject
+}
+
+fun jsonObjectToWaitForNewLevel(jsonObject: JSONObject) : WaitForNewLevel?{
+    return try {
+        val points = jsonObject.getInt("points")
+        return WaitForNewLevel(points)
+    }catch (_:java.lang.Exception){
+        null
+    }
+}
+
+fun gameOverToJsonObject() : JSONObject{
+    val jsonObject = JSONObject().also {
+        it.put("game_over", "")
+    }
+
+    return jsonObject
+}

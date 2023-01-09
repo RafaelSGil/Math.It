@@ -11,15 +11,15 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
-import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.Table
-import pt.isec.amov.mathit.model.data.multiplayer.LevelData
-import pt.isec.amov.mathit.model.data.multiplayer.ServerData
+import pt.isec.amov.mathit.model.data.levels.Levels
+import pt.isec.amov.mathit.model.data.multiplayer.*
 import pt.isec.amov.mathit.utils.*
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
 import java.io.*
 import java.net.*
+import java.util.LinkedList
 import kotlin.concurrent.thread
 
 
@@ -34,6 +34,11 @@ import kotlin.concurrent.thread
 object ConnectionManager {
     const val PLAYERS_PROP = "players"
     const val STARTING_MULTIPLAYER = "starting_multiplayer"
+    const val INITIATE_FRAGMENT = "initiate_fragment"
+    const val NEXT_BOARD = "next_board"
+    const val WAIT_NEW_LEVEL = "wait_new_level"
+    const val HOST_GAME_OVER = ""
+
     private const val multicastHost = "230.30.30.30"
     private const val multicastPort = 4004
     private lateinit var multicastSocket: MulticastSocket
@@ -45,13 +50,20 @@ object ConnectionManager {
     private var isHost = false
     private var localServerData: ServerData? = null
     private var serverList: ArrayList<ServerData> = ArrayList()
-    private var playersList: ArrayList<Player> = ArrayList()
     private var connectedClients: ArrayList<Socket> = ArrayList()
     private lateinit var localPlayer: Player
     private lateinit var profilePicPath: String
-    private var tableList: ArrayList<Table> = ArrayList()
-    private var levelOfPlayer: HashMap<String, Int> = HashMap()
 
+    private var currentBoards : LinkedList<ArrayList<String>> = LinkedList(ArrayList())
+    private var bestCombinations : LinkedList<ArrayList<String>> = LinkedList(ArrayList())
+    private var secondBestCombinations : LinkedList<ArrayList<String>> = LinkedList(ArrayList())
+
+    var nextBoard : NextBoardData? = null
+
+    var levelData: NextLevelData? = null
+    lateinit var level: Levels
+
+    var waitForNewLevel : WaitForNewLevel? = null
 
     private fun startMulticastSocket() {
         val group = InetAddress.getByName(multicastHost)
@@ -62,7 +74,7 @@ object ConnectionManager {
     }
 
     private var strIPAddress: String = ""
-    fun startServer(context: Context, name: String) {
+    fun startServer(context: Context, name: String, level: Int) {
 
         val connectivityManager = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -95,8 +107,23 @@ object ConnectionManager {
             strIPAddress, serverSocket.localPort,
         name)
         isHost = true
+        ConnectionManager.level = when(level){
+            1 -> Levels.LEVEL1
+            2 -> Levels.LEVEL2
+            3 -> Levels.LEVEL3
+            4 -> Levels.LEVEL4
+            5 -> Levels.LEVEL5
+            6 -> Levels.LEVEL6
+            7 -> Levels.LEVEL7
+            8 -> Levels.LEVEL8
+            else -> Levels.LEVEL1
+        }
         startServerSender()
         startServerCommunication()
+    }
+
+    fun updateLevel(level : Levels){
+        this.level = level
     }
 
     private fun startServerCommunication() {
@@ -114,6 +141,7 @@ object ConnectionManager {
         }
     }
 
+    //Server handler for clients
     private fun startClientRequestHandler(clientSocket: Socket?) {
         thread {
             while (clientSocket?.isClosed == false) {
@@ -121,31 +149,171 @@ object ConnectionManager {
                 Log.i("DEBUG-AMOV", "startClientRequestHandler: received request from client $receivedMessage")
                 try {
                     val jsonObject = JSONObject(receivedMessage)
-                    if (jsonObject.has("name")) {
+                    if (jsonObject.has("player_name")) {
                         //received player info
                         val player = jsonObjectToPlayer(jsonObject)
                         //receiveImage(player!!.name, clientSocket)
-                        if (!playersList.contains(player)) {
-                            player?.let { playersList.add(player) }
+                        if (!PlayersData.contains(player!!)) {
+                            PlayersData.addPlayer(player)
                             val handler = Handler(Looper.getMainLooper())
                             handler.post{
                                 pcs.firePropertyChange(PLAYERS_PROP, null, null)
                             }
                         }
-                        sendDataToAllClients(playerListToJsonObject(playersList).toString())
-                    } else if(jsonObject.has("level_finished")) {
-                        //save player info (points, etc)
+                        sendDataToAllClients(playerListToJsonObject(PlayersData.getPlayers()).toString())
+                    } else if(jsonObject.has("current_board")) {
+                        //when a player completes a board the server receives
+                        //the number of the current board
+                        //the tiles selected
+                        //the name of the player
+                        //the points the player currently has
+                        //the level the player is currently in
+
+                        val currentBoard = jsonObjectToNewMove(jsonObject)
+                        val points = determineHowManyPointsWereWon(currentBoard?.tilesSelected, currentBoard?.currentBoard)
+
+                        if(currentBoard?.points!! + points >= level.pointsToNextLevel){
+                            val waitForNextLevel = waitForNewLevelToJsonObject(WaitForNewLevel(points))
+                            send(clientSocket, waitForNextLevel.toString())
+                            send(clientSocket , playerListToJsonObject(PlayersData.getPlayers()).toString())
+                        }else{
+                            val nextBoard = currentBoards[currentBoard.currentBoard + 1]
+                            val jObj = nextBoardDataToJsonObject(NextBoardData(nextBoard, points, currentBoard.currentBoard + 1))
+                            send(clientSocket, jObj.toString())
+                        }
+
+                        PlayersData.updatePlayer(Player(currentBoard.username)
+                            .also { it.level = currentBoard.level; it.score = (currentBoard.points + points).toLong(); it.isWaiting = false })
+
+                        val handler = Handler(Looper.getMainLooper())
+                        handler.post{
+                            pcs.firePropertyChange(PLAYERS_PROP, null, null)
+                        }
                     }
                 } catch (e:java.lang.Exception) {
                     Log.i("DEBUG-AMOV", "startClientRequestHandler: Something went wrong $e")
                 }
-                //val message = "Hello there little client"
-                //sendToSocket(clientSocket, message)
             }
         }
     }
 
-    fun sendLevelDataToPlayers(levelData: LevelData){
+    //Client handler to receive server messages
+    private fun startCommunication() {
+        //receives data from the server
+        Log.i("DEBUG-AMOV", "startCommunication: connected to a server")
+        val jsonObjectOfPlayer = playerToJson(localPlayer)
+        Thread.sleep(500)
+        sendToSocket(socketClient!!, jsonObjectOfPlayer.toString())
+        //sendImage(profilePicPath, socket!!)
+
+        while(keepConnected && socketClient != null && socketClient?.isClosed == false) {
+            Log.i("DEBUG-AMOV", "startCommunication: waiting for server message")
+            val receivedObject = receiveFromSocket(socketClient!!)
+            Log.i("DEBUG-AMOV", "startCommunication: Received message from server: $receivedObject")
+            try {
+                if(receivedObject == "start_game"){
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(INITIATE_FRAGMENT, null, null)
+                    }
+
+                    continue
+                }
+
+                val jsonObject = JSONObject(receivedObject)
+                if (jsonObject.has("players")) {
+                    //received list of players
+                    val listPlayers = playerJsonObjectToPlayerList(jsonObject)
+                    PlayersData.clear()
+                    for (p in listPlayers){
+                        PlayersData.addPlayer(p)
+                    }
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(PLAYERS_PROP, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                    }
+                    continue
+                }
+                if(jsonObject.has("next_level")) {
+                    levelData = levelDataJsonObjectToLevelData(jsonObject)!!
+                    level = when(levelData?.level!!){
+                        1 -> Levels.LEVEL1
+                        2 -> Levels.LEVEL2
+                        3 -> Levels.LEVEL3
+                        4 -> Levels.LEVEL4
+                        5 -> Levels.LEVEL5
+                        6 -> Levels.LEVEL6
+                        7 -> Levels.LEVEL7
+                        8 -> Levels.LEVEL8
+                        else -> Levels.LEVEL1
+                    }
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(STARTING_MULTIPLAYER, null, null)
+                        Log.i("STARTING_MULTIPLAYER", "startCommunication: firing property")
+                    }
+                    continue
+                }
+                if(jsonObject.has("points_earned")){
+                    nextBoard = jsonObjectToNextBoardData(jsonObject)
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(NEXT_BOARD, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                    }
+                    continue
+                }
+                if(jsonObject.has("wait_new_level")){
+                    waitForNewLevel = jsonObjectToWaitForNewLevel(jsonObject)
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(WAIT_NEW_LEVEL, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                    }
+                    continue
+                }
+                if(jsonObject.has("game_over")){
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(HOST_GAME_OVER, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                    }
+                    continue
+                }
+            } catch (e: java.lang.Exception) {
+                Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")
+                keepConnected = false
+            }
+        }
+    }
+
+    private fun determineHowManyPointsWereWon(tilesSelected: ArrayList<String>?, currentBoard : Int?) : Int{
+        var tiles : String = ""
+        for (i in tilesSelected!!){
+            tiles += i
+        }
+
+        if (bestCombinations[currentBoard!!].containsAll(listOf(tiles))){
+            Log.i("PointsWereWon 1", "" + bestCombinations[currentBoard])
+            return 2
+        }
+        if (secondBestCombinations[currentBoard].containsAll(listOf(tiles))){
+            Log.i("PointsWereWon 2", "" + secondBestCombinations[currentBoard])
+            return 1
+        }
+
+        Log.i("PointsWereWon 3", "" + secondBestCombinations[currentBoard])
+        return -1
+    }
+
+    fun askForNextBoard(currentBoard: Int, tilesSelected: ArrayList<String>, username : String,
+                        points : Int, level : Int){
+        val jsonObject = newMoveToJsonObject(NewMove(currentBoard, tilesSelected, username, points, level))
+        send(socketClient!!, jsonObject.toString())
+    }
+
+    fun sendLevelDataToPlayers(levelData: NextLevelData){
         this.levelData = levelData
         val jsonObject = levelDataToJsonObject(levelData)
         sendDataToAllClients(jsonObject.toString())
@@ -177,6 +345,14 @@ object ConnectionManager {
         Log.i("DEBUG-AMOV", "sendToSocket: sent message to client $data")
     }
 
+    private fun send(socket: Socket, data: String) {
+        thread {
+            val writer = PrintWriter(socket.getOutputStream(), true)
+            writer.println(data)
+            Log.i("DEBUG-AMOV", "sendToSocket: sent message to client $data")
+        }
+    }
+
     private fun receiveFromSocket(socket: Socket): String {
         return try {
             val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
@@ -188,11 +364,11 @@ object ConnectionManager {
         }
     }
 
-    private fun sendDataToAllClients(data: String) {
+    fun sendDataToAllClients(data: String) {
         thread {
             for(clientSocket in connectedClients) {
                 sendToSocket(clientSocket, data)
-                Log.i("DEBUG-AMOV", "sendDataToAllClients: Sending Data to all clients: $data")
+                Log.i("SENDING TO ALL CLIENTS", "sendDataToAllClients: Sending Data to all clients: $data")
             }
         }
     }
@@ -200,8 +376,8 @@ object ConnectionManager {
     private  fun startServerSender() {
         Log.i("DEBUG-AMOV", "startServerSender:  started")
         keepSending = true
-        if(!playersList.contains(localPlayer))
-            playersList.add(localPlayer)
+        if(!PlayersData.contains(localPlayer))
+            PlayersData.addPlayer(localPlayer)
         thread {
             while (keepSending) {
                 if (multicastSocket.isClosed) {
@@ -294,7 +470,7 @@ object ConnectionManager {
         serverList.clear()
     }
 
-    private var socket: Socket? = null
+    private var socketClient: Socket? = null
 
     fun startClient(index: Int) : Boolean {
         isHost = false
@@ -306,7 +482,7 @@ object ConnectionManager {
             }
             val serverData = serverList[index]
             try {
-                socket = Socket(InetAddress.getByName(serverData.host), serverData.port)
+                socketClient = Socket(InetAddress.getByName(serverData.host), serverData.port)
                 thread {
                     keepConnected = true
                     startCommunication()
@@ -319,46 +495,7 @@ object ConnectionManager {
     }
 
     fun resetPlayers() {
-        playersList.clear()
-    }
-
-    var levelData: LevelData? = null
-
-    private fun startCommunication() {
-        //receives data from the server
-        Log.i("DEBUG-AMOV", "startCommunication: connected to a server")
-        val jsonObjectOfPlayer = playerToJson(localPlayer)
-        Thread.sleep(500)
-        sendToSocket(socket!!, jsonObjectOfPlayer.toString())
-        //sendImage(profilePicPath, socket!!)
-
-        while(keepConnected && socket != null && socket?.isClosed == false) {
-            Log.i("DEBUG-AMOV", "startCommunication: waiting for server message")
-            val receivedObject = receiveFromSocket(socket!!)
-            Log.i("DEBUG-AMOV", "startCommunication: Received message from server: $receivedObject")
-            try {
-                val jsonObject = JSONObject(receivedObject)
-                if (jsonObject.has("players")) {
-                    //received list of players
-                    playersList = playerJsonObjectToPlayerList(jsonObject)
-                    val handler = Handler(Looper.getMainLooper())
-                    handler.post{
-                        pcs.firePropertyChange(PLAYERS_PROP, null, null)
-                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
-                    }
-                } else if(jsonObject.has("next_level")) {
-                    levelData = levelDataJsonObjectToLevelData(jsonObject)!!
-                    val handler = Handler(Looper.getMainLooper())
-                    handler.post{
-                        pcs.firePropertyChange(STARTING_MULTIPLAYER, null, null)
-                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
-                    }
-                }
-            } catch (e: java.lang.Exception) {
-                Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")
-                keepConnected = false
-            }
-        }
+        PlayersData.clear()
     }
 
     private fun sendImage(imagePath: String?, socket: Socket) {
@@ -379,7 +516,7 @@ object ConnectionManager {
         return isHost
     }
 
-    private var pcs: PropertyChangeSupport = PropertyChangeSupport(this)
+    var pcs: PropertyChangeSupport = PropertyChangeSupport(this)
     fun addPropertyChangeListener(
         property: String?,
         listener: PropertyChangeListener?
@@ -388,11 +525,28 @@ object ConnectionManager {
     }
 
     fun getConnectedPlayers(): List<Player> {
-        return playersList
+        return PlayersData.getPlayers()
     }
 
     fun sendNextLevel(player: Player) {
         val message = playerToJson(player)
-        thread { sendToSocket(socket!!, message.toString()) }
+        thread { sendToSocket(socketClient!!, message.toString()) }
+    }
+
+    fun setAllBoards(boards : LinkedList<ArrayList<String>>){
+        currentBoards.clear()
+        currentBoards = boards
+    }
+
+    fun setBestCombinations(combinations : LinkedList<ArrayList<String>>){
+        Log.i("setBestCombinations", "" + combinations)
+        bestCombinations.clear()
+        bestCombinations = combinations
+    }
+
+    fun setSecondBestCombinations(combinations : LinkedList<ArrayList<String>>){
+        Log.i("set2ndBestCombinations", "" + combinations)
+        secondBestCombinations.clear()
+        secondBestCombinations = combinations
     }
 }

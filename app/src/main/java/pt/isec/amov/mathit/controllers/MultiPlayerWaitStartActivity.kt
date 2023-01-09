@@ -15,6 +15,7 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
         fun getNewIntent(context : Context, manager : ModelManager) : Intent {
             val intent = Intent(context, MultiPlayerWaitStartActivity::class.java)
             this.manager = manager
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
     }
@@ -47,7 +48,7 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
     }
 
     private fun createMultiplayerGame() {
-        manager?.startServer(applicationContext)
+        manager?.startServer(applicationContext, manager?.getLevel()?.toString()!!.toInt())
         manager?.goWaitForLobbyState(this, manager!!)
     }
 

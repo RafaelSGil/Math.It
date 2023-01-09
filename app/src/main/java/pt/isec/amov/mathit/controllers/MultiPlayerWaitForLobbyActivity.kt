@@ -8,10 +8,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import pt.isec.amov.mathit.controllers.fragments.MultiplayerGameBoardFragment
+import android.widget.Toast
 import pt.isec.amov.mathit.databinding.ActivityMultiplayerWaitForLobbyBinding
 import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.ModelManager
+import pt.isec.amov.mathit.model.data.multiplayer.PlayersData
 
 class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
     companion object{
@@ -20,6 +21,7 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         fun getNewIntent(context : Context, manager : ModelManager) : Intent {
             val intent = Intent(context, MultiPlayerWaitForLobbyActivity::class.java)
             this.manager = manager
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
     }
@@ -30,7 +32,6 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiplayerWaitForLobbyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ConnectionManager.resetPlayers()
         registerHandlers()
     }
 
@@ -50,21 +51,20 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         manager?.addPropertyChangeListener(ConnectionManager.PLAYERS_PROP) {
             updatePlayersList()
         }
-        manager?.addPropertyChangeListener(ConnectionManager.STARTING_MULTIPLAYER) {
-            startMultiplayer()
+        manager?.addPropertyChangeListener(ConnectionManager.INITIATE_FRAGMENT) {
+            manager?.goMultiPlayerState(this, manager!!, "client")
         }
         binding.btnNextLevel.setOnClickListener{
+            if(PlayersData.getPlayers().size < 2){
+                return@setOnClickListener
+            }
             manager?.goMultiPlayerState(this, manager!!, "host")
         }
     }
 
-    private fun startMultiplayer() {
-        manager?.goMultiPlayerState(this, manager!!, "client")
-    }
-
     private fun updatePlayersList() {
-        Log.i("DEBUG-AMOV", "updatePlayersList: updating list of players in lobby")
-        val players = manager?.getConnectedPlayers() ?: return
+        val players = PlayersData.getPlayers()
+        Log.i("Update Players", "" + players)
         players.sortedBy { player -> player.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,

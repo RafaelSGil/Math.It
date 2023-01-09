@@ -19,6 +19,7 @@ class GameOverActivity : AppCompatActivity() {
             val intent = Intent(context, GameOverActivity::class.java)
             this.manager = manager
             this.isSinglePlayer = isSinglePlayer
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
     }
@@ -52,6 +53,9 @@ class GameOverActivity : AppCompatActivity() {
                 manager.goStartState(this, manager)
                 return@setOnClickListener
             }
+
+            manager.sendMultiPlayerScoreToFirebase()
+            manager.goStartState(this, manager)
         }
     }
 }

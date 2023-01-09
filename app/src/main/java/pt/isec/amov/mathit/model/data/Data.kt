@@ -3,6 +3,7 @@ package pt.isec.amov.mathit.model.data
 import pt.isec.amov.mathit.model.data.levels.Levels
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -68,6 +69,8 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
         level = Levels.LEVEL1
     }
 
+    lateinit var boardStart : ArrayList<String>
+
     private fun savePlayerName(username: String) {
         editor?.putString(sharedPUsername, username)
         editor?.commit()
@@ -105,10 +108,12 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
     private var level: Levels = Levels.LEVEL1
 
     fun getLevel(): Levels {
-        if(singleplayerScore > level.pointsToNextLevel && level != Levels.LEVEL8){
+        if((singleplayerScore >= level.pointsToNextLevel || multiplayerScore >= level.pointsToNextLevel) && level != Levels.LEVEL8){
             level = level.getNextLevel(level)
         }
         return level
     }
+
+
 }
 

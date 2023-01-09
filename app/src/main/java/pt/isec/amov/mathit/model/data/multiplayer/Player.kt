@@ -1,4 +1,4 @@
-package pt.isec.amov.mathit.model.data
+package pt.isec.amov.mathit.model.data.multiplayer
 
 class Player(name: String) {
     private var _name = name
@@ -11,6 +11,9 @@ class Player(name: String) {
             if(value >= 0)
                 field = value
         }
+
+    var level : Int = 0
+    var isWaiting = false
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

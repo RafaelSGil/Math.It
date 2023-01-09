@@ -78,6 +78,14 @@ abstract class StateAdapter(
         return
     }
 
+    override fun goSinglePlayerState(
+        context: Context,
+        manager: ModelManager,
+        board: String
+    ) {
+        return
+    }
+
     override fun goSinglePlayerTopState(context : Context, manager: ModelManager) {
         return
     }
