@@ -9,10 +9,11 @@ class Player(name: String) {
     var score: Long = 0
         set(value) {
             if(value >= 0)
-                field += value
+                field = value
         }
 
     var level : Int = 0
+    var isWaiting = false
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

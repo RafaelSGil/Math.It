@@ -47,7 +47,7 @@ class MultiPlayerWaitStartActivity : AppCompatActivity() {
     }
 
     private fun createMultiplayerGame() {
-        manager?.startServer(applicationContext)
+        manager?.startServer(applicationContext, manager?.getLevel()?.toString()!!.toInt())
         manager?.goWaitForLobbyState(this, manager!!)
     }
 

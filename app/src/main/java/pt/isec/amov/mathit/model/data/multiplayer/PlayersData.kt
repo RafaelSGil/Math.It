@@ -1,5 +1,7 @@
 package pt.isec.amov.mathit.model.data.multiplayer
 
+import android.util.Log
+
 object PlayersData {
     private var players : ArrayList<Player> = ArrayList()
 
@@ -12,6 +14,7 @@ object PlayersData {
             val p = players[players.indexOf(player)]
             p.level = player.level
             p.score = player.score
+            p.isWaiting = player.isWaiting
         }
     }
 

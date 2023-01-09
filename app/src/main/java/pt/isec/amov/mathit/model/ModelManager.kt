@@ -35,7 +35,7 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.getPoints()
     }
 
-    fun getLevel() : Levels?{
+    fun getLevel() : Levels{
         return context.getLevel()
     }
 
@@ -92,6 +92,10 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         this.context.goSinglePlayerState(context, model)
     }
 
+    fun goSinglePlayerState(context: Context, manager: ModelManager, board : String){
+        this.context.goSinglePlayerState(context, manager, board)
+    }
+
     fun goSinglePlayerTopState(context: Context, model: ModelManager) {
         this.context.goSinglePlayerTopState(context, model)
     }
@@ -130,8 +134,8 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.changeLocalPlayerProfilePic(imagePath)
     }
 
-    fun startServer(applicationContext: Context) {
-        ConnectionManager.startServer(applicationContext, context.getLocalPlayerName()!!)
+    fun startServer(applicationContext: Context, level : Int) {
+        ConnectionManager.startServer(applicationContext, context.getLocalPlayerName()!!, level)
     }
 
     fun startServerListener(listView: ListView) {
@@ -176,5 +180,13 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
 
     fun getPointsMultiPlayer() : Int{
         return context.getPointsMultiPlayer()
+    }
+
+    fun setStartBoard(board : ArrayList<String>){
+        context.setStartBoard(board)
+    }
+
+    fun getStartBoard() : ArrayList<String>{
+        return context.getStartBoard()
     }
 }

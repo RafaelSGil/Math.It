@@ -35,7 +35,6 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
 
     var multiplayerScore: Int = 0
         set(value){
-            Log.i("ADD", "POINTS: " + value)
             if(value == 0){
                 field = 0
                 return
@@ -69,6 +68,8 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
         multiplayerScore = 0
         level = Levels.LEVEL1
     }
+
+    lateinit var boardStart : ArrayList<String>
 
     private fun savePlayerName(username: String) {
         editor?.putString(sharedPUsername, username)
@@ -107,10 +108,12 @@ class Data(sharedPreferences: SharedPreferences?) : java.io.Serializable{
     private var level: Levels = Levels.LEVEL1
 
     fun getLevel(): Levels {
-        if(singleplayerScore >= level.pointsToNextLevel && level != Levels.LEVEL8){
+        if((singleplayerScore >= level.pointsToNextLevel || multiplayerScore >= level.pointsToNextLevel) && level != Levels.LEVEL8){
             level = level.getNextLevel(level)
         }
         return level
     }
+
+
 }
 

@@ -14,11 +14,11 @@ class CurrentGameData : java.io.Serializable {
 
     private var _bestCombinations : MutableLiveData<LinkedList<ArrayList<String>>> = MutableLiveData(LinkedList(ArrayList()))
     val bestCombinations : LiveData<LinkedList<ArrayList<String>>>
-        get() = _currentLevelBoards
+        get() = _bestCombinations
 
     private var _secondBestCombinations : MutableLiveData<LinkedList<ArrayList<String>>> = MutableLiveData(LinkedList(ArrayList()))
     val secondBestCombinations : LiveData<LinkedList<ArrayList<String>>>
-        get() = _currentLevelBoards
+        get() = _secondBestCombinations
 
     private var _timer : MutableLiveData<Int> = MutableLiveData(0)
     val timer : LiveData<Int>
@@ -39,6 +39,14 @@ class CurrentGameData : java.io.Serializable {
     private var _currentLevel : MutableLiveData<Int> = MutableLiveData(1)
     val currentLevel : LiveData<Int>
         get() = _currentLevel
+
+    private var _multiplayerMode : MutableLiveData<String> = MutableLiveData("")
+    val multiplayerMode : LiveData<String>
+        get() = _multiplayerMode
+
+    fun setMode(str : String){
+        _multiplayerMode.value = str
+    }
 
     fun updateCurrentLeve(level : Int){
         _currentLevel.value = level

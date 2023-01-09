@@ -17,6 +17,8 @@ import pt.isec.amov.mathit.model.ConnectionManager
 import pt.isec.amov.mathit.model.DataViewModel
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.levels.Levels
+import pt.isec.amov.mathit.model.data.multiplayer.Player
+import pt.isec.amov.mathit.model.data.multiplayer.PlayersData
 import pt.isec.amov.mathit.utils.MyCountDown
 import kotlin.concurrent.thread
 import kotlin.math.abs
@@ -26,8 +28,6 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     private lateinit var binding : GameBoardBinding
     private var tvs : ArrayList<TextView> = ArrayList()
     private var operationSigns : ArrayList<String> = ArrayList()
-    private var bestCombination : ArrayList<TextView> = ArrayList()
-    private var secondBestCombination : ArrayList<TextView> = ArrayList()
     private var idsSelected : ArrayList<TextView> = ArrayList()
     private var valuesSelected : ArrayList<String> = ArrayList()
 
@@ -35,12 +35,8 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
     private val swipeVelocity = 100
     private lateinit var gestureDetector: GestureDetector
 
-    private var NUM_OF_BOARDS_GENERATED = 50
-
     private lateinit var manager: ModelManager
     private lateinit var level : Levels
-
-    private var goNextLevel : Boolean = false
 
     private lateinit var contextActivity: Context
     private var timer : MyCountDown? = null
@@ -122,7 +118,6 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         manager.addPropertyChangeListener(ConnectionManager.STARTING_MULTIPLAYER){
             viewModel.assignRandomValues(ConnectionManager.levelData?.board!!)
             viewModel.updateCurrentLeve(ConnectionManager.levelData?.level!!)
-            "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
             binding.pbTimer.max = (level.timeToComplete).toInt()
             timer = MyCountDown(level.timeToComplete*1000, viewModel, manager, contextActivity)
             timer?.start()
@@ -133,8 +128,36 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         manager.addPropertyChangeListener(ConnectionManager.NEXT_BOARD){
             viewModel.assignRandomValues(ConnectionManager.nextBoard?.newBoard!!)
             viewModel.updateBoardIndex(ConnectionManager.nextBoard?.nextBoardIndex!!)
-            manager.addPoints(ConnectionManager.nextBoard?.pointsEarned!!)
-            "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
+
+            when(ConnectionManager.nextBoard?.pointsEarned!!){
+                2 -> {
+                    manager.addPoints(2)
+                    timer?.addTime(level.timeToIncrement.toLong())
+                }
+                1 -> {
+                    manager.addPoints(1)
+                    timer?.addTime(level.timeToIncrement.toLong())
+                }
+                else -> {
+                    timer?.decreaseTime(level.timeToDecrement.toLong())
+                }
+            }
+
+            checkIfFragmentAttached {
+                "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
+            }
+        }
+
+        manager.addPropertyChangeListener(ConnectionManager.WAIT_NEW_LEVEL){
+            manager.addPoints(ConnectionManager.waitForNewLevel?.points!!)
+            PlayersData.updatePlayer(Player(manager.getLocalPlayerName()!!).also {
+                it.score = manager.getPoints().toLong()
+                it.level = manager.getLevel().toString().toInt()
+            })
+            activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit();
+            activity?.finish()
+            activity?.supportFragmentManager?.popBackStack()
+            manager.goWaitForLobbyState(contextActivity, manager)
         }
 
         viewModel.timer.observe(viewLifecycleOwner){
@@ -171,6 +194,8 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
                 Log.i("EXCEPTION", "Client fragment level attribution")
             }
         }
+
+        "${resources.getString(R.string.points)} ${manager.getPoints()}".also { binding.tvPoints.text = it }
 
         return binding.root
     }
@@ -248,9 +273,16 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
 
             if (idsSelected.size >= 5 && valuesSelected.size >= 5){
-                ConnectionManager.askForNextBoard(viewModel.boardIndex.value!!, valuesSelected,
-                                                    manager.getLocalPlayerName()!!, manager.getPoints(),
-                                                    level.toString().toInt())
+                try {
+                    ConnectionManager.askForNextBoard(viewModel.boardIndex.value!!, valuesSelected,
+                        manager.getLocalPlayerName()!!, manager.getPoints(),
+                        level.toString().toInt())
+                }catch (_:java.lang.Exception){
+                    activity?.supportFragmentManager?.beginTransaction()?.remove(getThis())?.commit();
+                    activity?.finish()
+                    manager.setStartBoard(viewModel.tvsValues.value!!)
+                    manager.goSinglePlayerState(contextActivity, manager, "board")
+                }
             }
 
 
@@ -262,7 +294,17 @@ class ClientGameFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
     }
 
+    private fun getThis() : ClientGameFragment{
+        return this
+    }
+
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
         return gestureDetector.onTouchEvent(p1!!)
+    }
+
+    private fun checkIfFragmentAttached(operation: Context.() -> Unit) {
+        if (isAdded && context != null) {
+            operation(requireContext())
+        }
     }
 }

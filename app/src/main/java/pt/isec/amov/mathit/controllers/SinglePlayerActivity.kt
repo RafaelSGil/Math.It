@@ -20,11 +20,22 @@ class SinglePlayerActivity : AppCompatActivity(){
     companion object{
         private var manager : ModelManager? = null
         private lateinit var level : Levels
+        private var board: String? = null
 
         fun getNewIntent(context : Context, manager : ModelManager, level : Levels) : Intent {
             val intent = Intent(context, SinglePlayerActivity::class.java)
             this.manager = manager
             this.level = level
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+            return intent
+        }
+
+        fun getNewIntent(context : Context, manager : ModelManager, board : String) : Intent {
+            val intent = Intent(context, SinglePlayerActivity::class.java)
+            this.manager = manager
+            this.board = board
+            this.level = manager.getLevel()
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
     }
@@ -43,13 +54,25 @@ class SinglePlayerActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         if(savedInstanceState == null){
-            intent.putExtra("data", manager)
-            intent.putExtra("level", level)
-            intent.putExtra("viewModel", viewModel)
+            if(board == null){
+                intent.putExtra("data", manager)
+                intent.putExtra("level", level)
+                intent.putExtra("viewModel", viewModel)
 
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                add<GameBoardFragment>(R.id.fragment_container_view)
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    add<GameBoardFragment>(R.id.fragment_container_view)
+                }
+            }else{
+                intent.putExtra("data", manager)
+                intent.putExtra("board", board)
+                intent.putExtra("level", level)
+                intent.putExtra("viewModel", viewModel)
+
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    add<GameBoardFragment>(R.id.fragment_container_view)
+                }
             }
         }
     }

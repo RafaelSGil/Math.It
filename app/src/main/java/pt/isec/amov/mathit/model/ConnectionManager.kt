@@ -12,6 +12,7 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import pt.isec.amov.mathit.model.data.Table
+import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.data.multiplayer.*
 import pt.isec.amov.mathit.utils.*
 import java.beans.PropertyChangeListener
@@ -35,6 +36,8 @@ object ConnectionManager {
     const val STARTING_MULTIPLAYER = "starting_multiplayer"
     const val INITIATE_FRAGMENT = "initiate_fragment"
     const val NEXT_BOARD = "next_board"
+    const val WAIT_NEW_LEVEL = "wait_new_level"
+
     private const val multicastHost = "230.30.30.30"
     private const val multicastPort = 4004
     private lateinit var multicastSocket: MulticastSocket
@@ -49,14 +52,17 @@ object ConnectionManager {
     private var connectedClients: ArrayList<Socket> = ArrayList()
     private lateinit var localPlayer: Player
     private lateinit var profilePicPath: String
-    private var tableList: ArrayList<Table> = ArrayList()
-    private var levelOfPlayer: HashMap<String, Int> = HashMap()
 
     private var currentBoards : LinkedList<ArrayList<String>> = LinkedList(ArrayList())
     private var bestCombinations : LinkedList<ArrayList<String>> = LinkedList(ArrayList())
     private var secondBestCombinations : LinkedList<ArrayList<String>> = LinkedList(ArrayList())
 
     var nextBoard : NextBoardData? = null
+
+    var levelData: NextLevelData? = null
+    lateinit var level: Levels
+
+    var waitForNewLevel : WaitForNewLevel? = null
 
     private fun startMulticastSocket() {
         val group = InetAddress.getByName(multicastHost)
@@ -67,7 +73,7 @@ object ConnectionManager {
     }
 
     private var strIPAddress: String = ""
-    fun startServer(context: Context, name: String) {
+    fun startServer(context: Context, name: String, level: Int) {
 
         val connectivityManager = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -100,8 +106,23 @@ object ConnectionManager {
             strIPAddress, serverSocket.localPort,
         name)
         isHost = true
+        ConnectionManager.level = when(level){
+            1 -> Levels.LEVEL1
+            2 -> Levels.LEVEL2
+            3 -> Levels.LEVEL3
+            4 -> Levels.LEVEL4
+            5 -> Levels.LEVEL5
+            6 -> Levels.LEVEL6
+            7 -> Levels.LEVEL7
+            8 -> Levels.LEVEL8
+            else -> Levels.LEVEL1
+        }
         startServerSender()
         startServerCommunication()
+    }
+
+    fun updateLevel(level : Levels){
+        this.level = level
     }
 
     private fun startServerCommunication() {
@@ -149,17 +170,28 @@ object ConnectionManager {
 
                         val currentBoard = jsonObjectToNewMove(jsonObject)
                         val points = determineHowManyPointsWereWon(currentBoard?.tilesSelected, currentBoard?.currentBoard)
-                        val nextBoard = currentBoards[currentBoard?.currentBoard!! + 1]
-                        val jObj = nextBoardDataToJsonObject(NextBoardData(nextBoard, points, currentBoard.currentBoard + 1))
-                        send(clientSocket, jObj.toString())
+
+                        if(currentBoard?.points!! + points >= level.pointsToNextLevel){
+                            val waitForNextLevel = waitForNewLevelToJsonObject(WaitForNewLevel(points))
+                            send(clientSocket, waitForNextLevel.toString())
+                            send(clientSocket , playerListToJsonObject(PlayersData.getPlayers()).toString())
+                        }else{
+                            val nextBoard = currentBoards[currentBoard.currentBoard + 1]
+                            val jObj = nextBoardDataToJsonObject(NextBoardData(nextBoard, points, currentBoard.currentBoard + 1))
+                            send(clientSocket, jObj.toString())
+                        }
+
                         PlayersData.updatePlayer(Player(currentBoard.username)
-                            .also { it.level = currentBoard.level; it.score = (currentBoard.points + points).toLong()  })
+                            .also { it.level = currentBoard.level; it.score = (currentBoard.points + points).toLong(); it.isWaiting = false })
+
+                        val handler = Handler(Looper.getMainLooper())
+                        handler.post{
+                            pcs.firePropertyChange(PLAYERS_PROP, null, null)
+                        }
                     }
                 } catch (e:java.lang.Exception) {
                     Log.i("DEBUG-AMOV", "startClientRequestHandler: Something went wrong $e")
                 }
-                //val message = "Hello there little client"
-                //sendToSocket(clientSocket, message)
             }
         }
     }
@@ -191,6 +223,7 @@ object ConnectionManager {
                 if (jsonObject.has("players")) {
                     //received list of players
                     val listPlayers = playerJsonObjectToPlayerList(jsonObject)
+                    PlayersData.clear()
                     for (p in listPlayers){
                         PlayersData.addPlayer(p)
                     }
@@ -203,6 +236,17 @@ object ConnectionManager {
                 }
                 if(jsonObject.has("next_level")) {
                     levelData = levelDataJsonObjectToLevelData(jsonObject)!!
+                    level = when(levelData?.level!!){
+                        1 -> Levels.LEVEL1
+                        2 -> Levels.LEVEL2
+                        3 -> Levels.LEVEL3
+                        4 -> Levels.LEVEL4
+                        5 -> Levels.LEVEL5
+                        6 -> Levels.LEVEL6
+                        7 -> Levels.LEVEL7
+                        8 -> Levels.LEVEL8
+                        else -> Levels.LEVEL1
+                    }
                     val handler = Handler(Looper.getMainLooper())
                     handler.post{
                         pcs.firePropertyChange(STARTING_MULTIPLAYER, null, null)
@@ -218,6 +262,14 @@ object ConnectionManager {
                         Log.i("DEBUG-AMOV", "startCommunication: firing property")
                     }
                 }
+                if(jsonObject.has("wait_new_level")){
+                    waitForNewLevel = jsonObjectToWaitForNewLevel(jsonObject)
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        pcs.firePropertyChange(WAIT_NEW_LEVEL, null, null)
+                        Log.i("DEBUG-AMOV", "startCommunication: firing property")
+                    }
+                }
             } catch (e: java.lang.Exception) {
                 Log.i("DEBUG-AMOV", "startCommunication: failed to parse json $e")
                 keepConnected = false
@@ -226,13 +278,22 @@ object ConnectionManager {
     }
 
     private fun determineHowManyPointsWereWon(tilesSelected: ArrayList<String>?, currentBoard : Int?) : Int{
-        if (bestCombinations[currentBoard!!].containsAll(tilesSelected!!)){
+        var tiles : String = ""
+        for (i in tilesSelected!!){
+            tiles += i
+        }
+
+        if (bestCombinations[currentBoard!!].containsAll(listOf(tiles))){
+            Log.i("PointsWereWon 1", "" + bestCombinations[currentBoard])
             return 2
         }
-        if (secondBestCombinations[currentBoard].containsAll(tilesSelected)){
+        if (secondBestCombinations[currentBoard].containsAll(listOf(tiles))){
+            Log.i("PointsWereWon 2", "" + secondBestCombinations[currentBoard])
             return 1
         }
-        return 0
+
+        Log.i("PointsWereWon 3", "" + secondBestCombinations[currentBoard])
+        return -1
     }
 
     fun askForNextBoard(currentBoard: Int, tilesSelected: ArrayList<String>, username : String,
@@ -426,8 +487,6 @@ object ConnectionManager {
         PlayersData.clear()
     }
 
-    var levelData: NextLevelData? = null
-
     private fun sendImage(imagePath: String?, socket: Socket) {
         if(imagePath==null)
             return
@@ -469,10 +528,14 @@ object ConnectionManager {
     }
 
     fun setBestCombinations(combinations : LinkedList<ArrayList<String>>){
+        Log.i("setBestCombinations", "" + combinations)
+        bestCombinations.clear()
         bestCombinations = combinations
     }
 
     fun setSecondBestCombinations(combinations : LinkedList<ArrayList<String>>){
+        Log.i("set2ndBestCombinations", "" + combinations)
+        secondBestCombinations.clear()
         secondBestCombinations = combinations
     }
 }

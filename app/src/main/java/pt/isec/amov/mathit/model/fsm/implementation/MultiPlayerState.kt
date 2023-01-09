@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import pt.isec.amov.mathit.controllers.GameOverActivity
 import pt.isec.amov.mathit.controllers.MultiPlayerWaitForLobbyActivity
+import pt.isec.amov.mathit.controllers.SinglePlayerActivity
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
 import pt.isec.amov.mathit.model.data.levels.Levels
@@ -31,6 +32,19 @@ class MultiPlayerState(
         ContextCompat.startActivity(context,GameOverActivity.getNewIntent(
             context, manager, false), null)
 
+    }
+
+    override fun goSinglePlayerState(
+        context: Context,
+        manager: ModelManager,
+        board: String
+    ) {
+        setState(States.SINGLE_PLAYER)
+        ContextCompat.startActivity(
+            context,
+            SinglePlayerActivity.getNewIntent(context, manager, board),
+            null
+        )
     }
 
     override fun addPoints(points : Int) {

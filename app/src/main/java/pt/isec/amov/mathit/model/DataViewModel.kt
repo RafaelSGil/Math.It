@@ -26,10 +26,10 @@ class DataViewModel(private val data : CurrentGameData) : ViewModel(), java.io.S
         get() = data.currentLevelBoards
 
     val bestCombinations : LiveData<LinkedList<ArrayList<String>>>
-        get() = data.currentLevelBoards
+        get() = data.bestCombinations
 
     val secondBestCombinations : LiveData<LinkedList<ArrayList<String>>>
-        get() = data.currentLevelBoards
+        get() = data.secondBestCombinations
 
     val inWhichBoardAmI : LiveData<Int>
         get() = data.inWhichBoardAmI
@@ -39,6 +39,11 @@ class DataViewModel(private val data : CurrentGameData) : ViewModel(), java.io.S
 
     val currentLevel : LiveData<Int>
         get() = data.currentLevel
+
+    val multiplayerMode : LiveData<String>
+        get() = data.multiplayerMode
+
+    fun setMode(str : String) = data.setMode(str)
 
     fun updateCurrentLeve(level : Int) = data.updateCurrentLeve(level)
 

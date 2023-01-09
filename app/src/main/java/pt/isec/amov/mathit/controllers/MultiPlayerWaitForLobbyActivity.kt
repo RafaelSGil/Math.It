@@ -20,6 +20,7 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
         fun getNewIntent(context : Context, manager : ModelManager) : Intent {
             val intent = Intent(context, MultiPlayerWaitForLobbyActivity::class.java)
             this.manager = manager
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
     }
@@ -58,9 +59,8 @@ class MultiPlayerWaitForLobbyActivity : AppCompatActivity() {
     }
 
     private fun updatePlayersList() {
-        Log.i("DEBUG-AMOV", "updatePlayersList: updating list of players in lobby")
         val players = PlayersData.getPlayers()
-        Log.i("Players | update list", "" + players)
+        Log.i("Update Players", "" + players)
         players.sortedBy { player -> player.score }
         val arrayAdapter: ArrayAdapter<*>
         arrayAdapter = ArrayAdapter(this,

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
@@ -26,6 +27,7 @@ class MultiPlayerActivity : AppCompatActivity() {
             val intent = Intent(context, MultiPlayerActivity::class.java)
             this.manager = manager
             this.mode = mode
+//            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
     }
@@ -40,6 +42,8 @@ class MultiPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Log.i("Multiplayer Mode", "" + mode)
 
         if(savedInstanceState == null){
             when(mode){

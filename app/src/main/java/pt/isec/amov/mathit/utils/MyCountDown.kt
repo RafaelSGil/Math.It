@@ -17,7 +17,6 @@ class MyCountDown(millisInFuture: Long, var viewModel : DataViewModel, var manag
             override fun onTick(millisUntilFinished: Long) {
                 viewModel.updateTimer((millisUntilFinished/1000).toInt())
                 currentTimer -= 1
-                Log.i("TIMER", "onTick: $currentTimer")
             }
 
             override fun onFinish() {

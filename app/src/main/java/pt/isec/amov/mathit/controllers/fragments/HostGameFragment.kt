@@ -17,7 +17,10 @@ import pt.isec.amov.mathit.model.DataViewModel
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.levels.Levels
 import pt.isec.amov.mathit.model.data.multiplayer.NextLevelData
+import pt.isec.amov.mathit.model.data.multiplayer.Player
+import pt.isec.amov.mathit.model.data.multiplayer.PlayersData
 import pt.isec.amov.mathit.utils.MyCountDown
+import pt.isec.amov.mathit.utils.playerListToJsonObject
 import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.properties.Delegates
@@ -146,6 +149,8 @@ class HostGameFragment : Fragment(R.layout.game_board), View.OnTouchListener{
                 v.text = values?.get(counter).toString()
             }
         }
+
+        ConnectionManager.updateLevel(level)
 
         return binding.root
     }
@@ -290,6 +295,7 @@ class HostGameFragment : Fragment(R.layout.game_board), View.OnTouchListener{
             secondBestCombination.addAll(listOf(values[4] + values[7] + values[12] + values[15] + values[20]))
         }
 
+        Log.i("calculateBest", "" + bestCombination)
         viewModel.newBestCombination(bestCombination)
         viewModel.newSecondBestCombination(secondBestCombination)
     }
@@ -355,9 +361,16 @@ class HostGameFragment : Fragment(R.layout.game_board), View.OnTouchListener{
                 }
             }
 
+            viewModel.inWhichBoardAmI.value!!
 
             if (idsSelected.size >= 5 && valuesSelected.size >= 5){
-                if (viewModel.bestCombinations.value?.get(viewModel.inWhichBoardAmI.value!!)?.containsAll(valuesSelected)!!){
+                var tiles : String = ""
+                for (i in valuesSelected){
+                    tiles += i
+                }
+                if (viewModel.bestCombinations.value?.get(viewModel.inWhichBoardAmI.value!!)?.containsAll(
+                        listOf(tiles)
+                    )!!){
                     Log.i("VALUES", "onFling: $valuesSelected")
 
                     idsSelected.clear()
@@ -368,15 +381,24 @@ class HostGameFragment : Fragment(R.layout.game_board), View.OnTouchListener{
 
                     timer?.addTime(level.timeToIncrement.toLong())
 
-                    if(goNextLevel){
+                    PlayersData.updatePlayer(Player(manager.getLocalPlayerName()!!).also {
+                        it.isWaiting = false
+                        it.score = manager.getPoints().toLong()
+                        it.level = manager.getLevel().toString().toInt()
+                    })
+                    ConnectionManager.sendDataToAllClients(playerListToJsonObject(PlayersData.getPlayers()).toString())
+
+                    if(manager.getLevel() != level){
                         timer?.cancel()
-                        manager.goNextLevelState(contextActivity, manager)
+                        manager.goWaitForLobbyState(contextActivity, manager)
                         return false
                     }
                     viewModel.nextBoard()
                     return result
                 }
-                if(viewModel.secondBestCombinations.value?.get(viewModel.inWhichBoardAmI.value!!)?.containsAll(valuesSelected)!!){
+                if(viewModel.secondBestCombinations.value?.get(viewModel.inWhichBoardAmI.value!!)?.containsAll(
+                        listOf(tiles)
+                    )!!){
                     Log.i("VALUES", "onFling: $valuesSelected")
 
                     idsSelected.clear()
@@ -387,9 +409,17 @@ class HostGameFragment : Fragment(R.layout.game_board), View.OnTouchListener{
 
                     timer?.addTime(level.timeToIncrement.toLong())
 
-                    if(goNextLevel){
+                    PlayersData.updatePlayer(Player(manager.getLocalPlayerName()!!).also {
+                        it.isWaiting = false
+                        it.score = manager.getPoints().toLong()
+                        it.level = manager.getLevel().toString().toInt()
+                    })
+
+                    ConnectionManager.sendDataToAllClients(playerListToJsonObject(PlayersData.getPlayers()).toString())
+
+                    if(manager.getLevel() != level){
                         timer?.cancel()
-                        manager.goNextLevelState(contextActivity, manager)
+                        manager.goWaitForLobbyState(contextActivity, manager)
                         return false
                     }
                     viewModel.nextBoard()

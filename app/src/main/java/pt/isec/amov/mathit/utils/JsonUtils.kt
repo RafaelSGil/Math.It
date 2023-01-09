@@ -169,3 +169,20 @@ fun nextBoardDataToJsonObject(nextBoardData: NextBoardData) : JSONObject{
 
     return jsonObject
 }
+
+fun waitForNewLevelToJsonObject(wait : WaitForNewLevel) : JSONObject{
+    val jsonObject = JSONObject().also {
+        it.put("wait_new_level", "")
+        it.put("points", wait.points)
+    }
+    return jsonObject
+}
+
+fun jsonObjectToWaitForNewLevel(jsonObject: JSONObject) : WaitForNewLevel?{
+    return try {
+        val points = jsonObject.getInt("points")
+        return WaitForNewLevel(points)
+    }catch (_:java.lang.Exception){
+        null
+    }
+}

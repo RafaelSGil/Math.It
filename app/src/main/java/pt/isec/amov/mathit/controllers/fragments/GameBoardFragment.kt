@@ -62,6 +62,8 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
 
     private lateinit var viewModel : DataViewModel
 
+    private var startBoard : String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,6 +77,7 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
             manager = i.getSerializableExtra("data") as ModelManager
             level = i.getSerializableExtra("level") as Levels
             viewModel = i.getSerializableExtra("viewModel") as DataViewModel
+            startBoard = i.getStringExtra("board").toString()
         }
 
         //add every text view to an array, to make it easier to iterate through each one
@@ -125,7 +128,11 @@ class GameBoardFragment : Fragment(R.layout.game_board), View.OnTouchListener {
         }
         if(!viewModel.hasBeenInitiated){
             binding.pbTimer.max = (level.timeToComplete).toInt()
-            assignRandomValues()
+            if (startBoard != ""){
+                assignRandomValues()
+            }else{
+                viewModel.assignRandomValues(manager.getStartBoard())
+            }
             timer = MyCountDown(level.timeToComplete*1000, viewModel, manager, contextActivity)
             timer?.start()
             binding.pbTimer.progress = viewModel.timer.value!!
