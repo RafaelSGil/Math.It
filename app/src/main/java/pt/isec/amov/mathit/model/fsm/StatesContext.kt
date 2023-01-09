@@ -135,6 +135,10 @@ class StatesContext(sharedPreferences: SharedPreferences){
         data.setSinglePlayerScore()
     }
 
+    fun setMultiPlayerScore(){
+        data.setMultiPlayerScore()
+    }
+
     fun setStartBoard(board : ArrayList<String>){
         data.boardStart = board
     }

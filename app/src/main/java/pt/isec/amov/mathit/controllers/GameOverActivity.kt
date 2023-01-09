@@ -53,6 +53,9 @@ class GameOverActivity : AppCompatActivity() {
                 manager.goStartState(this, manager)
                 return@setOnClickListener
             }
+
+            manager.sendMultiPlayerScoreToFirebase()
+            manager.goStartState(this, manager)
         }
     }
 }

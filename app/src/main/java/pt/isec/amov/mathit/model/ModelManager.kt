@@ -174,6 +174,10 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         context.setSinglePlayerScore()
     }
 
+    fun sendMultiPlayerScoreToFirebase(){
+        context.setMultiPlayerScore()
+    }
+
     fun getPointsSinglePlayer() : Int{
         return context.getPointsSinglePlayer()
     }
