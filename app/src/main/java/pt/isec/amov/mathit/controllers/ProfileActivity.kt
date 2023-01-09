@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -77,8 +78,8 @@ class ProfileActivity : AppCompatActivity() {
         Log.i("DEBUG-AMOV", "updateProfilePicView: $imagePath")
         if(imagePath == null)
             binding.playerProfilePic.background = ContextCompat.getDrawable(this,R.drawable.default_profile_image)
-
-        binding.playerProfilePic.background = BitmapDrawable.createFromPath(imagePath)
+        else
+            binding.playerProfilePic.background = BitmapDrawable.createFromPath(imagePath)
     }
 
     private fun chooseImage() {

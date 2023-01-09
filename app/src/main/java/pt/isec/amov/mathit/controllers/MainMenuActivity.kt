@@ -74,9 +74,13 @@ class MainMenuActivity : AppCompatActivity() {
         binding.BtnUsers.setOnClickListener{
             manager.goTop5State(this, manager)
         }
+
+        binding.btnCredits?.setOnClickListener{
+            startActivity(CreditsActivity.getNewIntent(applicationContext, manager), null)
+        }
     }
 
-    val requestPermissionLauncher = registerForActivityResult(
+    private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { }
 }
