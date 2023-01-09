@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import pt.isec.amov.mathit.databinding.ActivityCreditsBinding
 import pt.isec.amov.mathit.model.ModelManager
-import pt.isec.amov.mathit.model.data.Player
 
 class CreditsActivity : AppCompatActivity() {
 

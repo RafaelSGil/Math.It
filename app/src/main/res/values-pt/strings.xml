@@ -6,7 +6,7 @@
     <string name="Users">Utilizador</string>
     <string name="points">"Pontos: "</string>
     <string name="level">"Nível: "</string>
-    <string name="users_label">Utilizadores</string>
+    <string name="users_label">Top 5</string>
     <string name="default_player_name">Jogadador123</string>
     <string name="profile_title_label">Perfil</string>
     <string name="profile_picture_label">Foto de perfil</string>
