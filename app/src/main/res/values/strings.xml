@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Math.It</string>
+    <string name="app_name" translatable="false">Math.It</string>
     <string name="welcome_message">Welcome my friend</string>
     <string name="SinglePlayer">Singleplayer</string>
     <string name="MultiPlayer">Multiplayer</string>
@@ -19,9 +19,15 @@
     <string name="join_game_title">Available Games</string>
     <string name="nextLevel">Loading next level in…</string>
     <string name="time_left">Time left:</string>
+    <string name="start_next_level">Next Level</string>
+    <string name="list_empty_prompt">There are no games available</string>
+    <string name="waiting_for_game_to_start">Waiting for game to proceed</string>
+    <string name="current_level">Current Level</string>
+    <string name="no_players_connected">There are no players connected</string>
     <string name="game_over">GAME OVER</string>
     <string name="main_menu">Main Menu</string>
     <string name="save_to_top_5">Save To TOP 5</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
+    <string name="wait_for_players">Wait for more player</string>
 </resources>

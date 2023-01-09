@@ -2,17 +2,18 @@ package pt.isec.amov.mathit.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.ArraySet
+import android.widget.ListView
 import pt.isec.amov.mathit.model.data.Data
-import pt.isec.amov.mathit.model.data.Player
+import pt.isec.amov.mathit.model.data.multiplayer.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
-import pt.isec.amov.mathit.model.fsm.IState
 import pt.isec.amov.mathit.model.fsm.States
 import pt.isec.amov.mathit.model.fsm.StatesContext
+import java.beans.PropertyChangeListener
 
 class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     private var context : StatesContext = StatesContext(sharedPreferences)
     private var previousStates: States? = null
+    var tvsValues : java.util.ArrayList<String> = java.util.ArrayList<String>()
 
     fun getState() : States?{
         return this.context.getState()
@@ -34,7 +35,7 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.getPoints()
     }
 
-    fun getLevel() : Levels?{
+    fun getLevel() : Levels{
         return context.getLevel()
     }
 
@@ -45,14 +46,13 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
     fun redirectNextLevel(context: Context, model: ModelManager){
         when(previousStates){
             States.SINGLE_PLAYER -> goSinglePlayerState(context, model)
-            States.MULTI_PLAYER -> goMultiPlayerState(context, model)
             States.NEXT_LEVEL -> goNextLevelState(context, model)
             else -> goStartState(context, model)
         }
     }
 
-    fun goMultiPlayerState(context: Context, model: ModelManager) {
-        this.context.goMultiPlayerState(context, model)
+    fun goMultiPlayerState(context: Context, model: ModelManager, mode: String) {
+        this.context.goMultiPlayerState(context, model, mode)
     }
 
     fun goMultiPlayerTopState(context: Context, model: ModelManager) {
@@ -90,6 +90,10 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
 
     fun goSinglePlayerState(context: Context, model: ModelManager) {
         this.context.goSinglePlayerState(context, model)
+    }
+
+    fun goSinglePlayerState(context: Context, manager: ModelManager, board : String){
+        this.context.goSinglePlayerState(context, manager, board)
     }
 
     fun goSinglePlayerTopState(context: Context, model: ModelManager) {
@@ -130,8 +134,48 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
         return context.changeLocalPlayerProfilePic(imagePath)
     }
 
+    fun startServer(applicationContext: Context, level : Int) {
+        ConnectionManager.startServer(applicationContext, context.getLocalPlayerName()!!, level)
+    }
+
+    fun startServerListener(listView: ListView) {
+        val localPlayer: Player? = getData().playerName?.let { Player(it) }
+        ConnectionManager.startServerListener(listView, localPlayer, getData().profilePicImagePath)
+    }
+
+    fun closeServerListener() {
+        ConnectionManager.closeServerListener()
+    }
+
+    fun closeServer() {
+        ConnectionManager.closeServer()
+    }
+
+    fun startClient(index: Int): Boolean {
+        return ConnectionManager.startClient(index)
+    }
+
+    fun isHost(): Boolean {
+        return ConnectionManager.isHost()
+    }
+
+    fun addPropertyChangeListener(
+        property: String?,
+        listener: PropertyChangeListener?
+    ) {
+        ConnectionManager.addPropertyChangeListener(property, listener)
+    }
+
+    fun getConnectedPlayers(): List<Player> {
+        return ConnectionManager.getConnectedPlayers()
+    }
+
     fun sendSinglePlayerScoreToFirebase(){
         context.setSinglePlayerScore()
+    }
+
+    fun sendMultiPlayerScoreToFirebase(){
+        context.setMultiPlayerScore()
     }
 
     fun getPointsSinglePlayer() : Int{
@@ -140,5 +184,13 @@ class ModelManager(sharedPreferences: SharedPreferences) : java.io.Serializable{
 
     fun getPointsMultiPlayer() : Int{
         return context.getPointsMultiPlayer()
+    }
+
+    fun setStartBoard(board : ArrayList<String>){
+        context.setStartBoard(board)
+    }
+
+    fun getStartBoard() : ArrayList<String>{
+        return context.getStartBoard()
     }
 }

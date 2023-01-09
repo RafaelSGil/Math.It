@@ -17,6 +17,7 @@ class NextLevelActivity : AppCompatActivity(){
         fun getNewIntent(context : Context, manager : ModelManager) : Intent {
             val intent = Intent(context, NextLevelActivity::class.java)
             this.manager = manager
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             return intent
         }
 
@@ -30,7 +31,7 @@ class NextLevelActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityNextLevelBinding
 
-
+    private var timer : CountDownTimer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,7 +49,7 @@ class NextLevelActivity : AppCompatActivity(){
             binding.tvTime.text = time.toString()
         }
 
-        val timer = object : CountDownTimer(milisec.toLong(), 1000) {
+        timer = object : CountDownTimer(milisec.toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 when(binding.tvTime.text){
                     "5" -> binding.tvTime.text = "4"
@@ -68,6 +69,7 @@ class NextLevelActivity : AppCompatActivity(){
 
         binding.btnPause.apply {
             setOnClickListener {
+                timer?.cancel()
                 manager?.goPauseState(context, manager!!, binding.tvTime.text.toString().toInt())
             }
         }

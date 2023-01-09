@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import pt.isec.amov.mathit.model.ModelManager
 import pt.isec.amov.mathit.model.data.Data
-import pt.isec.amov.mathit.model.data.Player
 import pt.isec.amov.mathit.model.data.levels.Levels
-import pt.isec.amov.mathit.model.fsm.implementation.SinglePlayerState
 import pt.isec.amov.mathit.model.fsm.implementation.StartState
 
 class StatesContext(sharedPreferences: SharedPreferences){
@@ -41,8 +39,8 @@ class StatesContext(sharedPreferences: SharedPreferences){
         return data.multiplayerScore
     }
 
-    fun getLevel() : Levels?{
-        return state.getLevel()
+    fun getLevel() : Levels{
+        return data.getLevel()
     }
 
     fun reset(){
@@ -53,8 +51,8 @@ class StatesContext(sharedPreferences: SharedPreferences){
         this.state.goGameOverState(context, manager)
     }
 
-    fun goMultiPlayerState(context : Context, manager: ModelManager) {
-        this.state.goMultiPlayerState(context, manager)
+    fun goMultiPlayerState(context : Context, manager: ModelManager, mode: String) {
+        this.state.goMultiPlayerState(context, manager, mode)
     }
 
     fun goMultiPlayerTopState(context : Context, manager: ModelManager) {
@@ -91,6 +89,9 @@ class StatesContext(sharedPreferences: SharedPreferences){
 
     fun goSinglePlayerState(context : Context, manager: ModelManager) {
         this.state.goSinglePlayerState(context, manager)
+    }
+    fun goSinglePlayerState(context: Context, manager: ModelManager, board : String){
+        this.state.goSinglePlayerState(context, manager, board)
     }
 
     fun goSinglePlayerTopState(context : Context, manager: ModelManager) {
@@ -132,5 +133,16 @@ class StatesContext(sharedPreferences: SharedPreferences){
 
     fun setSinglePlayerScore(){
         data.setSinglePlayerScore()
+    }
+
+    fun setMultiPlayerScore(){
+        data.setMultiPlayerScore()
+    }
+
+    fun setStartBoard(board : ArrayList<String>){
+        data.boardStart = board
+    }
+    fun getStartBoard() : ArrayList<String>{
+        return data.boardStart
     }
 }

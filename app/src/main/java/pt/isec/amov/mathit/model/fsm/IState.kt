@@ -7,8 +7,9 @@ import pt.isec.amov.mathit.model.data.levels.Levels
 interface IState {
     fun getState() : States?
     fun goSinglePlayerState(context : Context, manager: ModelManager)
+    fun goSinglePlayerState(context: Context, manager: ModelManager, board : String)
     fun goGameOverState(context : Context, manager: ModelManager)
-    fun goMultiPlayerState(context : Context, manager: ModelManager)
+    fun goMultiPlayerState(context : Context, manager: ModelManager, mode: String)
     fun goMultiPlayerTopState(context : Context, manager: ModelManager)
     fun goMultiPointsTopState(context : Context, manager: ModelManager)
     fun goMultiTimeTopState(context : Context, manager: ModelManager)

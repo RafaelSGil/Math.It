@@ -38,7 +38,7 @@ abstract class StateAdapter(
         return
     }
 
-    override fun goMultiPlayerState(context : Context, manager: ModelManager) {
+    override fun goMultiPlayerState(context : Context, manager: ModelManager, mode: String) {
         return
     }
 
@@ -75,6 +75,14 @@ abstract class StateAdapter(
     }
 
     override fun goSinglePlayerState(context : Context, manager: ModelManager) {
+        return
+    }
+
+    override fun goSinglePlayerState(
+        context: Context,
+        manager: ModelManager,
+        board: String
+    ) {
         return
     }
 
