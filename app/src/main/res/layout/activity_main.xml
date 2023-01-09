@@ -91,6 +91,29 @@
                 android:layout_marginEnd="10dp"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="40dp">
+
+            <Button
+                android:id="@+id/btnCredits"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/round_btn"
+                android:padding="15dp"
+                android:text="@string/creditsTitle"
+                android:textColor="#D2D2D2"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ButtonSinglePlayer"
+                app:layout_constraintVertical_chainStyle="packed" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout

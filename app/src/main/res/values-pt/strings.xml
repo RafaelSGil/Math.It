@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Math.It</string>
     <string name="welcome_message">Bem vindo amigo</string>
     <string name="SinglePlayer">Um jogador</string>
     <string name="MultiPlayer">Vários jogadores</string>
     <string name="Users">Utilizador</string>
     <string name="points">"Pontos: "</string>
     <string name="level">"Nível: "</string>
-    <string name="users_label">Utilizadores</string>
+    <string name="users_label">Top 5</string>
     <string name="default_player_name">Jogadador123</string>
     <string name="profile_title_label">Perfil</string>
     <string name="profile_picture_label">Foto de perfil</string>
@@ -30,5 +29,8 @@
     <string name="save_to_top_5">Guardar no TOP 5</string>
     <string name="pause">Pausa</string>
     <string name="resume">Continuar</string>
+    <string name="creditsTitle">Créditos</string>
+    <string name="this_project_was_made_by">Projeto feito por:</string>
     <string name="wait_for_players">Espere port mais jogadores</string>
+>>>>>>> main
 </resources>

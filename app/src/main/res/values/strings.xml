@@ -6,7 +6,7 @@
     <string name="Users">Users</string>
     <string name="points">Points: </string>
     <string name="level">Level:</string>
-    <string name="users_label">Users</string>
+    <string name="users_label">Top 5</string>
     <string name="default_player_name">Player123</string>
     <string name="profile_title_label">Your Profile</string>
     <string name="profile_picture_label">Profile Picture</string>
@@ -29,5 +29,10 @@
     <string name="save_to_top_5">Save To TOP 5</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
+    <string name="creditsTitle">Credits</string>
+    <string name="this_project_was_made_by">This project was made by:</string>
+    <string name="aplicacoes_moveis_22_23" translatable="false">Aplicações Móveis 22/23</string>
+    <string name="developers" translatable="false">Rafael Gil\na2020136741@isec.pt\n \nGonçalo Salgueirinho\na2020142627@isec.pt\n \nPedro Nogueira\na2020136533@isec.pt</string>
     <string name="wait_for_players">Wait for more player</string>
+>>>>>>> main
 </resources>
